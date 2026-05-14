@@ -1,0 +1,225 @@
+/* ================================================================
+   CATEGORIES — Acordeón Editorial (Fluid Expand)
+   ================================================================ */
+
+.categories-accordion {
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  background: #0A0807;
+  padding: 0;
+  display: flex;
+}
+
+.accordion-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 
+  The Magic: Flex properties control the width. 
+  flex: 1 means it takes 1 fraction. 
+  flex: 6 means it takes 6 fractions (much wider). 
+*/
+.accordion-item {
+  position: relative;
+  height: 100%;
+  flex: 1; 
+  transition: flex 1s cubic-bezier(0.19, 1, 0.22, 1);
+  cursor: pointer;
+  overflow: hidden;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.accordion-item:last-child {
+  border-right: none;
+}
+
+/* Active width - takes up most of the screen */
+.accordion-item.is-active {
+  flex: 6;
+  cursor: default;
+}
+
+/* ================================================================
+   BACKGROUND IMAGES
+   ================================================================ */
+
+.accordion-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.accordion-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.1);
+  transition: transform 8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Cinematic slow zoom when active */
+.accordion-item.is-active .accordion-bg img {
+  transform: scale(1);
+}
+
+/* Gradient overlays for text legibility */
+.accordion-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6); /* Darker when inactive to hide noise */
+  transition: background 1s ease;
+}
+
+.accordion-item.is-active .accordion-overlay {
+  background: linear-gradient(
+    to top, 
+    rgba(10, 8, 5, 0.95) 0%, 
+    rgba(10, 8, 5, 0.3) 50%, 
+    transparent 100%
+  );
+}
+
+/* ================================================================
+   CONTENT & TYPOGRAPHY
+   ================================================================ */
+
+.accordion-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Vertical Title (Inactive State) */
+.title-vertical-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.title-vertical {
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  transform: rotate(-90deg);
+  opacity: 1;
+  transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), color 0.4s ease;
+}
+
+.accordion-item:hover .title-vertical {
+  color: white;
+}
+
+.accordion-item.is-active .title-vertical {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.9);
+}
+
+/* Active Content Reveal */
+.content-active {
+  width: 100%;
+  padding: 4rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  transition-delay: 0s;
+}
+
+.accordion-item.is-active .content-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition-delay: 0.4s; /* Wait for expansion to start before showing text */
+}
+
+.content-active__inner {
+  max-width: 500px;
+}
+
+.content-active h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 4vw, 4.5rem);
+  color: #FFFDF8;
+  margin-bottom: var(--space-sm);
+  font-style: italic;
+  font-weight: 300;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+
+.content-active p {
+  font-family: var(--font-sans);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: var(--space-xl);
+  font-weight: 300;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.content-active .btn {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  backdrop-filter: blur(4px);
+}
+
+.content-active .btn:hover {
+  background: white;
+  color: #111;
+  border-color: white;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 768px) {
+  .categories-accordion {
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .accordion-container {
+    flex-direction: column;
+  }
+  
+  .accordion-item {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* On mobile, inactive height is small, active takes up most space */
+    min-height: 80px; 
+  }
+  
+  .title-vertical-wrapper {
+    align-items: center;
+  }
+
+  .title-vertical {
+    transform: rotate(0deg); /* Horizontal on mobile */
+    font-size: 0.85rem;
+  }
+  
+  .accordion-item.is-active .title-vertical {
+    transform: rotate(0deg) scale(0.9);
+  }
+  
+  .content-active {
+    padding: 2rem;
+  }
+  
+  .content-active h2 {
+    font-size: 2.2rem;
+  }
+}

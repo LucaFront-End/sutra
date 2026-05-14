@@ -1,0 +1,338 @@
+/* ================================================================
+   CONCEPT — Caos al Silencio
+   ================================================================ */
+
+.concept-wrapper {
+  height: 250vh;
+  position: relative;
+  z-index: 10;
+  background: var(--sutra-primary);
+}
+
+.concept-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* STRESS PHASE BACKGROUND: A harsh, cold, bright gray/white */
+  background: #F4F4F6; 
+  transition: background 0.1s; /* Snaps to dark instantly, like turning off a TV */
+}
+
+/* THE CURE: Instantly switches to the deepest peace */
+.concept-sticky.is-silent {
+  background: #0A0807;
+  transition: background 1s ease-out; /* Slow fade when turning back, fast snap when engaging */
+}
+
+/* ================================================================
+   SENSORY OVERLOAD LAYER (NOISE)
+   ================================================================ */
+
+.concept__noise {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  opacity: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* The Snap Out: The noise violently scales and blurs out of existence */
+.concept-sticky.is-silent .concept__noise {
+  opacity: 0;
+  transform: scale(3) rotate(-5deg);
+  filter: blur(40px);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Fast scrolling claustrophobic tracks */
+.noise-track {
+  font-family: var(--font-sans);
+  font-size: clamp(5rem, 12vw, 12rem); /* Massive, suffocating size */
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #111111; /* Aggressive solid black */
+  white-space: nowrap;
+  line-height: 0.8;
+  letter-spacing: -0.06em; /* Uncomfortably tight */
+  will-change: transform;
+}
+
+/* Very fast, stressful speeds */
+.noise-track-fast { animation: scroll-left-panic 5s linear infinite; }
+.noise-track-reverse { animation: scroll-right-panic 4s linear infinite; color: #222; }
+.noise-track-fast-2 { animation: scroll-left-panic 3s linear infinite; color: #333; }
+
+@keyframes scroll-left-panic {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes scroll-right-panic {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+/* Aggressive Flashing Pop-ups */
+.noise-pop {
+  position: absolute;
+  font-family: var(--font-sans);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #D90429; /* Notification Red - The universal color of stress */
+  mix-blend-mode: multiply;
+  opacity: 0;
+  will-change: transform, opacity;
+  z-index: 5;
+}
+
+.pop-1 {
+  top: 15%;
+  left: 5%;
+  font-size: clamp(6rem, 15vw, 15rem);
+  animation: flash-glitch 1.2s infinite;
+}
+
+.pop-2 {
+  bottom: 20%;
+  right: -5%;
+  font-size: clamp(8rem, 25vw, 25rem);
+  color: #111;
+  animation: flash-glitch 2.1s infinite;
+  animation-delay: 0.5s;
+}
+
+.pop-3 {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(5rem, 10vw, 10rem);
+  color: #D90429;
+  animation: flash-glitch-scale 0.7s infinite;
+  animation-delay: 0.2s;
+}
+
+@keyframes flash-glitch {
+  0%, 100% { opacity: 0; transform: scale(0.9) skewX(0deg); }
+  2%, 8% { opacity: 0.9; transform: scale(1.1) skewX(-15deg); }
+  10% { opacity: 0; }
+}
+
+@keyframes flash-glitch-scale {
+  0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  5% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.5) rotate(5deg); }
+  15% { opacity: 0; transform: translate(-50%, -50%) scale(2) rotate(-5deg); }
+}
+
+/* Panic Notification Badge */
+.noise-badge {
+  position: absolute;
+  top: 10%;
+  right: 15%;
+  width: 140px;
+  height: 140px;
+  background: #D90429; /* Stark red */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: 3.5rem;
+  letter-spacing: -2px;
+  box-shadow: 0 0 40px rgba(217, 4, 41, 0.6);
+  animation: pulse-panic 0.3s infinite alternate; /* Fast heartbeat */
+  z-index: 10;
+}
+
+@keyframes pulse-panic {
+  0% { transform: scale(0.95); box-shadow: 0 0 20px rgba(217, 4, 41, 0.4); }
+  100% { transform: scale(1.15); box-shadow: 0 0 80px rgba(217, 4, 41, 0.9); }
+}
+
+/* Context Anchor (Explains the noise) */
+.concept__noise-context {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 15;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 3rem 4rem;
+  text-align: center;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.concept-sticky.is-silent .concept__noise-context {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.2);
+  transition: all 0.5s ease;
+}
+
+.context-label {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  font-weight: 700;
+  color: #D90429;
+  margin-bottom: 1.5rem;
+}
+
+.concept__noise-context h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: #111;
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* ================================================================
+   ESCAPE HINT (DURING STRESS)
+   ================================================================ */
+
+.concept__escape-hint {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 20;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  animation: float-escape 2s ease-in-out infinite;
+}
+
+.concept__escape-hint.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.concept__escape-hint span {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.escape-arrow {
+  background: white;
+  color: #111;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.8rem;
+}
+
+@keyframes float-escape {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 10px); }
+}
+
+/* ================================================================
+   SILENCE LAYER (THE CURE)
+   ================================================================ */
+
+.concept__silence {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 800px;
+  padding: 0 var(--space-md);
+  
+  /* Initial hidden state */
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 2s ease, transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: 0s;
+}
+
+.concept-sticky.is-silent .concept__silence {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.8s; /* Wait a beat in pure silence before showing the text */
+}
+
+.concept__title {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 300;
+  color: #FFFDF8;
+  margin-bottom: var(--space-xl);
+  font-style: italic;
+  letter-spacing: -0.02em;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.concept__text {
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 300;
+  margin-bottom: var(--space-xl);
+  max-width: 600px;
+  margin-inline: auto;
+}
+
+.concept__divider {
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(to bottom, rgba(212, 167, 106, 0.5), transparent);
+  margin: 0 auto var(--space-xl);
+}
+
+.concept__quote {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  color: #D4A76A;
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 768px) {
+  .noise-track {
+    font-size: 20vw; /* Make words claustrophobic on mobile */
+  }
+  
+  .noise-badge {
+    top: 5%;
+    right: 5%;
+    width: 90px;
+    height: 90px;
+    font-size: 2rem;
+  }
+
+  .concept__divider {
+    height: 50px;
+  }
+}

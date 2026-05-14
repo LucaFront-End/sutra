@@ -1,0 +1,444 @@
+/* ================================================================
+   HERO — Configurador de Estados de Ánimo ("¿Qué necesitas hoy?")
+   ================================================================ */
+
+.hero-moods {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #0A0807; /* Fallback dark */
+}
+
+/* ================================================================
+   BACKGROUND LAYERS & PARALLAX
+   ================================================================ */
+
+.hero__backgrounds {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* Transform is handled inline by React for parallax, but we add a smooth transition 
+     so the parallax doesn't feel jittery */
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hero__bg.visible {
+  opacity: 1;
+}
+
+/* Default neutral background before selection */
+.hero__bg--default {
+  background: radial-gradient(circle at 50% 50%, #2A2420 0%, #0A0807 100%);
+}
+
+.hero__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  /* Subtle zoom out effect when active */
+  transform: scale(1.03);
+  transition: transform 8s ease-out;
+}
+
+.hero__bg.visible .hero__bg-img {
+  transform: scale(1);
+}
+
+.hero__bg-overlay {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+}
+
+/* ================================================================
+   CINEMATIC VIGNETTES (LEGIBILITY)
+   ================================================================ */
+
+.hero__text-protection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40vh; /* Protects the top question */
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 8, 5, 0.85) 0%,
+    rgba(10, 8, 5, 0.4) 50%,
+    transparent 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero__bottom-protection {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40vh; /* Protects the bottom dynamic text */
+  background: linear-gradient(
+    to top,
+    rgba(10, 8, 5, 0.95) 0%,
+    rgba(10, 8, 5, 0.5) 40%,
+    transparent 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ================================================================
+   ATMOSPHERIC PARTICLES
+   ================================================================ */
+
+.hero__particles {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+/* 1. Descanso: Slow floating stardust (Blue/White) */
+.hero__particles--descanso .particle {
+  width: calc(2px + var(--rnd) * 3px);
+  height: calc(2px + var(--rnd) * 3px);
+  background: rgba(200, 220, 255, 0.6);
+  left: calc(var(--rnd) * 100%);
+  bottom: calc(var(--rnd) * -20%);
+  animation: float-up 15s linear infinite;
+  animation-delay: calc(var(--i) * -1s);
+  filter: blur(1px);
+}
+
+/* 2. Enfoque: Sharp, still geometric light motes (Olive/Gold) */
+.hero__particles--enfoque .particle {
+  width: 4px;
+  height: 4px;
+  background: rgba(212, 167, 106, 0.4);
+  left: calc(var(--rnd) * 100%);
+  top: calc(var(--rnd) * 100%);
+  animation: breathe 4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.5s);
+  transform: rotate(45deg);
+}
+
+/* 3. Calma: Soft rising smoke rings (Warm grey) */
+.hero__particles--calma .particle {
+  width: calc(30px + var(--rnd) * 50px);
+  height: calc(30px + var(--rnd) * 50px);
+  border: 1px solid rgba(255, 240, 220, 0.05);
+  border-radius: 50%;
+  background: transparent;
+  left: calc(20% + var(--rnd) * 60%);
+  bottom: -100px;
+  animation: smoke-rise 12s ease-in infinite;
+  animation-delay: calc(var(--i) * -0.8s);
+  filter: blur(8px);
+}
+
+/* 4. Energía: Fast moving sun-dust (Gold/Orange) */
+.hero__particles--energia .particle {
+  width: calc(3px + var(--rnd) * 4px);
+  height: calc(3px + var(--rnd) * 4px);
+  background: #FFD700;
+  box-shadow: 0 0 8px #FFA500;
+  left: -10px;
+  top: calc(var(--rnd) * 100%);
+  animation: sun-dust 8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+  animation-delay: calc(var(--i) * -0.3s);
+}
+
+@keyframes float-up {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.6; }
+  100% { transform: translateY(-100vh); opacity: 0; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.1; transform: rotate(45deg) scale(0.8); }
+  50% { opacity: 0.8; transform: rotate(45deg) scale(1.2); box-shadow: 0 0 10px rgba(212, 167, 106, 0.5); }
+}
+
+@keyframes smoke-rise {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(-80vh) scale(2); opacity: 0; }
+}
+
+@keyframes sun-dust {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translate(100vw, calc(-50px + var(--rnd) * 100px)); opacity: 0; }
+}
+
+/* ================================================================
+   CONTENT & TYPOGRAPHY
+   ================================================================ */
+
+.hero__content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: white;
+  width: 100%;
+  max-width: 900px;
+  padding: var(--space-xl) var(--space-md);
+  
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+}
+
+.hero__content--loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero__question {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 300;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-xl);
+  
+  /* Legibility enhancements: Ivory color + Deep shadow */
+  color: #FFFDF8;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6), 
+               0 2px 8px rgba(0, 0, 0, 0.4);
+               
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+}
+
+.hero__question--shifted {
+  transform: translateY(-20px) scale(0.95);
+  opacity: 0.9;
+}
+
+/* ================================================================
+   MAGNETIC GLASSMORPHISM PILLS
+   ================================================================ */
+
+.hero__pills {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-2xl);
+  perspective: 1000px;
+}
+
+.mood-pill {
+  /* Removed transition for transform because Magnetic Hook handles it via React style */
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+  will-change: transform;
+  
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+  padding: 0.8rem 2rem;
+  color: white;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  
+  /* Text shadow for legibility inside the button */
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.mood-pill:hover,
+.mood-pill--active {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255,255,255,0.1);
+}
+
+/* Blur other pills when one is active */
+.hero__pills:hover .mood-pill:not(:hover) {
+  opacity: 0.4;
+  /* Not scaling here to avoid conflicting with magnetic transform */
+}
+
+/* ================================================================
+   DYNAMIC TEXT REVEAL
+   ================================================================ */
+
+.hero__dynamic-area {
+  position: relative;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero__dynamic-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero__dynamic-text.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition-delay: 0.1s;
+}
+
+.hero__dynamic-text h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 300;
+  margin-bottom: var(--space-xs);
+  color: #FFFDF8;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.hero__dynamic-text p {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 500px;
+  margin: 0 auto var(--space-md);
+  font-weight: 300;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.hero__dynamic-text .btn {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  backdrop-filter: blur(4px);
+}
+
+.hero__dynamic-text .btn:hover {
+  background: white;
+  color: #111;
+  border-color: white;
+}
+
+/* Helper Hint */
+.hero__hint {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-wide);
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero__hint.visible {
+  opacity: 1;
+}
+
+/* ================================================================
+   SCROLL HINT
+   ================================================================ */
+
+.hero__scroll-hint {
+  position: absolute;
+  bottom: var(--space-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.hero__scroll-hint.visible {
+  opacity: 1;
+}
+
+.scroll-mouse {
+  width: 22px;
+  height: 36px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 11px;
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.scroll-dot {
+  width: 3px;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+  animation: scroll-dot-move 2s ease-in-out infinite;
+}
+
+@keyframes scroll-dot-move {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 768px) {
+  .hero__question {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero__pills {
+    gap: var(--space-xs);
+    perspective: none; /* Disable 3D on mobile */
+  }
+
+  .mood-pill {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.7rem;
+    width: calc(50% - var(--space-xs));
+    /* Disable magnetic transform inline styles via CSS override on mobile */
+    transform: none !important;
+  }
+
+  .hero__pills:hover .mood-pill:not(:hover) {
+    opacity: 1;
+  }
+
+  .hero__dynamic-area {
+    height: 220px;
+  }
+
+  .hero__dynamic-text h2 {
+    font-size: 1.8rem;
+  }
+}

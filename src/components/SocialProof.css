@@ -1,0 +1,270 @@
+/* ================================================================
+   SOCIAL PROOF — Infinite Film Strip
+   ================================================================ */
+
+.social-proof {
+  padding: 8rem 0;
+  background: #FFFDF8;
+  color: #111;
+  position: relative;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.social-proof__header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+.social-proof__header .section-tag {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: #D4A76A;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.social-proof__header h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-weight: 300;
+  color: #111;
+  letter-spacing: -0.02em;
+}
+
+/* ——— FILM STRIP CONTAINER ——— */
+.film-strip-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%); /* Full bleed trick */
+}
+
+.film-strip {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Add a subtle vignette to the edges of the screen so cards fade out gracefully */
+.film-strip::before,
+.film-strip::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+.film-strip::before {
+  left: 0;
+  background: linear-gradient(to right, #FFFDF8 0%, transparent 100%);
+}
+.film-strip::after {
+  right: 0;
+  background: linear-gradient(to left, #FFFDF8 0%, transparent 100%);
+}
+
+/* ——— THE TRACKS ——— */
+.strip-track {
+  display: flex;
+  width: max-content;
+  /* Hardware acceleration */
+  will-change: transform;
+}
+
+.strip-block {
+  display: flex;
+  gap: 2rem;
+  padding-right: 2rem; /* Gap between blocks */
+}
+
+/* Seamless infinite animation */
+.strip-left .strip-track {
+  animation: scroll-left 50s linear infinite;
+}
+
+.strip-right .strip-track {
+  animation: scroll-right 50s linear infinite;
+}
+
+/* Freeze on Hover */
+.film-strip:hover .strip-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.33333%); } /* Exact width of 1 out of 3 blocks */
+}
+
+@keyframes scroll-right {
+  0% { transform: translateX(-33.33333%); }
+  100% { transform: translateX(0); }
+}
+
+/* ——— UGC CARDS (TikTok Style) ——— */
+.ugc-card {
+  width: 320px;
+  height: 520px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background: #000;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.ugc-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+.ugc-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  opacity: 0.8; /* Slightly dim initially */
+}
+
+.ugc-card:hover .ugc-bg {
+  transform: scale(1.1);
+  filter: brightness(0.4) blur(2px); /* Darken & blur to read text perfectly */
+}
+
+/* Persistent UI Elements */
+.play-icon {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 30px;
+  height: 30px;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+  padding-left: 2px;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.ugc-card:hover .play-icon {
+  opacity: 0;
+}
+
+.ugc-badge {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 2;
+  transition: all 0.4s ease;
+}
+
+.ugc-user {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: white;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  padding: 6px 12px;
+  border-radius: 30px;
+  letter-spacing: 0.05em;
+}
+
+/* Hover Overlay UI */
+.ugc-overlay {
+  position: absolute;
+  inset: 0;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 3;
+}
+
+.ugc-card:hover .ugc-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ugc-card:hover .ugc-badge {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.ugc-text {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  color: white;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.2;
+  margin-bottom: 3rem;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.btn-ugc-shop {
+  background: white;
+  color: #111;
+  border: none;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 14px 24px;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-ugc-shop:hover {
+  background: #D4A76A;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(212, 167, 106, 0.3);
+}
+
+.btn-ugc-shop .arrow {
+  transition: transform 0.3s ease;
+}
+
+.btn-ugc-shop:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 768px) {
+  .social-proof {
+    padding: 6rem 0;
+  }
+  .ugc-card {
+    width: 260px;
+    height: 420px;
+  }
+  .ugc-text {
+    font-size: 1.8rem;
+  }
+}

@@ -1,0 +1,239 @@
+/* ================================================================
+   SHOP PAGE (Aesthetic Grid)
+   ================================================================ */
+
+.shop-page {
+  padding-top: 100px; /* Leave space for navbar */
+  min-height: 100vh;
+  background: #FFFDF8;
+  color: #111;
+  padding-bottom: 8rem;
+}
+
+.fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ——— HEADER ——— */
+.shop-header {
+  text-align: center;
+  padding: 6rem 2rem;
+  border-bottom: 1px solid rgba(17,17,17,0.05);
+}
+
+.shop-tag {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: #D4A76A;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.shop-header h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-weight: 300;
+  margin-bottom: 1rem;
+  color: #111;
+}
+
+.shop-header p {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  color: rgba(17,17,17,0.5);
+  font-weight: 300;
+}
+
+/* ——— LAYOUT ——— */
+.shop-layout {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  gap: 4rem;
+}
+
+/* ——— FILTERS (LEFT) ——— */
+.shop-filters {
+  width: 200px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 120px;
+  align-self: flex-start;
+}
+
+.shop-filters ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.shop-filters button {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(17,17,17,0.4);
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.shop-filters button:hover {
+  color: #111;
+}
+
+.shop-filters button.active {
+  color: #111;
+  font-weight: 600;
+}
+
+.shop-filters button.active::before {
+  content: '';
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #D4A76A;
+}
+
+/* ——— GRID (RIGHT) ——— */
+.shop-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 4rem 2rem;
+}
+
+.shop-item {
+  cursor: pointer;
+  group: shop-item;
+}
+
+.shop-item-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background: #F0EBE1; /* Subtle placeholder background */
+}
+
+.shop-item-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.shop-item:hover .shop-item-img-wrap img {
+  transform: scale(1.05);
+}
+
+.shop-item-hover {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.shop-item:hover .shop-item-hover {
+  opacity: 1;
+}
+
+.btn-quick-view {
+  background: #111;
+  color: #FFF;
+  border: none;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  padding: 1rem 2rem;
+  border-radius: 40px;
+  cursor: pointer;
+  transform: translateY(10px);
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.shop-item:hover .btn-quick-view {
+  transform: translateY(0);
+}
+
+.btn-quick-view:hover {
+  background: #D4A76A;
+}
+
+.shop-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: center;
+}
+
+.shop-item-mood {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #8B7355;
+}
+
+.shop-item-info h2 {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: #111;
+}
+
+.shop-item-price {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: rgba(17,17,17,0.6);
+}
+
+/* ——— RESPONSIVE ——— */
+@media (max-width: 900px) {
+  .shop-layout {
+    flex-direction: column;
+    gap: 3rem;
+  }
+  .shop-filters {
+    position: relative;
+    top: 0;
+    width: 100%;
+  }
+  .shop-filters ul {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+  }
+  .shop-filters button.active::before {
+    top: auto;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

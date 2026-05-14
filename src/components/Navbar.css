@@ -1,0 +1,207 @@
+/* ================================================================
+   NAVBAR — Quiet Luxury Navigation
+   ================================================================ */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: var(--space-sm) 0;
+  transition: all var(--duration-normal) var(--ease-out-expo);
+}
+
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ——— Brand ——— */
+.navbar__brand {
+  z-index: 1001;
+}
+
+.navbar__logo {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: var(--ls-ultra);
+  color: white;
+  transition: color var(--duration-normal) var(--ease-out-expo);
+}
+
+.navbar--scrolled .navbar__logo,
+.navbar--light-theme .navbar__logo {
+  color: var(--sutra-espresso);
+}
+
+/* ——— Links ——— */
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  list-style: none;
+}
+
+.navbar__link {
+  font-size: var(--fs-small);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.85);
+  transition: all var(--duration-fast) ease;
+  position: relative;
+}
+
+.navbar__link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width var(--duration-normal) var(--ease-out-expo);
+}
+
+.navbar__link:hover::after {
+  width: 100%;
+}
+
+.navbar--scrolled .navbar__link,
+.navbar--light-theme .navbar__link {
+  color: var(--sutra-espresso);
+}
+
+.navbar__link:hover {
+  opacity: 1;
+}
+
+/* ——— Scrolled State (Frosted Glass) ——— */
+.navbar--scrolled {
+  background: rgba(250, 247, 242, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-xs) 0;
+}
+
+/* ——— Actions ——— */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  z-index: 1001;
+}
+
+.navbar__cart {
+  color: white;
+  padding: 8px;
+  border-radius: var(--radius-full);
+  transition: all var(--duration-fast) ease;
+}
+
+.navbar__cart:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar--scrolled .navbar__cart,
+.navbar--light-theme .navbar__cart {
+  color: var(--sutra-espresso);
+}
+
+.navbar--scrolled .navbar__cart:hover,
+.navbar--light-theme .navbar__cart:hover {
+  background: rgba(60, 36, 21, 0.06);
+}
+
+/* ——— Hamburger ——— */
+.navbar__hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  z-index: 1001;
+}
+
+.hamburger-line {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: white;
+  transition: all var(--duration-normal) var(--ease-out-expo);
+  transform-origin: center;
+}
+
+.navbar--scrolled .hamburger-line,
+.navbar--light-theme .hamburger-line {
+  background: var(--sutra-espresso);
+}
+
+.navbar--open .hamburger-line {
+  background: var(--sutra-espresso);
+}
+
+.navbar--open .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.navbar--open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar--open .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/* ——— Mobile Menu ——— */
+.navbar__mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: var(--sutra-cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--duration-normal) var(--ease-out-expo);
+  z-index: 999;
+}
+
+.navbar--open .navbar__mobile-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.navbar__mobile-links {
+  list-style: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.navbar__mobile-link {
+  font-family: var(--font-serif);
+  font-size: var(--fs-h3);
+  color: var(--sutra-espresso);
+  letter-spacing: 0.02em;
+  transition: color var(--duration-fast) ease;
+}
+
+.navbar__mobile-link:hover {
+  color: var(--sutra-olive);
+}
+
+/* ——— Responsive ——— */
+@media (max-width: 1024px) {
+  .navbar__links {
+    display: none;
+  }
+
+  .navbar__hamburger {
+    display: flex;
+  }
+}

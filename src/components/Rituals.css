@@ -1,0 +1,487 @@
+/* ================================================================
+   RITUALS — Pista Horizontal y Entornos Cinemáticos
+   ================================================================ */
+
+.rituals-wrapper {
+  height: 500vh; /* Mayor recorrido para disfrutar cada entorno */
+  background: #EAE6DF;
+  position: relative;
+  z-index: 10;
+}
+
+.rituals-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ——— ENVIRONMENTAL THEMES ——— */
+.rituals-sticky.theme--1 { background: #EAE6DF; color: #111; } /* Intro: Beige */
+.rituals-sticky.theme-0 { background: #D6CCC2; color: #111; } /* Sun: Warmer Beige */
+.rituals-sticky.theme-1 { background: #08101F; color: #FFF; } /* Moon: Deep Night Blue */
+.rituals-sticky.theme-2 { background: #1B2A26; color: #FFF; } /* Wind: Deep Sage Green */
+.rituals-sticky.theme-3 { background: #2A1A1A; color: #FFF; } /* Regalo: Deep Warm Burgundy */
+.rituals-sticky.theme-4 { background: #030303; color: #FFF; } /* Dormir: Pitch Black */
+
+.rituals-environment {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 1. SUN (Morning Ritual) */
+.env-sun {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(255,223,150,0.8) 0%, rgba(255,180,100,0) 60%);
+  transform: translate(-50%, -100%) scale(0.5);
+  opacity: 0;
+  transition: all 2s cubic-bezier(0.19, 1, 0.22, 1);
+  border-radius: 50%;
+  mix-blend-mode: screen;
+}
+.env-sun.active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+/* 2. MOON (Night Ritual) */
+.env-moon {
+  position: absolute;
+  top: 40%;
+  left: 60%;
+  width: 300px;
+  height: 300px;
+  background: #FFFDF8;
+  border-radius: 50%;
+  box-shadow: 0 0 120px rgba(200, 220, 255, 0.3), inset -30px -30px 60px rgba(0,0,0,0.3);
+  transform: translate(-50%, 100%);
+  opacity: 0;
+  transition: all 2s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.env-moon.active {
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+
+/* 3. WIND / ENERGY (Limpieza Ritual) */
+.env-wind {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+.env-wind.active {
+  opacity: 1;
+}
+.env-wind::before, .env-wind::after {
+  content: '';
+  position: absolute;
+  top: 30%;
+  left: -20%;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: sweep 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  filter: blur(4px);
+}
+.env-wind::after {
+  top: 70%;
+  animation-delay: 2.5s;
+  width: 80%;
+  height: 3px;
+  filter: blur(8px);
+}
+@keyframes sweep {
+  0% { transform: translateX(0) scaleX(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(150vw) scaleX(1); opacity: 0; }
+}
+
+/* 4. GOLDEN SPARKLES (Regalo Ritual) */
+.env-sparkles {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  background-image: radial-gradient(circle at 50% 50%, rgba(212, 167, 106, 0.05) 0%, transparent 70%);
+}
+.env-sparkles.active {
+  opacity: 1;
+}
+.env-sparkles::before {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  background: #D4A76A;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #D4A76A, 150px -250px 0 #D4A76A, -200px -100px 0 #D4A76A, 250px 150px 0 #D4A76A, -100px 200px 0 #D4A76A;
+  top: 50%; left: 50%;
+  animation: float-sparkles 6s ease-in-out infinite alternate;
+  filter: blur(1px);
+}
+@keyframes float-sparkles {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-50px) rotate(15deg); }
+}
+
+/* 5. STARRY NIGHT (Dormir Ritual) */
+.env-stars {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+.env-stars.active {
+  opacity: 1;
+}
+.env-stars::before {
+  content: '';
+  position: absolute;
+  width: 2px; height: 2px;
+  background: white;
+  box-shadow: 10vw 20vh 0 white, 80vw 15vh 0 white, 50vw 40vh 0 white, 30vw 80vh 0 white, 85vw 75vh 0 white, 20vw 50vh 0 white, 70vw 90vh 0 white;
+  border-radius: 50%;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+@keyframes twinkle {
+  0% { opacity: 0.1; }
+  100% { opacity: 1; box-shadow: 10vw 20vh 8px white, 80vw 15vh 6px white, 50vw 40vh 10px white, 30vw 80vh 5px white, 85vw 75vh 7px white, 20vw 50vh 4px white, 70vw 90vh 8px white; }
+}
+
+/* ——— THE DYNAMIC GOLDEN THREAD ——— */
+.rituals-thread-container {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100vw;
+  height: 1px;
+  z-index: 1;
+}
+
+.rituals-thread-base {
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  opacity: 0.1;
+  transition: background 1s ease;
+}
+
+/* The thread fills precisely based on scroll progress */
+.rituals-thread-container::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  height: 3px;
+  width: calc(var(--scroll-progress, 0) * 100vw);
+  background: linear-gradient(90deg, transparent, #D4A76A, #FFF);
+  box-shadow: 0 0 15px rgba(212, 167, 106, 0.8);
+  border-radius: 0 2px 2px 0;
+}
+
+/* ——— THE TRACK ——— */
+.rituals-track {
+  display: flex;
+  align-items: center;
+  gap: 15vw;
+  padding-left: 10vw;
+  padding-right: 50vw;
+  width: max-content;
+  transform: translateX(calc(var(--scroll-progress, 0) * -1 * (100% - 100vw)));
+  will-change: transform;
+  z-index: 2;
+}
+
+/* ——— INTRO BLOCK ——— */
+.rituals-intro-block {
+  width: 50vw;
+  max-width: 600px;
+  min-width: 300px;
+  padding-right: 4rem;
+  color: currentColor;
+  transition: color 1s ease;
+}
+
+.rituals-intro-block h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(3.5rem, 6vw, 6rem);
+  font-weight: 300;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.rituals-intro-block p {
+  font-family: var(--font-sans);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  opacity: 0.7;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* Horizontal Scroll Indicator */
+.scroll-indicator-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.scroll-indicator-horizontal span {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-weight: 700;
+  color: currentColor;
+}
+
+.scroll-indicator-horizontal .line {
+  width: 120px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.3;
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-indicator-horizontal .line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30%;
+  height: 100%;
+  background: #D4A76A; /* Brand Gold */
+  animation: pan-right 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+/* ——— RITUAL CARDS (Glassmorphism + Parallax) ——— */
+.ritual-card {
+  position: relative;
+  width: 400px;
+  height: 520px;
+  margin-top: -100px;
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.ritual-card:nth-child(even) {
+  margin-top: 100px;
+}
+
+/* Giant Background Number */
+.ritual-card__parallax-number {
+  position: absolute;
+  top: -60px;
+  left: -40px;
+  font-family: var(--font-serif);
+  font-size: 14rem;
+  color: currentColor;
+  opacity: 0.04;
+  z-index: 0;
+  pointer-events: none;
+  font-style: italic;
+  line-height: 1;
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Glass Panel */
+.ritual-card__glass {
+  position: absolute;
+  inset: 0;
+  /* Dark tint by default for night themes to block bright elements like the moon */
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Focused State (When card is active) */
+.ritual-card.focused {
+  transform: translateY(-20px);
+}
+.ritual-card.focused:nth-child(even) {
+  transform: translateY(20px);
+}
+
+.ritual-card.focused .ritual-card__glass {
+  /* Darker tint when active to ensure perfect reading focus */
+  background: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 50px 100px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.ritual-card.focused .ritual-card__parallax-number {
+  transform: scale(1.1) translate(-20px, -20px);
+  opacity: 0.15;
+  color: #D4A76A;
+}
+
+/* Light Theme Adjustments */
+.rituals-sticky.theme--1 .ritual-card__glass,
+.rituals-sticky.theme-0 .ritual-card__glass {
+  /* Heavy white milk-glass tint */
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 1);
+  color: #111;
+  text-shadow: none; /* No shadow needed on dark text over light glass */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+}
+
+.rituals-sticky.theme--1 .ritual-card.focused .ritual-card__glass,
+.rituals-sticky.theme-0 .ritual-card.focused .ritual-card__glass {
+  background: rgba(255, 255, 255, 0.9); /* Solid white to block sun glare */
+  box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+}
+
+/* Typography inside card */
+.ritual-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ritual-card__time {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 4px;
+}
+
+.ritual-card__icon {
+  font-size: 1.5rem;
+  opacity: 0.7;
+}
+
+.ritual-card__title {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: inherit; /* Overrides global h3 color so it turns white in night mode */
+}
+
+.ritual-card__desc {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.8;
+  font-weight: 300;
+  color: inherit;
+}
+
+/* E-Commerce CTA */
+.ritual-card__shop {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  transition: border-color 0.8s ease;
+}
+
+.rituals-sticky.theme--1 .ritual-card__shop,
+.rituals-sticky.theme-0 .ritual-card__shop {
+  border-top-color: rgba(0, 0, 0, 0.15);
+}
+
+.shop-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.shop-label {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.6;
+}
+
+.shop-product {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.btn-ritual-shop {
+  background: none;
+  border: none;
+  color: inherit;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-ritual-shop:hover {
+  border-bottom-color: currentColor;
+}
+
+.btn-ritual-shop .arrow {
+  transition: transform 0.3s ease;
+}
+
+.btn-ritual-shop:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 768px) {
+  .rituals-wrapper { height: 400vh; }
+  .rituals-track { gap: 20vw; padding-left: 10vw; }
+  .rituals-intro-block { width: 80vw; padding-right: 0; }
+  
+  .ritual-card {
+    width: 300px;
+    height: 420px;
+    margin-top: -50px;
+  }
+  .ritual-card:nth-child(even) { margin-top: 50px; }
+  .ritual-card__parallax-number { font-size: 10rem; }
+  .ritual-card__glass { padding: 2rem; }
+  .ritual-card__title { font-size: 2rem; }
+  
+  /* Scale down environments */
+  .env-sun { width: 400px; height: 400px; }
+  .env-moon { width: 200px; height: 200px; }
+}

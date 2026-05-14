@@ -1,0 +1,301 @@
+/* ================================================================
+   AROMA EXPERIENCE — Generative Smoke Physics
+   ================================================================ */
+
+.aroma-experience {
+  position: relative;
+  min-height: 100vh;
+  background: #060606;
+  color: #FFF;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  z-index: 5;
+}
+
+/* 
+  The Canvas that runs the generative fluid smoke.
+  Pointer-events: none ensures the mouse can interact with the 
+  React container wrapper but the canvas doesn't block the buttons.
+*/
+.aroma-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.aroma__content {
+  position: relative;
+  z-index: 1;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 8rem 2rem;
+  width: 100%;
+}
+
+/* ——— HEADER ——— */
+.aroma__header {
+  margin-bottom: 6rem;
+}
+
+.aroma__header .section-tag {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: #D4A76A;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.aroma__header h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-weight: 300;
+  color: #FFF;
+  letter-spacing: -0.02em;
+}
+
+/* ——— LAYOUT ——— */
+.aroma__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: center;
+}
+
+/* ——— SELECTOR (LEFT) ——— */
+.aroma__selector {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 2rem;
+}
+
+.aroma-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  font-style: italic;
+}
+
+.aroma-btn-circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FFF;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.aroma-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateX(10px);
+}
+
+.aroma-btn.active {
+  color: #FFF;
+  font-size: 3rem;
+  transform: translateX(20px);
+}
+
+.aroma-btn.active .aroma-btn-circle {
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 0 20px var(--aroma-color);
+}
+
+/* ——— DETAILS (RIGHT) ——— */
+.aroma__details {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 4rem;
+  border-radius: 4px;
+}
+
+/* CSS Animations for switching data */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.aroma__details h3 {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #FFF; /* Override global brown h3 */
+  animation: fadeInUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.aroma-meta {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeInUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation-delay: 0.1s;
+  opacity: 0; /* hidden until animation */
+}
+
+.meta-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.meta-label {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.5;
+}
+
+.meta-value {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 300;
+}
+
+.aroma__details p {
+  font-family: var(--font-sans);
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.8;
+  font-weight: 300;
+  animation: fadeInUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+/* ——— E-COMMERCE CTA ——— */
+.aroma__shop {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeInUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+.aroma-formats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.aroma-formats > span {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.5;
+}
+
+.formats-list {
+  display: flex;
+  gap: 1rem;
+}
+
+.format-tag {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 30px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 300;
+}
+
+.btn-aroma-shop {
+  border: none;
+  color: #111; /* Dark text on colored background */
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.2rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.btn-aroma-shop:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  filter: brightness(1.1);
+}
+
+.btn-aroma-shop .arrow {
+  transition: transform 0.3s ease;
+}
+
+.btn-aroma-shop:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 900px) {
+  .aroma__layout {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+  
+  .aroma__selector {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 0;
+    padding-top: 2rem;
+  }
+  
+  .aroma-btn {
+    font-size: 1.5rem;
+  }
+  
+  .aroma-btn.active {
+    font-size: 2rem;
+  }
+  
+  .aroma__details {
+    padding: 2rem;
+  }
+  
+  .aroma__details h3 {
+    font-size: 2.5rem;
+  }
+  
+  .aroma-meta {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}

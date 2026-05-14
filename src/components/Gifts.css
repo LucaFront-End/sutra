@@ -1,0 +1,339 @@
+/* ================================================================
+   GIFTS — Interactive 3D Card
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap');
+
+.gifts-section {
+  padding: 10rem 0;
+  background: #F9F6F0; /* Light elegant cream background */
+  color: #111;
+  overflow: hidden;
+  position: relative;
+  z-index: 5;
+}
+
+.gifts__header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+.gifts__header .section-tag {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: #8B7355; /* Darker accent for readability on light */
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.gifts__header h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-weight: 300;
+  color: #111; /* Dark text for light background */
+  letter-spacing: -0.02em;
+}
+
+/* ——— 3D SCENE & PERSPECTIVE ——— */
+.gifts__scene {
+  perspective: 2000px; /* High perspective for a dramatic 3D pop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.gift-card {
+  width: 100%;
+  max-width: 550px;
+  min-height: 580px;
+  position: relative;
+  transform-style: preserve-3d;
+  /* Hyper-smooth ease for the flip */
+  transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.gift-card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* ——— CARD FACES ——— */
+.gift-card__face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari support */
+  border-radius: 6px;
+  background: #FFF; /* Pure white paper */
+  color: #111;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.05); /* Soft, elegant shadow for light mode */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* The Back of the card needs to be pre-rotated so it faces away initially */
+.gift-card__back {
+  transform: rotateY(180deg);
+}
+
+/* Paper Texture - Generative SVG Noise */
+.card-texture {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  z-index: 0;
+}
+
+.card-content {
+  position: relative;
+  z-index: 1;
+  padding: 4rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ——— FRONT (THE FORM) ——— */
+.card-title {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 3.5rem;
+  color: #111;
+}
+
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  flex: 1;
+}
+
+.input-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.message-group {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.input-group label {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  color: #D4A76A;
+  padding-bottom: 5px;
+  min-width: 60px;
+}
+
+/* Handwriting Input Magic */
+.handwriting-input {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(17,17,17,0.1);
+  font-family: 'Caveat', cursive;
+  font-size: 2.5rem;
+  color: #111;
+  outline: none;
+  padding: 0 0.5rem;
+  transition: border-color 0.3s ease;
+  line-height: 1;
+}
+
+.handwriting-input::placeholder {
+  color: rgba(17,17,17,0.15);
+}
+
+.handwriting-input:focus {
+  border-bottom-color: #D4A76A;
+}
+
+textarea.handwriting-input {
+  resize: none;
+  font-size: 2rem;
+  line-height: 1.2;
+  border-bottom: 1px dashed rgba(17,17,17,0.1);
+}
+
+.btn-seal {
+  margin-top: auto;
+  align-self: center;
+  background: #111;
+  color: #FFF;
+  border: none;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  padding: 1.2rem 3rem;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.btn-seal:hover {
+  background: #D4A76A;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(212, 167, 106, 0.3);
+}
+
+.btn-seal .arrow {
+  transition: transform 0.3s ease;
+}
+
+.btn-seal:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* ——— BACK (THE BUNDLES) ——— */
+.back-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.back-header h3 {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 300;
+  color: #111;
+}
+
+.back-header p {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 1rem;
+  color: rgba(17,17,17,0.5);
+}
+
+.handwriting-text {
+  font-family: 'Caveat', cursive;
+  font-size: 2rem;
+  color: #D4A76A;
+  margin-left: 0.5rem;
+  text-transform: none;
+}
+
+.bundles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.bundle-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.2rem;
+  border: 1px solid rgba(17,17,17,0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.3);
+}
+
+.bundle-item:hover {
+  border-color: #D4A76A;
+  background: #FFF;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.bundle-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.bundle-info {
+  flex: 1;
+}
+
+.bundle-info h4 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 0.3rem;
+  color: #111;
+}
+
+.bundle-price {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+.btn-add-bundle {
+  background: transparent;
+  border: 1px solid #111;
+  color: #111;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  padding: 0.8rem 1.5rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-add-bundle:hover {
+  background: #111;
+  color: #FFF;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  color: rgba(17,17,17,0.4);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  margin-top: 3rem;
+  transition: color 0.3s ease;
+  padding: 1rem;
+}
+
+.btn-back:hover {
+  color: #111;
+}
+
+/* ——— RESPONSIVE ——— */
+@media (max-width: 768px) {
+  .gifts-section {
+    padding: 6rem 0;
+  }
+  .card-content {
+    padding: 3rem 2rem;
+  }
+  .input-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .bundle-item {
+    flex-direction: column;
+    text-align: center;
+  }
+}
