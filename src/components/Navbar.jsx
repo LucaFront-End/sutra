@@ -2,6 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import logoDark from '../assets/logo/LOGO-07.png';
 import logoLight from '../assets/logo/LOGO-08.png';
+import zenImg from '../assets/images/jardin-zen-detalle.jpg';
+import cartasImg from '../assets/images/cartas-rituales.jpg';
+import vasijasImg from '../assets/images/vasijas.jpg';
+import ceraNegraImg from '../assets/images/cera-negra.jpg';
+import teCeremonialImg from '../assets/images/te-ceremonial-lata.jpg';
 import './Navbar.css';
 
 export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart, cartCount = 0 }) {
@@ -14,6 +19,19 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
   const [mobileAccOpen, setMobileAccOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const closeTimeoutRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    setDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    closeTimeoutRef.current = setTimeout(() => {
+      setDropdownOpen(false);
+    }, 140);
+  };
 
   const currentPath = location.pathname;
   const isHome = currentPath === '/';
@@ -98,12 +116,12 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
 
         {/* Clean, simplified navigation menu */}
         <ul className="navbar__links" id="nav-links">
-          {/* Tienda with rich dropdown */}
+          {/* Tienda with rich visual mega dropdown */}
           <li 
             className={`navbar__item navbar__item--has-dropdown ${dropdownOpen ? 'is-active' : ''}`}
             ref={dropdownRef}
-            onMouseEnter={() => setDropdownOpen(true)}
-            onMouseLeave={() => setDropdownOpen(false)}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           >
             <button 
               className={`navbar__link navbar__link--dropdown-trigger ${isShop ? 'active-link' : ''}`}
@@ -120,74 +138,219 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
               </svg>
             </button>
 
-            {/* Dropdown Menu */}
-            <div className={`navbar__dropdown ${dropdownOpen ? 'navbar__dropdown--visible' : ''}`}>
-              <div className="dropdown__section">
-                <button 
-                  className="dropdown__item dropdown__item--primary" 
-                  onClick={() => handleShopSelect('all')}
-                >
-                  <span className="dropdown__bullet">✦</span>
-                  <div className="dropdown__item-text">
-                    <strong>Todos los productos</strong>
-                    <small>Explora el catálogo completo de bienestar</small>
+            {/* Mega Dropdown Menu */}
+            <div 
+              className={`navbar__dropdown navbar__dropdown--mega ${dropdownOpen ? 'navbar__dropdown--visible' : ''}`}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className="megamenu__inner">
+                {/* Columna 1: Colecciones Principales */}
+                <div className="megamenu__col megamenu__col--main">
+                  <div className="megamenu__col-header">
+                    <span className="megamenu__eyebrow">COLECCIONES</span>
+                    <span className="megamenu__pill">SUTRA RITUALS</span>
                   </div>
-                </button>
 
-                <div className="dropdown__divider" />
-
-                <button 
-                  className="dropdown__item" 
-                  onClick={() => handleShopSelect('velas')}
-                >
-                  Velas
-                </button>
-
-                {/* Accesorios Group with subitems */}
-                <div className="dropdown__group">
                   <button 
-                    className="dropdown__group-title" 
-                    onClick={() => handleShopSelect('accesorios')}
+                    className="megamenu__all-btn" 
+                    onClick={() => handleShopSelect('all')}
                   >
-                    <span>Accesorios</span>
-                    <span className="group-badge">Ver todos</span>
+                    <div className="megamenu__all-icon">✦</div>
+                    <div className="megamenu__all-text">
+                      <strong>Todos los productos</strong>
+                      <small>Explora el catálogo completo de bienestar</small>
+                    </div>
+                    <span className="megamenu__all-arrow">→</span>
                   </button>
-                  <div className="dropdown__sublist">
+
+                  <div className="megamenu__categories-list">
                     <button 
-                      className="dropdown__subitem" 
-                      onClick={() => handleShopSelect('accesorios', 'jardin-zen')}
+                      className="megamenu__cat-link" 
+                      onClick={() => handleShopSelect('velas')}
                     >
-                      • Jardín Zen
+                      <div className="megamenu__cat-info">
+                        <span className="megamenu__cat-title">Velas Rituales</span>
+                        <span className="megamenu__cat-desc">Cera de soya & mecha de algodón puro</span>
+                      </div>
+                      <span className="megamenu__cat-badge">6 piezas</span>
                     </button>
+
                     <button 
-                      className="dropdown__subitem" 
-                      onClick={() => handleShopSelect('accesorios', 'cartas-rituales')}
+                      className="megamenu__cat-link" 
+                      onClick={() => handleShopSelect('aromas')}
                     >
-                      • Cartas de rituales
+                      <div className="megamenu__cat-info">
+                        <span className="megamenu__cat-title">Aromas & Brumas</span>
+                        <span className="megamenu__cat-desc">Sprays áuricos y difusores botánicos</span>
+                      </div>
+                      <span className="megamenu__cat-badge">4 piezas</span>
                     </button>
+
                     <button 
-                      className="dropdown__subitem" 
-                      onClick={() => handleShopSelect('accesorios', 'vasijas')}
+                      className="megamenu__cat-link" 
+                      onClick={() => handleShopSelect('accesorios')}
                     >
-                      • Vasijas
+                      <div className="megamenu__cat-info">
+                        <span className="megamenu__cat-title">Accesorios Sagrados</span>
+                        <span className="megamenu__cat-desc">Jardines zen, cartas y vasijas cerámicas</span>
+                      </div>
+                      <span className="megamenu__cat-badge">3 piezas</span>
+                    </button>
+
+                    <button 
+                      className="megamenu__cat-link" 
+                      onClick={() => handleShopSelect('te')}
+                    >
+                      <div className="megamenu__cat-info">
+                        <span className="megamenu__cat-title">Té Ceremonial</span>
+                        <span className="megamenu__cat-desc">Blends botánicos para introspección</span>
+                      </div>
+                      <span className="megamenu__cat-badge">2 piezas</span>
                     </button>
                   </div>
                 </div>
 
-                <div className="dropdown__divider" />
+                {/* Columna 2: Accesorios & Experiencias con Mini-Fotos */}
+                <div className="megamenu__col megamenu__col--accessories">
+                  <div className="megamenu__col-header">
+                    <span className="megamenu__eyebrow">PIEZAS SAGRADAS</span>
+                    <button 
+                      className="megamenu__sublink-all" 
+                      onClick={() => handleShopSelect('accesorios')}
+                    >
+                      Ver todas →
+                    </button>
+                  </div>
+
+                  <div className="megamenu__thumb-cards">
+                    <button 
+                      className="megamenu__thumb-card" 
+                      onClick={() => handleShopSelect('accesorios', 'jardin-zen')}
+                    >
+                      <div className="megamenu__thumb-media">
+                        <img src={zenImg} alt="Jardín Zen Sutra" loading="lazy" />
+                        <span className="megamenu__thumb-zoom-icon">✦</span>
+                      </div>
+                      <div className="megamenu__thumb-body">
+                        <strong>Jardín Zen</strong>
+                        <span>Arena blanca, rastrillo y cuarzos naturales</span>
+                        <em className="megamenu__thumb-tag">Meditación activa</em>
+                      </div>
+                    </button>
+
+                    <button 
+                      className="megamenu__thumb-card" 
+                      onClick={() => handleShopSelect('accesorios', 'cartas-rituales')}
+                    >
+                      <div className="megamenu__thumb-media">
+                        <img src={cartasImg} alt="Cartas de Rituales Sutra" loading="lazy" />
+                        <span className="megamenu__thumb-zoom-icon">✦</span>
+                      </div>
+                      <div className="megamenu__thumb-body">
+                        <strong>Cartas de Rituales</strong>
+                        <span>Baraja de 44 intenciones con guía dorada</span>
+                        <em className="megamenu__thumb-tag">Introspección diaria</em>
+                      </div>
+                    </button>
+
+                    <button 
+                      className="megamenu__thumb-card" 
+                      onClick={() => handleShopSelect('accesorios', 'vasijas')}
+                    >
+                      <div className="megamenu__thumb-media">
+                        <img src={vasijasImg} alt="Vasijas Cerámicas Sutra" loading="lazy" />
+                        <span className="megamenu__thumb-zoom-icon">✦</span>
+                      </div>
+                      <div className="megamenu__thumb-body">
+                        <strong>Vasijas Artesanales</strong>
+                        <span>Torno a mano con barro y texturas de lava</span>
+                        <em className="megamenu__thumb-tag">Artesanía de origen</em>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Columna 3: Card Destacada "Best Seller" */}
+                <div className="megamenu__col megamenu__col--feature">
+                  <div className="megamenu__col-header">
+                    <span className="megamenu__eyebrow">DESTACADO</span>
+                    <span className="megamenu__pill megamenu__pill--gold">MÁS DESEADO</span>
+                  </div>
+
+                  <div 
+                    className="megamenu__feature-card" 
+                    onClick={() => handleShopSelect('velas')}
+                  >
+                    <div className="megamenu__feature-media">
+                      <img src={ceraNegraImg} alt="Cera Negra Ritual" loading="lazy" />
+                      <div className="megamenu__feature-gradient" />
+                      <span className="megamenu__feature-badge">BEST SELLER</span>
+                    </div>
+                    <div className="megamenu__feature-content">
+                      <span className="megamenu__feature-kicker">VELA ESCULTÓRICA</span>
+                      <h4 className="megamenu__feature-title">Cera Negra Ritual</h4>
+                      <p className="megamenu__feature-desc">Notas de sándalo ahumado, mirra y resinas sagradas para calmar el espacio.</p>
+                      <span className="megamenu__feature-action">
+                        Descubrir vela
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Columna 4: Card Destacada "Experiencia & Ceremonia" */}
+                <div className="megamenu__col megamenu__col--feature">
+                  <div className="megamenu__col-header">
+                    <span className="megamenu__eyebrow">EXPERIENCIA</span>
+                    <span className="megamenu__pill">CEREMONIAL</span>
+                  </div>
+
+                  <div 
+                    className="megamenu__feature-card" 
+                    onClick={() => handleShopSelect('te')}
+                  >
+                    <div className="megamenu__feature-media">
+                      <img src={teCeremonialImg} alt="Té Ceremonial Sutra" loading="lazy" />
+                      <div className="megamenu__feature-gradient" />
+                      <span className="megamenu__feature-badge megamenu__feature-badge--gold">NUEVO</span>
+                    </div>
+                    <div className="megamenu__feature-content">
+                      <span className="megamenu__feature-kicker">INFUSIÓN BOTÁNICA</span>
+                      <h4 className="megamenu__feature-title">Té Ceremonial en Lata</h4>
+                      <p className="megamenu__feature-desc">Mezcla floral de lavanda silvestre, manzanilla y pétalos en lata hermética.</p>
+                      <span className="megamenu__feature-action">
+                        Ver experiencia
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Barra Inferior del Mega Menú */}
+              <div className="megamenu__footer">
+                <div className="megamenu__perks">
+                  <div className="megamenu__perk">
+                    <span className="megamenu__perk-dot">🌿</span>
+                    <span>Cera 100% de soya vegetal</span>
+                  </div>
+                  <div className="megamenu__perk">
+                    <span className="megamenu__perk-dot">✨</span>
+                    <span>Envío sin cargo en compras +$1,500 MXN</span>
+                  </div>
+                  <div className="megamenu__perk">
+                    <span className="megamenu__perk-dot">🕯️</span>
+                    <span>Hecho a mano en México</span>
+                  </div>
+                </div>
 
                 <button 
-                  className="dropdown__item" 
-                  onClick={() => handleShopSelect('aromas')}
+                  className="megamenu__footer-link" 
+                  onClick={() => handleShopSelect('all')}
                 >
-                  Aromas
-                </button>
-
-                <button 
-                  className="dropdown__item" 
-                  onClick={() => handleShopSelect('te')}
-                >
-                  Té
+                  <span>Ver todas las piezas de la colección</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </button>
               </div>
             </div>
