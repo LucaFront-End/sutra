@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Categories.css';
 import catCeraArena from '../assets/images/cat-cera-arena.jpg';
-import catSprays from '../assets/images/cat-sprays.png';
+import catAromas from '../assets/images/cat-aromas-wide.jpg';
 import catZen from '../assets/images/cat-jardin-zen.jpg';
 import catTea from '../assets/images/cat-te-ceremonial.jpg';
 
@@ -22,7 +22,7 @@ const CATEGORIES = [
   { 
     id: 'aromas', 
     title: 'Aromas & Brumas', 
-    image: catSprays, 
+    image: catAromas, 
     desc: 'Home sprays botánicos, difusores mikado de ratán y aceites esenciales terapéuticos.',
   },
   { 
