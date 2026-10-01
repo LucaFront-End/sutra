@@ -34,6 +34,11 @@ export default function Events({ onNavigate, onAddToCart }) {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [folioNumber, setFolioNumber] = useState('');
+  const [activeSector, setActiveSector] = useState('wedding');
+
+  const toggleSector = (id) => {
+    setActiveSector(prev => prev === id ? null : id);
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -182,34 +187,74 @@ export default function Events({ onNavigate, onAddToCart }) {
     {
       id: 'wedding',
       icon: '💍',
-      tag: 'Bodas & Romance',
+      tag: 'Bodas de Autor & Romance',
       title: 'Wedding Planners',
-      desc: 'Crea pasillos de ceremonia y centros de mesa de ensueño que duran encendidos toda la fiesta. Sin cera derramada en mantelería fina ni llamas que se apagan con la brisa.',
-      badge: 'Cero Riesgo de Derrame'
+      shortTitle: 'Bodas',
+      headline: 'Montajes románticos de ensueño sin arruinar un solo mantel',
+      desc: 'Crea pasillos de ceremonia y centros de mesa impecables que duran encendidos toda la fiesta. Sin cera derramada en mantelería fina ni llamas que se apagan con la brisa de jardín o playa.',
+      badge: 'Cero Riesgo de Derrame',
+      image: imgBanquetes,
+      imageBadge: 'Montaje en Recepción de Bodas',
+      perks: [
+        'No mancha mantelería importada, sedas ni vestidos de novia',
+        'Autoextinguible al instante si un invitado derriba un cilindro',
+        '8+ horas de llama pura sin generar humo negro ni hollín'
+      ],
+      waText: 'Hola equipo Sutra, me gustaría cotizar cera de arena para eventos de Wedding Planning y Bodas.'
     },
     {
       id: 'catering',
       icon: '🍽️',
-      tag: 'Banquetería Fina',
+      tag: 'Banquetería & Alta Producción',
       title: 'Catering & Banqueteras',
-      desc: 'Montajes de 50+ mesas en tiempo récord: solo vierte la cera de arena en cualquier cilindro o copa y enciende. Al terminar, retiras la mecha y la cera queda 100% limpia para tu próximo evento.',
-      badge: 'Montaje en Minutos'
+      shortTitle: 'Banquetes',
+      headline: '50 mesas listas en minutos con hasta 60% de ahorro de insumos',
+      desc: 'Montajes a gran escala en tiempo récord: solo vierte la cera de arena en cualquier cristalería. Al terminar el evento, retiras la mecha usada y el 90% restante vuelve intacto al saco para tu próxima fiesta.',
+      badge: 'Montaje en Minutos',
+      image: imgWhiteWax,
+      imageBadge: 'Cera Granulada en Cristalería',
+      perks: [
+        'Ahorro del 60% frente al desecho constante de velas de pilar',
+        'Cero raspado de parafina pegada al desmontar la vajilla',
+        'Reutilizable evento tras evento sin pérdida de calidad estética'
+      ],
+      waText: 'Hola equipo Sutra, me gustaría cotizar cera de arena para montajes de Catering y Banquetes masivos.'
     },
     {
       id: 'hoteles-restaurantes',
       icon: '🏨',
       tag: 'Hospitalidad & Gastronomía',
       title: 'Hoteles, Restaurantes & Rooftops',
-      desc: 'Iluminación cálida y centros de mesa que se renuevan en 5 segundos entre turno y turno. Ideal para lobbies, spas, terrazas y cenas sin raspar parafina pegada ni manchar vajillas.',
-      badge: 'Ahorro & Recambio Rápido'
+      shortTitle: 'Restaurantes',
+      headline: 'Iluminación cálida y recambios en 5 segundos entre turno y turno',
+      desc: 'Centros de mesa que se renuevan en 5 segundos para el siguiente comensal. Ideal para lobbies, spas, terrazas al aire libre y cenas de autor sin olores a petróleo que interfieran con la comida.',
+      badge: 'Ahorro & Recambio Rápido',
+      image: imgBlackWax,
+      imageBadge: 'Atmósfera Nocturna & Rooftops',
+      perks: [
+        'Recambio de mecha en 5 segundos entre reservaciones',
+        'Sin olores sintéticos que alteren la experiencia gastronómica',
+        'Resistente a corrientes de aire en terrazas y rooftops'
+      ],
+      waText: 'Hola equipo Sutra, me gustaría cotizar cera de arena para iluminación de Hotel / Restaurante / Rooftop.'
     },
     {
       id: 'oficinas',
       icon: '🏢',
       tag: 'Corporativo & Bienestar',
       title: 'Oficinas & Eventos Corporativos',
-      desc: 'Cenas de gala, activaciones de marca, espacios de pausa consciente para colaboradores y regalos corporativos personalizados con el logotipo de tu compañía.',
-      badge: 'Regalos & Activaciones'
+      shortTitle: 'Corporativo',
+      headline: 'Galas empresariales, activación olfativa y regalos VIP con tu marca',
+      desc: 'Diseño integral para celebraciones corporativas, cenas de gala y espacios de bienestar. Personalizamos cajas rituales y recipientes con el logo de tu empresa para directivos, socios y clientes VIP.',
+      badge: 'Regalos & Activaciones VIP',
+      image: imgVasijas,
+      imageBadge: 'Piezas Artesanales & Regalos VIP',
+      perks: [
+        'Regalos corporativos de alta gama con grabado de tu logo',
+        'Activaciones olfativas para congresos y lanzamientos de marca',
+        'Facturación fiscal SAT inmediata y 100% deducible de impuestos'
+      ],
+      waText: 'Hola equipo Sutra, me gustaría cotizar soluciones para Eventos Corporativos y Regalos VIP.'
     }
   ];
 
@@ -327,25 +372,51 @@ export default function Events({ onNavigate, onAddToCart }) {
       </section>
 
       {/* ============================================================
-          COMPARISON: TRADICIONAL VS SUTRA
+          COMPARISON: TRADICIONAL VS SUTRA (VISUAL & FOTOGRAFÍAS)
           ============================================================ */}
       <section className="b2b-comparison-section">
         <div className="container">
           <div className="section-head text-center">
             <span className="section-tag">El Problema de la Cera Tradicional</span>
-            <h2>Por qué las empresas y organizadores están migrando a las Velas de Arena</h2>
+            <h2>Por qué los profesionales migran a las Velas de Arena</h2>
+            <p className="section-subtext">Compara la experiencia operativa y financiera entre la parafina rígida de pilar y la tecnología granulada Sutra.</p>
+          </div>
+
+          {/* Visual Stat Comparison Bar */}
+          <div className="b2b-comp-stats-banner">
+            <div className="comp-stat-col comp-stat-col--bad">
+              <span className="comp-stat-pill comp-stat-pill--bad">Velas Tradicionales</span>
+              <strong className="comp-stat-huge">Hasta 70%</strong>
+              <span className="comp-stat-desc">Desperdicio de cera y parafina por evento</span>
+            </div>
+            <div className="comp-stat-divider">
+              <span>VS</span>
+            </div>
+            <div className="comp-stat-col comp-stat-col--good">
+              <span className="comp-stat-pill comp-stat-pill--gold">✦ Velas de Arena Sutra</span>
+              <strong className="comp-stat-huge comp-stat-huge--gold">100%</strong>
+              <span className="comp-stat-desc">Cera recuperable lista para el próximo evento</span>
+            </div>
           </div>
 
           <div className="b2b-comparison-grid">
-            {/* Tradicionales */}
+            {/* Tradicionales con Media */}
             <div className="comp-card comp-card--bad">
-              <div className="comp-card-badge">Velas Tradicionales de Pilar</div>
+              <div className="comp-media-header comp-media-header--bad">
+                <img src={imgCandleLit} alt="Velas tradicionales con goteo y túnel" />
+                <div className="comp-media-caption-bar comp-media-caption-bar--bad">
+                  <span className="comp-caption-icon">✕</span>
+                  <span>Cera de Parafina Rígida de Pilar</span>
+                </div>
+              </div>
+
+              <div className="comp-card-badge">Limitaciones de Velas Convencionales</div>
               <ul className="comp-list">
                 <li>
                   <span className="cross">✕</span>
                   <div>
                     <strong>Arruinan manteles y vajillas</strong>
-                    <p>La parafina caliente gotea sobre mantelería costosa y deja marcas imposibles de remover.</p>
+                    <p>La parafina caliente gotea sobre mantelería costosa y deja marcas de grasa imposibles de remover.</p>
                   </div>
                 </li>
                 <li>
@@ -366,15 +437,23 @@ export default function Events({ onNavigate, onAddToCart }) {
                   <span className="cross">✕</span>
                   <div>
                     <strong>Horas de limpieza y raspado</strong>
-                    <p>Tu equipo pasa horas despegando cera fría de cilindros de vidrio y candelabros.</p>
+                    <p>Tu equipo pasa horas despegando cera fría de cilindros de vidrio y candelabros con navajas y agua caliente.</p>
                   </div>
                 </li>
               </ul>
             </div>
 
-            {/* Sutra Granulada */}
+            {/* Sutra Granulada con Media */}
             <div className="comp-card comp-card--good">
-              <div className="comp-card-badge comp-card-badge--gold">✦ Velas de Arena Sutra</div>
+              <div className="comp-media-header comp-media-header--good">
+                <img src={imgWhiteWax} alt="Cera de arena Sutra en vaso de cristal" />
+                <div className="comp-media-caption-bar comp-media-caption-bar--good">
+                  <span className="comp-caption-icon">✦</span>
+                  <span>Cera de Arena Granulada Sutra</span>
+                </div>
+              </div>
+
+              <div className="comp-card-badge comp-card-badge--gold">✦ Ventajas de Autor Sutra</div>
               <ul className="comp-list">
                 <li>
                   <span className="check">✓</span>
@@ -411,28 +490,114 @@ export default function Events({ onNavigate, onAddToCart }) {
       </section>
 
       {/* ============================================================
-          SECTORS / INDUSTRIES
+          SECTORS / INDUSTRIES (ACORDEÓN VISUAL + BOTÓN A WHATSAPP)
           ============================================================ */}
-      <section className="b2b-industries-section">
+      <section className="b2b-industries-section" id="sectores">
         <div className="container">
           <div className="section-head text-center">
             <span className="section-tag">Sectores & Profesionales</span>
-            <h2>Soluciones a la medida de tu negocio</h2>
-            <p className="section-subtext">Diseñado para los estándares más exigentes de la industria de eventos y hospitalidad en México.</p>
+            <h2>Soluciones a la medida de tu operación</h2>
+            <p className="section-subtext">Toca cada sector para explorar la solución a tu medida y cotiza de inmediato vía WhatsApp con nuestro equipo comercial.</p>
           </div>
 
-          <div className="industries-grid">
-            {industries.map((ind) => (
-              <div key={ind.id} className="industry-card">
-                <div className="industry-card__header">
-                  <span className="industry-icon">{ind.icon}</span>
-                  <span className="industry-badge">{ind.badge}</span>
+          <div className="sector-accordion">
+            {industries.map((ind) => {
+              const isOpen = activeSector === ind.id;
+              return (
+                <div 
+                  key={ind.id} 
+                  className={`sector-accordion-item ${isOpen ? 'is-open' : ''}`}
+                >
+                  <button 
+                    type="button"
+                    className="sector-accordion-trigger"
+                    onClick={() => toggleSector(ind.id)}
+                    aria-expanded={isOpen}
+                    id={`sector-trigger-${ind.id}`}
+                  >
+                    <div className="sector-trigger-left">
+                      <span className="sector-icon">{ind.icon}</span>
+                      <div className="sector-trigger-titles">
+                        <span className="sector-trigger-tag">{ind.tag}</span>
+                        <h3 className="sector-trigger-title">{ind.title}</h3>
+                      </div>
+                    </div>
+                    <div className="sector-trigger-right">
+                      <span className="sector-badge">{ind.badge}</span>
+                      <span className="sector-chevron">{isOpen ? '−' : '+'}</span>
+                    </div>
+                  </button>
+
+                  {isOpen && (
+                    <div className="sector-accordion-body">
+                      <div className="sector-body-grid">
+                        {/* Columna Izquierda: Contenido, Perks y Botón WhatsApp */}
+                        <div className="sector-body-content">
+                          <h4 className="sector-headline">{ind.headline}</h4>
+                          <p className="sector-desc">{ind.desc}</p>
+
+                          <div className="sector-perks-list">
+                            {ind.perks.map((perk, i) => (
+                              <div key={i} className="sector-perk-item">
+                                <span className="sector-perk-check">✓</span>
+                                <span>{perk}</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="sector-actions">
+                            <a 
+                              href={`https://wa.me/5215500000000?text=${encodeURIComponent(ind.waText)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="sector-wa-btn"
+                              id={`wa-cotizar-${ind.id}`}
+                            >
+                              <svg className="sector-wa-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.971.53 1.761.813 2.796.814 3.183 0 5.769-2.587 5.77-5.766.001-3.182-2.585-5.769-5.77-5.771zm3.392 8.234c-.143.403-.717.74-1.026.786-.299.043-.687.072-2.001-.47-1.68-.692-2.756-2.42-2.84-2.532-.083-.112-.68-1.037-.68-1.977 0-.94.492-1.401.667-1.593.175-.192.38-.24.507-.24.127 0 .254.001.365.006.118.006.277-.045.433.332.162.391.554 1.353.603 1.452.049.099.082.215.016.347-.066.132-.099.214-.198.33-.099.116-.208.259-.297.348-.1.099-.204.207-.088.406.116.199.514.848 1.103 1.372.759.675 1.399.884 1.597.983.198.099.314.083.43-.05.116-.133.497-.579.629-.778.132-.199.264-.165.446-.099.182.066 1.157.546 1.355.645.198.099.33.149.379.232.049.083.049.48-.094.883z"/>
+                                <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.98-1.306A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.182c-1.65 0-3.18-.46-4.49-1.258l-.32-.193-2.955.775.789-2.88-.21-.334A8.146 8.146 0 013.818 12c0-4.512 3.67-8.182 8.182-8.182 4.512 0 8.182 3.67 8.182 8.182 0 4.512-3.67 8.182-8.182 8.182z"/>
+                              </svg>
+                              <span>Cotizar {ind.shortTitle} vía WhatsApp</span>
+                              <span className="sector-wa-arrow">→</span>
+                            </a>
+
+                            <button 
+                              type="button" 
+                              onClick={() => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  tipoNegocio: ind.title,
+                                  detalles: `Interés en soluciones para ${ind.title}`
+                                }));
+                                setCurrentStep(1);
+                                const formEl = document.getElementById('cotizador');
+                                if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+                              }}
+                              className="sector-form-link"
+                            >
+                              O llena el formulario formal ↓
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Columna Derecha: Fotografía Editorial */}
+                        <div className="sector-body-media">
+                          <div className="sector-media-frame">
+                            <img src={ind.image} alt={ind.headline} loading="lazy" />
+                            <div className="sector-media-overlay">
+                              <span className="sector-media-badge">
+                                <span className="sector-media-spark">✦</span>
+                                {ind.imageBadge}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <span className="industry-tag">{ind.tag}</span>
-                <h3 className="industry-title">{ind.title}</h3>
-                <p className="industry-desc">{ind.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
