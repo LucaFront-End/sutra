@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { blogArticles } from '../data/shopData';
 import './Blog.css';
 
 export default function Blog({ onNavigate }) {
+  const navigate = useNavigate();
   const [selectedTag, setSelectedTag] = useState('all');
-  const [readingArticle, setReadingArticle] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [readingArticle]);
+  }, []);
 
   const tags = ['all', 'Filosofía Sutra', 'Rituales', 'Bienestar Sensorial', 'Mindfulness'];
 
@@ -40,37 +41,6 @@ export default function Blog({ onNavigate }) {
         </div>
       </header>
 
-      {/* Reading Article Modal / Overlay if user clicked an article */}
-      {readingArticle && (
-        <div className="article-reader-overlay" onClick={() => setReadingArticle(null)}>
-          <div className="article-reader-card" onClick={(e) => e.stopPropagation()}>
-            <button className="article-reader-close" onClick={() => setReadingArticle(null)}>✕ Cerrar</button>
-            <div className="article-reader-meta">
-              <span className="article-reader-cat">{readingArticle.category}</span>
-              <span>•</span>
-              <span>{readingArticle.date}</span>
-              <span>•</span>
-              <span>{readingArticle.readTime}</span>
-            </div>
-            <h2 className="article-reader-title">{readingArticle.title}</h2>
-            <div className="article-reader-image-wrap">
-              <img src={readingArticle.image} alt={readingArticle.title} />
-            </div>
-            <div className="article-reader-body">
-              {readingArticle.content.split('\n\n').map((paragraph, idx) => (
-                <p key={idx}>{paragraph}</p>
-              ))}
-            </div>
-            <div className="article-reader-footer">
-              <p className="article-quote">"Menos ruido. Más presencia. Más Sutra."</p>
-              <button className="article-shop-link" onClick={() => { setReadingArticle(null); onNavigate('shop'); }}>
-                Explorar elementos para este ritual →
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Articles Grid */}
       <div className="blog-container container">
         <div className="blog-grid">
@@ -78,7 +48,8 @@ export default function Blog({ onNavigate }) {
             <article 
               key={article.id} 
               className="blog-card"
-              onClick={() => setReadingArticle(article)}
+              onClick={() => navigate(`/blog/${article.id}`)}
+              style={{ cursor: 'pointer' }}
             >
               <div className="blog-card-img-wrap">
                 <img src={article.image} alt={article.title} />

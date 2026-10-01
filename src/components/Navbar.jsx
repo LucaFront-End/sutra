@@ -39,6 +39,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
   const isEvents = currentPath.startsWith('/eventos');
   const isAbout = currentPath.startsWith('/nosotros');
   const isCommunity = currentPath.startsWith('/comunidad') || currentPath.startsWith('/blog');
+  const isContact = currentPath.startsWith('/contacto') || currentPath.startsWith('/contact');
 
   // When not on home, treat navbar as light-theme (dark text)
   const isLightTheme = !isHome;
@@ -84,6 +85,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
       else if (path === '/nosotros') onNavigate('about');
       else if (path === '/eventos') onNavigate('events');
       else if (path === '/comunidad') onNavigate('blog');
+      else if (path === '/contacto') onNavigate('contact');
     }
     navigate(path);
     if (anchor) {
@@ -386,6 +388,17 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
               Comunidad
             </button>
           </li>
+
+          {/* Contacto */}
+          <li className="navbar__item">
+            <button
+              className={`navbar__link ${isContact ? 'active-link' : ''}`}
+              onClick={() => handleLinkClick('/contacto')}
+              title="Contacto & Asistencia"
+            >
+              Contacto
+            </button>
+          </li>
         </ul>
 
         {/* Right side actions: Usuario & Tienda/Carrito */}
@@ -514,6 +527,15 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                 onClick={() => handleLinkClick('/comunidad')}
               >
                 Comunidad (Blog)
+              </button>
+            </li>
+
+            <li className="mobile-item">
+              <button 
+                className="mobile-direct-link"
+                onClick={() => handleLinkClick('/contacto')}
+              >
+                Contacto
               </button>
             </li>
           </ul>

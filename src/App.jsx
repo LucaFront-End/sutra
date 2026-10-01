@@ -23,7 +23,9 @@ import Shop from './pages/Shop';
 import ProductPage from './pages/ProductPage';
 import About from './pages/About';
 import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import Events from './pages/Events';
+import Contact from './pages/Contact';
 
 export default function App() {
   const navigate = useNavigate();
@@ -64,6 +66,8 @@ export default function App() {
       navigate('/eventos');
     } else if (page === 'blog' || page === 'comunidad') {
       navigate('/comunidad');
+    } else if (page === 'contact' || page === 'contacto') {
+      navigate('/contacto');
     } else {
       navigate(page);
     }
@@ -146,8 +150,26 @@ export default function App() {
             element={<Blog onNavigate={handleNavigate} />} 
           />
           <Route 
+            path="/comunidad/:slug" 
+            element={<BlogPost onNavigate={handleNavigate} />} 
+          />
+          <Route 
             path="/blog" 
             element={<Blog onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/blog/:slug" 
+            element={<BlogPost onNavigate={handleNavigate} />} 
+          />
+
+          {/* Contacto */}
+          <Route 
+            path="/contacto" 
+            element={<Contact onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/contact" 
+            element={<Contact onNavigate={handleNavigate} />} 
           />
 
           {/* Catch-all */}
