@@ -224,6 +224,7 @@ export const footerContent = {
         { label: 'Aromas', href: '#' },
         { label: 'Tés', href: '#' },
         { label: 'Bundles', href: '#' },
+        { label: 'Mystery Box', href: '#' },
       ],
     },
     {

@@ -21,6 +21,9 @@ export default function Footer({ onNavigate }) {
     } else if (link.label === 'Contacto') {
       if (onNavigate) onNavigate('contact');
       navigate('/contacto');
+    } else if (link.label === 'Mystery Box' || link.label === 'Suscripción') {
+      if (onNavigate) onNavigate('mysterybox');
+      navigate('/mysterybox');
     } else if (['Ritual Zen', 'Velas', 'Aromas', 'Tés', 'Bundles'].includes(link.label)) {
       const catMap = {
         'Ritual Zen': '/tienda/accesorios/jardin-zen',

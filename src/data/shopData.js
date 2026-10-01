@@ -23,6 +23,8 @@ import imgCalma from '../assets/images/sutra-calma.png';
 import imgDescanso from '../assets/images/sutra-descanso.png';
 import imgEnergia from '../assets/images/sutra-energia.png';
 import imgEnfoque from '../assets/images/sutra-enfoque.png';
+import imgMysteryCompleto from '../assets/images/mystery-box-hero.jpg';
+import imgMysteryEsencial from '../assets/images/mystery-box-esencial.jpg';
 
 export const storeCategories = [
   { id: 'all', label: 'Todos los productos' },
@@ -605,6 +607,46 @@ export const allProducts = [
       { step: '02', title: 'Infusión breve', desc: 'No dejes reposar más de 3 minutos para evitar que desarrolle amargor.' },
       { step: '03', title: 'Inicia con claridad', desc: 'Bebe como primer acto tras tu respiración matutina y aborda tus tareas con calma.' },
     ]
+  },
+
+  // ==================== 5. SUSCRIPCIONES / MYSTERY BOX ====================
+  {
+    id: 'p-mystery-completo',
+    category: 'suscripciones',
+    name: 'Sutra Mystery Box · Ritual Completo',
+    emotionalName: 'Suscripción Bimestral',
+    tag: 'Más Popular',
+    price: '1,450 MXN',
+    priceNum: 1450,
+    rating: 5.0,
+    reviewCount: 84,
+    shortDesc: 'Vela de cera en arena, vasija artesanal, 2 aromas y 5 mechas de 15 cm.',
+    description: 'Suscripción bimestral con entrega cada 2 meses. Incluye 500g de cera en arena Sutra, vasija de cerámica modelada a mano, 2 aromas botánicos sorpresa y 5 mechas de 15 cm.',
+    benefit: 'Sostiene tu ritual con una vasija y aromas renovados cada 60 días en la puerta de tu hogar.',
+    img: imgMysteryCompleto,
+    images: [
+      { id: 'box', src: imgMysteryCompleto, label: 'Unboxing Completo' },
+      { id: 'detail', src: imgMysteryEsencial, label: 'Detalles de la Entrega' },
+    ],
+  },
+  {
+    id: 'p-mystery-esencial',
+    category: 'suscripciones',
+    name: 'Sutra Mystery Box · Ritual Esencial',
+    emotionalName: 'Recarga Bimestral',
+    tag: 'Suscripción',
+    price: '1,050 MXN',
+    priceNum: 1050,
+    rating: 4.9,
+    reviewCount: 42,
+    shortDesc: 'Vela de cera en arena, 2 aromas y 5 mechas de 15 cm (sin vasija).',
+    description: 'Suscripción bimestral de recarga. Incluye 500g de cera en arena Sutra, 2 aromas botánicos y 5 mechas de 15 cm para usar en tus propias vasijas.',
+    benefit: 'Recarga continua y económica de tus esencias y cera vegetal favorita sin acumular vasijas.',
+    img: imgMysteryEsencial,
+    images: [
+      { id: 'box', src: imgMysteryEsencial, label: 'Set Esencial' },
+      { id: 'detail', src: imgMysteryCompleto, label: 'Contenido y Presentación' },
+    ],
   }
 ];
 

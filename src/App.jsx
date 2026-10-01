@@ -26,6 +26,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Events from './pages/Events';
 import Contact from './pages/Contact';
+import MysteryBox from './pages/MysteryBox';
 
 export default function App() {
   const navigate = useNavigate();
@@ -68,6 +69,8 @@ export default function App() {
       navigate('/comunidad');
     } else if (page === 'contact' || page === 'contacto') {
       navigate('/contacto');
+    } else if (page === 'mysterybox' || page === 'misterybox' || page === 'suscripcion') {
+      navigate('/mysterybox');
     } else {
       navigate(page);
     }
@@ -170,6 +173,20 @@ export default function App() {
           <Route 
             path="/contact" 
             element={<Contact onNavigate={handleNavigate} />} 
+          />
+
+          {/* Mystery Box (Suscripción Bimestral) */}
+          <Route 
+            path="/mysterybox" 
+            element={<MysteryBox onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/misterybox" 
+            element={<MysteryBox onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/suscripcion" 
+            element={<MysteryBox onNavigate={handleNavigate} />} 
           />
 
           {/* Catch-all */}

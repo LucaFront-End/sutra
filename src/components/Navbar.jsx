@@ -40,6 +40,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
   const isAbout = currentPath.startsWith('/nosotros');
   const isCommunity = currentPath.startsWith('/comunidad') || currentPath.startsWith('/blog');
   const isContact = currentPath.startsWith('/contacto') || currentPath.startsWith('/contact');
+  const isMystery = currentPath.startsWith('/mysterybox') || currentPath.startsWith('/misterybox') || currentPath.startsWith('/suscripcion');
 
   // When not on home, treat navbar as light-theme (dark text)
   const isLightTheme = !isHome;
@@ -86,6 +87,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
       else if (path === '/eventos') onNavigate('events');
       else if (path === '/comunidad') onNavigate('blog');
       else if (path === '/contacto') onNavigate('contact');
+      else if (path === '/mysterybox') onNavigate('mysterybox');
     }
     navigate(path);
     if (anchor) {
@@ -389,6 +391,17 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
             </button>
           </li>
 
+          {/* Mystery Box (Suscripción Bimestral) */}
+          <li className="navbar__item">
+            <button
+              className={`navbar__link ${isMystery ? 'active-link' : ''}`}
+              onClick={() => handleLinkClick('/mysterybox')}
+              title="Sutra Mystery Box · Suscripción Bimestral"
+            >
+              Mystery Box
+            </button>
+          </li>
+
           {/* Contacto */}
           <li className="navbar__item">
             <button
@@ -527,6 +540,15 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                 onClick={() => handleLinkClick('/comunidad')}
               >
                 Comunidad (Blog)
+              </button>
+            </li>
+
+            <li className="mobile-item">
+              <button 
+                className="mobile-direct-link"
+                onClick={() => handleLinkClick('/mysterybox')}
+              >
+                Mystery Box (Suscripción)
               </button>
             </li>
 
