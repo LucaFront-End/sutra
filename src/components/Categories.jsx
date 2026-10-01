@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Categories.css';
-import catVelas from '../assets/images/cat-velas.png';
+import catCeraArena from '../assets/images/cat-cera-arena.jpg';
 import catSprays from '../assets/images/cat-sprays.png';
-import catZen from '../assets/images/jardin-zen-detalle.jpg';
-import catTea from '../assets/images/te-ceremonial-lata.jpg';
+import catZen from '../assets/images/cat-jardin-zen.jpg';
+import catTea from '../assets/images/cat-te-ceremonial.jpg';
 
 const CATEGORIES = [
   { 
     id: 'velas', 
     title: 'Velas & Cera de Arena', 
-    image: catVelas, 
+    image: catCeraArena, 
     desc: 'Luz limpia y calidez sin límites. Cera perlada vegetal reutilizable con aromas puros.',
   },
   { 

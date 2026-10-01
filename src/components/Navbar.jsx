@@ -6,7 +6,7 @@ import zenImg from '../assets/images/jardin-zen-detalle.jpg';
 import cartasImg from '../assets/images/cartas-rituales.jpg';
 import vasijasImg from '../assets/images/vasijas.jpg';
 import ceraNegraImg from '../assets/images/cera-negra.jpg';
-import teCeremonialImg from '../assets/images/te-ceremonial-lata.jpg';
+import teCeremonialImg from '../assets/images/cat-te-ceremonial.jpg';
 import './Navbar.css';
 
 export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart, cartCount = 0 }) {

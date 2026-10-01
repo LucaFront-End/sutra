@@ -4,7 +4,7 @@ import './About.css';
 import imgLifestyle from '../assets/images/hero-lifestyle.png';
 import imgZenDetalle from '../assets/images/jardin-zen-detalle.jpg';
 import imgVasijas from '../assets/images/vasijas.jpg';
-import imgTeaLata from '../assets/images/te-ceremonial-lata.jpg';
+import imgTeaLata from '../assets/images/cat-te-ceremonial.jpg';
 import imgBanquetes from '../assets/images/eventos-banquetes.jpg';
 
 export default function About({ onNavigate }) {
