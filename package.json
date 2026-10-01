@@ -10,8 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@wix/data": "^1.0.524",
+    "@wix/ecom": "^1.0.2526",
+    "@wix/inbox": "^1.0.115",
+    "@wix/members": "^1.0.525",
+    "@wix/redirects": "^1.0.130",
+    "@wix/sdk": "^1.21.16",
+    "@wix/stores": "^1.0.925",
+    "framer-motion": "^13.4.6",
+    "js-cookie": "^3.0.8",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

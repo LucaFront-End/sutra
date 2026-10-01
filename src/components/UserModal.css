@@ -1,0 +1,242 @@
+.user-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 20, 16, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.user-modal-card {
+  background: #FAF7F2;
+  border: 1px solid rgba(212, 167, 106, 0.25);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  padding: 2.5rem 2rem;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(44, 30, 20, 0.25);
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.user-modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #7A6B63;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.user-modal-close:hover {
+  color: #2C1E14;
+  transform: scale(1.1);
+}
+
+.user-modal-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.user-modal-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #9C7A4A;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.user-modal-title {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: 1.65rem;
+  font-weight: 500;
+  color: #2C1E14;
+  margin: 0 0 0.5rem;
+  line-height: 1.2;
+}
+
+.user-modal-subtitle {
+  font-size: 0.875rem;
+  color: #7A6B63;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.user-modal-tabs {
+  display: flex;
+  background: #EFE9E0;
+  padding: 4px;
+  border-radius: 999px;
+  margin-bottom: 1.75rem;
+}
+
+.user-modal-tab {
+  flex: 1;
+  padding: 0.6rem 0;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6E5F56;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-modal-tab.active {
+  background: #FFFFFF;
+  color: #2C1E14;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.user-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #4A3B32;
+  letter-spacing: 0.02em;
+}
+
+.form-group input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #DFD7CC;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: #FFFFFF;
+  color: #2C1E14;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+  border-color: #D4A76A;
+  box-shadow: 0 0 0 3px rgba(212, 167, 106, 0.15);
+}
+
+.form-extra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #7A6B63;
+  margin-top: -0.25rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.forgot-password {
+  color: #9C7A4A;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.user-modal-btn {
+  margin-top: 0.5rem;
+  padding: 0.85rem;
+  background: #2C1E14;
+  color: #FAF7F2;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.user-modal-btn:hover {
+  background: #463426;
+  transform: translateY(-1px);
+}
+
+.user-modal-success {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.user-modal-success-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: #2C1E14;
+  color: #FAF7F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.user-modal-success h3 {
+  font-family: var(--font-serif, serif);
+  font-size: 1.3rem;
+  color: #2C1E14;
+  margin-bottom: 0.5rem;
+}
+
+.user-modal-success p {
+  color: #7A6B63;
+  font-size: 0.9rem;
+}
+
+.user-modal-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #EFE9E0;
+  text-align: center;
+}
+
+.user-modal-footer p {
+  font-size: 0.75rem;
+  color: #8C7E76;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.user-modal-footer a {
+  color: #9C7A4A;
+  text-decoration: none;
+}

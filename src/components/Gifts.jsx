@@ -2,15 +2,15 @@ import { useState } from 'react';
 import './Gifts.css';
 
 // Usaremos dos de nuestras imágenes de categorías para simular los Bundles de lujo
-import imgBundle1 from '../assets/images/cat-velas.png'; 
-import imgBundle2 from '../assets/images/cat-difusores.png'; 
+import imgBundle1 from '../assets/images/category-candle.png'; 
+import imgBundle2 from '../assets/images/jardin-zen-detalle.jpg'; 
 
 const bundles = [
-  { id: 'b1', name: 'Ritual de Descanso Profundo', price: '2,490 MXN', img: imgBundle1 },
-  { id: 'b2', name: 'Set Purificación Zen', price: '1,890 MXN', img: imgBundle2 },
+  { id: 'b1', name: 'Ritual de Descanso Profundo', price: '2,490 MXN', priceNum: 2490, img: imgBundle1 },
+  { id: 'b2', name: 'Set Purificación Zen & Vasija', price: '1,890 MXN', priceNum: 1890, img: imgBundle2 },
 ];
 
-export default function Gifts() {
+export default function Gifts({ onAddToCart }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [formData, setFormData] = useState({ to: '', from: '', message: '' });
 
@@ -18,6 +18,24 @@ export default function Gifts() {
     e.preventDefault();
     if (formData.to && formData.from) {
       setIsFlipped(true);
+    }
+  };
+
+  const handleAddBundle = (bundle) => {
+    if (onAddToCart) {
+      onAddToCart({
+        id: `gift-${bundle.id}`,
+        name: `Pack Regalo: ${bundle.name}`,
+        emotionalName: `Dedicatoria para ${formData.to || 'Alguien Especial'}`,
+        price: bundle.price,
+        priceNum: bundle.priceNum,
+        img: bundle.img,
+        customDetails: {
+          to: formData.to,
+          from: formData.from,
+          message: formData.message,
+        }
+      });
     }
   };
 
@@ -34,7 +52,6 @@ export default function Gifts() {
             
             {/* CARA FRONTAL (La Dedicatoria) */}
             <div className="gift-card__face gift-card__front">
-               {/* Textura de papel rugoso */}
                <div className="card-texture"></div>
                
                <div className="card-content">
@@ -101,7 +118,13 @@ export default function Gifts() {
                             <h4>{bundle.name}</h4>
                             <span className="bundle-price">{bundle.price}</span>
                          </div>
-                         <button className="btn-add-bundle">Añadir</button>
+                         <button 
+                           type="button"
+                           className="btn-add-bundle"
+                           onClick={() => handleAddBundle(bundle)}
+                         >
+                           Añadir
+                         </button>
                       </div>
                     ))}
                   </div>

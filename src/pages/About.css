@@ -1,0 +1,399 @@
+/* ================================================================
+   ABOUT / NOSOTROS PAGE — Quiet Luxury Manifesto & Heritage
+   ================================================================ */
+
+.about-page {
+  padding-top: 6.5rem;
+  padding-bottom: 5rem;
+  background: #FAF7F2;
+  min-height: 100vh;
+}
+
+/* 1. Hero Manifesto */
+.about-hero {
+  padding: 4.5rem 1.5rem 3.5rem;
+  text-align: center;
+  border-bottom: 1px solid #ECE5DC;
+}
+
+.about-hero__container {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.about-tag {
+  display: inline-block;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #9C7A4A;
+  margin-bottom: 0.85rem;
+  font-weight: 600;
+}
+
+.about-title {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: clamp(2.3rem, 4.5vw, 3.4rem);
+  font-weight: 400;
+  color: #2C1E14;
+  line-height: 1.18;
+  margin: 0 0 1.25rem;
+}
+
+.about-subtitle {
+  font-size: 1.1rem;
+  color: #6E5F56;
+  line-height: 1.7;
+  margin: 0 auto;
+  max-width: 680px;
+}
+
+/* 2. Visual Narrative */
+.about-narrative {
+  padding: 5rem 1.5rem;
+}
+
+.about-narrative__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4.5rem;
+  align-items: center;
+}
+
+.narrative-media {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(44, 30, 20, 0.08);
+}
+
+.narrative-img-main {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  display: block;
+}
+
+.narrative-badge {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  background: rgba(250, 247, 242, 0.94);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: #2C1E14;
+  font-weight: 500;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.narrative-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.section-eyebrow {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #9C7A4A;
+  font-weight: 600;
+}
+
+.narrative-heading {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: clamp(2rem, 3.2vw, 2.6rem);
+  font-weight: 400;
+  color: #2C1E14;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.narrative-text p {
+  font-size: 1.02rem;
+  color: #5A4C44;
+  line-height: 1.75;
+  margin: 0;
+}
+
+.narrative-quote-box {
+  border-left: 3px solid #D4A76A;
+  padding: 0.85rem 1.25rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 0 10px 10px 0;
+  margin-top: 0.5rem;
+}
+
+.quote-text {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-style: italic;
+  font-size: 1.08rem;
+  color: #2C1E14;
+  line-height: 1.6;
+}
+
+/* 3. The 4 Elemental Pillars */
+.about-pillars {
+  background: #F4EFEB;
+  border-top: 1px solid #ECE5DC;
+  border-bottom: 1px solid #ECE5DC;
+  padding: 5.5rem 1.5rem;
+}
+
+.pillars-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 3.5rem;
+}
+
+.pillars-title {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: clamp(2.2rem, 3.5vw, 2.8rem);
+  font-weight: 400;
+  color: #2C1E14;
+  margin: 0.35rem 0 0.75rem;
+}
+
+.pillars-desc {
+  font-size: 1rem;
+  color: #6E5F56;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.75rem;
+}
+
+.pillar-card {
+  background: #FFFFFF;
+  border: 1px solid #EAE2D7;
+  border-radius: 16px;
+  padding: 2.25rem 1.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pillar-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(44, 30, 20, 0.06);
+  border-color: #D4A76A;
+}
+
+.pillar-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.pillar-name {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: 1.22rem;
+  font-weight: 500;
+  color: #2C1E14;
+  margin: 0;
+}
+
+.pillar-body {
+  font-size: 0.92rem;
+  color: #6A5B52;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* 4. Artisanal Workshop */
+.about-craft {
+  padding: 5.5rem 1.5rem;
+}
+
+.craft-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.craft-heading {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: clamp(2rem, 3.2vw, 2.6rem);
+  font-weight: 400;
+  color: #2C1E14;
+  margin: 0.35rem 0 1.25rem;
+  line-height: 1.2;
+}
+
+.craft-text p {
+  font-size: 1.02rem;
+  color: #5A4C44;
+  line-height: 1.75;
+  margin: 0 0 1.5rem;
+}
+
+.craft-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.craft-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: #4A3C34;
+  line-height: 1.55;
+}
+
+.check-icon {
+  color: #D4A76A;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.craft-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.craft-img-wrap {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(44, 30, 20, 0.08);
+}
+
+.craft-img-wrap img {
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  display: block;
+}
+
+.img-wrap-2 {
+  transform: translateY(2rem);
+}
+
+/* 5. Call To Action */
+.about-cta {
+  padding: 4rem 1.5rem 6rem;
+}
+
+.about-cta__box {
+  background: #2C1E14;
+  border-radius: 20px;
+  padding: 4rem 2.5rem;
+  text-align: center;
+  color: #FAF7F2;
+  box-shadow: 0 20px 50px rgba(44, 30, 20, 0.2);
+}
+
+.about-cta__box .about-tag {
+  color: #D4A76A;
+}
+
+.about-cta__title {
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  margin: 0.25rem 0 1rem;
+}
+
+.about-cta__text {
+  font-size: 1.05rem;
+  color: #D6CCC4;
+  max-width: 600px;
+  margin: 0 auto 2.25rem;
+  line-height: 1.65;
+}
+
+.about-cta__actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.btn-about-primary {
+  background: #D4A76A;
+  color: #2C1E14;
+  border: none;
+  padding: 0.95rem 2.25rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: all 0.25s ease;
+}
+
+.btn-about-primary:hover {
+  background: #E5BB7F;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212, 167, 106, 0.3);
+}
+
+.btn-about-secondary {
+  background: transparent;
+  color: #FAF7F2;
+  border: 1px solid rgba(250, 247, 242, 0.3);
+  padding: 0.95rem 2.25rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: all 0.25s ease;
+}
+
+.btn-about-secondary:hover {
+  border-color: #FAF7F2;
+  background: rgba(250, 247, 242, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .pillars-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-narrative__grid,
+  .craft-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .narrative-img-main {
+    height: 400px;
+  }
+
+  .img-wrap-2 {
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .pillars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-cta__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-about-primary,
+  .btn-about-secondary {
+    width: 100%;
+  }
+}

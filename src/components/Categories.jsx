@@ -1,43 +1,48 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Categories.css';
 import catVelas from '../assets/images/cat-velas.png';
 import catSprays from '../assets/images/cat-sprays.png';
-import catAceites from '../assets/images/cat-aceites.png';
-import catDifusores from '../assets/images/cat-difusores.png';
+import catZen from '../assets/images/jardin-zen-detalle.jpg';
+import catTea from '../assets/images/te-ceremonial-lata.jpg';
 
 const CATEGORIES = [
   { 
     id: 'velas', 
-    title: 'Velas Aromáticas', 
+    title: 'Velas & Cera de Arena', 
     image: catVelas, 
-    desc: 'Luz y calidez para tus espacios. Cera de soja vertida a mano con aromas exclusivos.',
-    href: '#velas'
+    desc: 'Luz limpia y calidez sin límites. Cera perlada vegetal reutilizable con aromas puros.',
   },
   { 
-    id: 'sprays', 
-    title: 'Home Sprays', 
+    id: 'accesorios', 
+    title: 'Accesorios & Jardín Zen', 
+    image: catZen, 
+    desc: 'Jardines zen en nogal macizo, cartas de intención diaria y vasijas de barro horneadas.',
+  },
+  { 
+    id: 'aromas', 
+    title: 'Aromas & Brumas', 
     image: catSprays, 
-    desc: 'Frescura instantánea en el aire. Transforma la energía de tu ambiente con un solo toque.',
-    href: '#sprays'
+    desc: 'Home sprays botánicos, difusores mikado de ratán y aceites esenciales terapéuticos.',
   },
   { 
-    id: 'aceites', 
-    title: 'Aceites Esenciales', 
-    image: catAceites, 
-    desc: 'Gotas de bienestar puro. Extractos botánicos puros para equilibrar tu energía.',
-    href: '#aceites'
-  },
-  { 
-    id: 'difusores', 
-    title: 'Difusores', 
-    image: catDifusores, 
-    desc: 'Aromaterapia continua y objetos de diseño minimalista para complementar tu ritual.',
-    href: '#difusores'
+    id: 'te', 
+    title: 'Tés & Ceremonias', 
+    image: catTea, 
+    desc: 'Blends botánicos orgánicos de hojas enteras para cultivar pausas conscientes y descanso.',
   }
 ];
 
-export default function Categories() {
+export default function Categories({ onNavigate }) {
   const [activeId, setActiveId] = useState(CATEGORIES[0].id);
+  const navigate = useNavigate();
+
+  const handleSelectCategory = (catId) => {
+    if (onNavigate) {
+      onNavigate('shop', null, catId);
+    }
+    navigate(`/tienda/${catId}`);
+  };
 
   return (
     <section className="categories-accordion" id="colecciones">
@@ -50,7 +55,8 @@ export default function Categories() {
               key={cat.id} 
               className={`accordion-item ${isActive ? 'is-active' : ''}`}
               onMouseEnter={() => setActiveId(cat.id)}
-              onClick={() => { if(isActive) window.location.href = cat.href; }}
+              onClick={() => handleSelectCategory(cat.id)}
+              style={{ cursor: 'pointer' }}
             >
               {/* Cinematic Background Image */}
               <div className="accordion-bg">
@@ -70,10 +76,11 @@ export default function Categories() {
                     <h2>{cat.title}</h2>
                     <p>{cat.desc}</p>
                     <button 
+                      type="button"
                       className="btn btn--outline" 
                       onClick={(e) => { 
                         e.stopPropagation(); 
-                        window.location.href = cat.href; 
+                        handleSelectCategory(cat.id);
                       }}
                     >
                       Explorar Colección

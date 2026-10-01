@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { useCart } from './context/CartContext';
+import ScrollToTop from './components/ScrollToTop';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Concept from './components/Concept';
@@ -11,50 +14,166 @@ import SocialProof from './components/SocialProof';
 import Gifts from './components/Gifts';
 import Newsletter from './components/Newsletter';
 import Footer from './components/Footer';
+import UserModal from './components/UserModal';
+import CartDrawer from './components/CartDrawer';
+import FloatingActions from './components/FloatingActions';
 
 // Pages
 import Shop from './pages/Shop';
 import ProductPage from './pages/ProductPage';
+import About from './pages/About';
+import Blog from './pages/Blog';
+import Events from './pages/Events';
 
-function App() {
-  const [currentPage, setCurrentPage] = useState('home'); // 'home' | 'shop' | 'product'
+export default function App() {
+  const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
-  const handleNavigate = (page, product = null) => {
-    setCurrentPage(page);
+  // Wix Cart context
+  const {
+    cartItems,
+    addToCart,
+    isCartOpen,
+    setIsCartOpen,
+    getItemCount,
+    updateQuantity,
+  } = useCart();
+
+  const handleNavigate = (page, product = null, category = 'all', subcategory = null) => {
     if (product) setSelectedProduct(product);
+
+    if (page === 'home' || page === '/') {
+      navigate('/');
+    } else if (page === 'shop' || page === 'tienda') {
+      if (category && category !== 'all') {
+        if (category === 'accesorios' && subcategory) {
+          navigate(`/tienda/accesorios/${subcategory}`);
+        } else {
+          navigate(`/tienda/${category}`);
+        }
+      } else {
+        navigate('/tienda');
+      }
+    } else if (page === 'product' || page === 'producto') {
+      const slug = product?.slug || product?._wixId || product?.id || 'ritual';
+      navigate(`/producto/${slug}`);
+    } else if (page === 'about' || page === 'nosotros') {
+      navigate('/nosotros');
+    } else if (page === 'events' || page === 'eventos') {
+      navigate('/eventos');
+    } else if (page === 'blog' || page === 'comunidad') {
+      navigate('/comunidad');
+    } else {
+      navigate(page);
+    }
+  };
+
+  const handleAddToCart = (product, qty = 1, variant = null) => {
+    addToCart(product, qty, variant);
   };
 
   return (
     <>
-      <Navbar onNavigate={handleNavigate} currentPage={currentPage} />
+      <ScrollToTop />
+      <Navbar 
+        onNavigate={handleNavigate} 
+        onOpenUser={() => setIsUserModalOpen(true)}
+        onOpenCart={() => setIsCartOpen(true)}
+        cartCount={getItemCount()}
+      />
+
       <main>
-        {currentPage === 'home' && (
-          <>
-            <Hero />
-            <Concept />
-            <Marquee />
-            <Categories />
-            <Rituals />
-            <BestSellers />
-            <AromaExperience />
-            <SocialProof />
-            <Gifts />
-            <Newsletter />
-          </>
-        )}
-        
-        {currentPage === 'shop' && (
-          <Shop onNavigate={handleNavigate} />
-        )}
-        
-        {currentPage === 'product' && (
-          <ProductPage product={selectedProduct} onNavigate={handleNavigate} />
-        )}
+        <Routes>
+          {/* Home */}
+          <Route 
+            path="/" 
+            element={
+              <>
+                <Hero />
+                <Concept />
+                <Marquee />
+                <Categories onNavigate={handleNavigate} />
+                <Rituals />
+                <BestSellers onNavigate={handleNavigate} onAddToCart={handleAddToCart} />
+                <AromaExperience onNavigate={handleNavigate} />
+                <SocialProof />
+                <Gifts onAddToCart={handleAddToCart} />
+                <Newsletter />
+              </>
+            } 
+          />
+
+          {/* Tienda & Categorías */}
+          <Route 
+            path="/tienda" 
+            element={<Shop onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+          <Route 
+            path="/tienda/:category" 
+            element={<Shop onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+          <Route 
+            path="/tienda/:category/:subcategory" 
+            element={<Shop onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+
+          {/* Product Page con Slug */}
+          <Route 
+            path="/producto/:slug" 
+            element={<ProductPage product={selectedProduct} onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+          <Route 
+            path="/productos/:slug" 
+            element={<ProductPage product={selectedProduct} onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+
+          {/* Nosotros */}
+          <Route 
+            path="/nosotros" 
+            element={<About onNavigate={handleNavigate} />} 
+          />
+
+          {/* Eventos */}
+          <Route 
+            path="/eventos" 
+            element={<Events onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+
+          {/* Comunidad / Blog */}
+          <Route 
+            path="/comunidad" 
+            element={<Blog onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/blog" 
+            element={<Blog onNavigate={handleNavigate} />} 
+          />
+
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
-      <Footer />
+
+      <Footer onNavigate={handleNavigate} />
+
+      {/* User Account Modal */}
+      <UserModal 
+        isOpen={isUserModalOpen} 
+        onClose={() => setIsUserModalOpen(false)} 
+      />
+
+      {/* Shopping Bag Drawer connected to Wix ecom */}
+      <CartDrawer 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+        cartItems={cartItems}
+        onUpdateQuantity={updateQuantity}
+        onNavigate={handleNavigate}
+      />
+
+      {/* Dual Floating Actions: WhatsApp & Wix Inbox Chat */}
+      <FloatingActions />
     </>
   );
 }
-
-export default App;

@@ -16,6 +16,35 @@
 }
 
 /* ——— Brand Column ——— */
+.footer__brand-link {
+  display: inline-flex;
+  align-items: center;
+  height: 46px;
+  width: 175px;
+  min-width: 175px;
+  overflow: visible;
+  position: relative;
+  text-decoration: none;
+  margin-bottom: var(--space-md);
+}
+
+.footer__logo-img {
+  height: 44px;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  transform: scale(3.3);
+  transform-origin: left center;
+  pointer-events: none;
+  user-select: none;
+  display: block;
+  transition: opacity 0.25s ease;
+}
+
+.footer__brand-link:hover .footer__logo-img {
+  opacity: 0.85;
+}
+
 .footer__logo {
   font-family: var(--font-serif);
   font-size: 1.75rem;

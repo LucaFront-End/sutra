@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { aromas } from '../data/content';
 import './AromaExperience.css';
 
-export default function AromaExperience() {
+export default function AromaExperience({ onNavigate }) {
   const [activeAroma, setActiveAroma] = useState(aromas[0]);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -218,8 +218,10 @@ export default function AromaExperience() {
                 </div>
               </div>
               <button 
+                type="button"
                 className="btn-aroma-shop" 
                 style={{ backgroundColor: activeAroma.color }}
+                onClick={() => onNavigate && onNavigate('shop', null, 'aromas')}
               >
                 Comprar Colección <span className="arrow">→</span>
               </button>

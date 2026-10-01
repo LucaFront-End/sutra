@@ -1,0 +1,122 @@
+/* Floating Contact & Support Actions (WhatsApp & Wix Inbox) */
+
+.sutra-floating-actions {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  z-index: 999;
+}
+
+.sutra-float-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  text-decoration: none;
+  outline: none;
+}
+
+.sutra-float-btn:hover {
+  transform: scale(1.08) translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+}
+
+/* WhatsApp Float Button */
+.sutra-float-whatsapp {
+  background: #25D366;
+  color: #FFFFFF;
+}
+
+.sutra-float-whatsapp svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+/* Wix Inbox Chat Float Button */
+.sutra-float-chat {
+  background: linear-gradient(135deg, #2C1E14, #1B120B);
+  color: #D4A76A;
+  border: 1.5px solid rgba(212, 167, 106, 0.4);
+}
+
+.sutra-float-chat svg {
+  width: 25px;
+  height: 25px;
+  fill: currentColor;
+}
+
+/* Gold Pulse Ping */
+.sutra-float-ping {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 11px;
+  height: 11px;
+  background-color: #D4A76A;
+  border-radius: 50%;
+  border: 2px solid #2C1E14;
+  animation: sutra-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes sutra-ping {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px rgba(212, 167, 106, 0.8); }
+  100% { transform: scale(0.95); opacity: 0.9; }
+}
+
+/* Tooltips */
+.sutra-float-tooltip {
+  position: absolute;
+  right: 66px;
+  background: #2C1E14;
+  color: #FAF7F2;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(8px);
+  transition: all 0.2s ease;
+  border: 1px solid rgba(212, 167, 106, 0.25);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.sutra-float-btn:hover .sutra-float-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .sutra-floating-actions {
+    bottom: 20px;
+    right: 18px;
+    gap: 10px;
+  }
+  .sutra-float-btn {
+    width: 48px;
+    height: 48px;
+  }
+  .sutra-float-whatsapp svg {
+    width: 24px;
+    height: 24px;
+  }
+  .sutra-float-chat svg {
+    width: 22px;
+    height: 22px;
+  }
+}
