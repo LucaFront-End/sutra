@@ -200,7 +200,25 @@ export function normalizeProduct(wixProduct) {
   let category = 'velas';
   let subcategory = null;
 
-  if (lowerName.includes('zen') || lowerDesc.includes('jardín zen') || lowerDesc.includes('jardin zen')) {
+  if (
+    lowerName.includes('esencia') ||
+    lowerName.includes('aroma') ||
+    lowerName.includes('spray') ||
+    lowerName.includes('bruma') ||
+    lowerName.includes('mist') ||
+    lowerName.includes('difusor') ||
+    lowerName.includes('aceite') ||
+    lowerName.includes('incienso') ||
+    lowerName.includes('fragancia') ||
+    lowerName.includes('rosewood') ||
+    lowerName.includes('copal') ||
+    lowerName.includes('patchouli') ||
+    lowerName.includes('ylang')
+  ) {
+    category = 'aromas';
+  } else if (lowerName.includes('té') || lowerName.includes('te') || lowerName.includes('infusión') || lowerName.includes('infusion')) {
+    category = 'te';
+  } else if (lowerName.includes('zen') || lowerDesc.includes('jardín zen') || lowerDesc.includes('jardin zen')) {
     category = 'accesorios';
     subcategory = 'jardin-zen';
   } else if (lowerName.includes('carta') || lowerName.includes('baraja') || lowerDesc.includes('cartas de ritual')) {
@@ -209,10 +227,10 @@ export function normalizeProduct(wixProduct) {
   } else if (lowerName.includes('vasija') || lowerName.includes('cerámica') || lowerDesc.includes('vasija wabi')) {
     category = 'accesorios';
     subcategory = 'vasijas';
-  } else if (lowerName.includes('spray') || lowerName.includes('difusor') || lowerName.includes('aceite') || lowerName.includes('aroma')) {
-    category = 'aromas';
-  } else if (lowerName.includes('té') || lowerName.includes('te') || lowerName.includes('infusión')) {
-    category = 'te';
+  } else if (lowerName.includes('mistery') || lowerName.includes('mystery') || lowerName.includes('suscripci')) {
+    category = 'suscripciones';
+  } else {
+    category = 'velas';
   }
 
   // Extract dynamic options from Wix productOptions

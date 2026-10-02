@@ -435,6 +435,92 @@ export const allProducts = [
   },
 
   {
+    id: 'p-esencia-rosewood',
+    slug: 'esencia-madera-rosé-rosewood',
+    category: 'aromas',
+    name: 'Esencia "Madera Rosé" Rosewood',
+    emotionalName: 'Calma & Sofisticación',
+    tag: 'Esencia para Cera',
+    price: '299 MXN',
+    priceNum: 299,
+    rating: 5.0,
+    reviewCount: 38,
+    shortDesc: 'Esencia para velas de cera perlada con madera de rosa.',
+    description: 'Envuelve tus espacios con Madera Rosé, una esencia amaderada floral diseñada para velas de cera perlada Sutra. Notas cálidas de palo de rosa brasileño, cedro blanco y toques florales suaves para crear una atmósfera íntima y reconfortante.',
+    benefit: 'Perfuma de forma limpia y duradera tu cera de arena Sutra con solo 5 a 8 gotas alrededor de la mecha encendida.',
+    img: 'https://static.wixstatic.com/media/45119e_a0916ab2abfe4b5e879a34baaf7833a1~mv2.png',
+    images: [
+      { id: 'rosewood-main', src: 'https://static.wixstatic.com/media/45119e_a0916ab2abfe4b5e879a34baaf7833a1~mv2.png', label: 'Esencia Madera Rosé' },
+      { id: 'alt-oil', src: imgAceite, label: 'Gotero Ámbar' },
+      { id: 'lifestyle', src: imgLifestyle, label: 'Ritual en Hogar' },
+    ],
+    options: [
+      {
+        id: 'size',
+        label: 'Presentación',
+        type: 'pills',
+        choices: [
+          { label: 'Frasco Gotero 15 ml', value: '15ml', priceDelta: 0, isDefault: true },
+          { label: 'Dúo Esencias (15ml + 15ml)', value: 'duo', priceDelta: 240 },
+        ]
+      }
+    ],
+    specs: [
+      { label: 'Uso', value: 'Velas de cera en arena Sutra, difusores ultrasónicos y quemadores cerámicos' },
+      { label: 'Dosificación', value: '5 a 8 gotas junto a la mecha encendida' },
+      { label: 'Contenido', value: '15 ml de esencia aromática concentrada pura' },
+    ],
+    ritualSteps: [
+      { step: '01', title: 'Prepara tu vasija', desc: 'Vierte la cera de arena Sutra e inserta la mecha de 15 cm.' },
+      { step: '02', title: 'Dosifica Madera Rosé', desc: 'Aplica 5 gotas de esencia directamente en los granos de cera cerca de la mecha.' },
+      { step: '03', title: 'Enciende tu santuario', desc: 'Enciende la mecha y disfruta cómo el calor libera las notas de palo de rosa y cedro.' },
+    ]
+  },
+
+  {
+    id: 'p-esencia-copal',
+    slug: 'esencia-limpia-aura-copal',
+    category: 'aromas',
+    name: 'Esencia "Limpia Aura" Copal',
+    emotionalName: 'Purificación & Claridad',
+    tag: 'Esencia Sagrada',
+    price: '299 MXN',
+    priceNum: 299,
+    rating: 4.9,
+    reviewCount: 31,
+    shortDesc: 'Esencia para velas de cera perlada con copal blanco.',
+    description: 'Renueva la atmósfera de tus espacios con Limpia Aura, una esencia botánica con notas de resina de copal blanco silvestre de Oaxaca, mirra y fondo ahumado para limpiar la energía del entorno.',
+    benefit: 'Purifica y despeja la sobrecarga energética en sesiones de meditación o tras una jornada intensa.',
+    img: 'https://static.wixstatic.com/media/45119e_1cea18a09df44703897b7b7af038eade~mv2.png',
+    images: [
+      { id: 'copal-main', src: 'https://static.wixstatic.com/media/45119e_1cea18a09df44703897b7b7af038eade~mv2.png', label: 'Esencia Limpia Aura' },
+      { id: 'alt-oil', src: imgAceite, label: 'Gotero Ámbar' },
+      { id: 'lifestyle', src: imgLifestyle, label: 'Ritual en Hogar' },
+    ],
+    options: [
+      {
+        id: 'size',
+        label: 'Presentación',
+        type: 'pills',
+        choices: [
+          { label: 'Frasco Gotero 15 ml', value: '15ml', priceDelta: 0, isDefault: true },
+          { label: 'Dúo Esencias (15ml + 15ml)', value: 'duo', priceDelta: 240 },
+        ]
+      }
+    ],
+    specs: [
+      { label: 'Uso', value: 'Velas de cera en arena Sutra, difusores ultrasónicos y quemadores cerámicos' },
+      { label: 'Dosificación', value: '5 a 8 gotas junto a la mecha encendida' },
+      { label: 'Contenido', value: '15 ml de esencia aromática concentrada pura' },
+    ],
+    ritualSteps: [
+      { step: '01', title: 'Prepara tu vasija', desc: 'Vierte la cera perlada e inserta la mecha.' },
+      { step: '02', title: 'Añade Limpia Aura', desc: 'Distribuye unas gotas sobre la cera de arena.' },
+      { step: '03', title: 'Purifica el espacio', desc: 'Enciende y permite que la resina sagrada de copal despeje el ambiente.' },
+    ]
+  },
+
+  {
     id: 'p-aroma-2',
     category: 'aromas',
     name: 'Difusor Mikado Bosque Interior',
