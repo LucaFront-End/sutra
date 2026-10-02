@@ -212,7 +212,6 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
           {!wixLoading && filteredProducts.length === 0 && (
             <div className="no-products">
               <p>No se encontraron productos en esta categoría.</p>
-              <button onClick={() => handleCategoryChange('all')}>Ver todos los productos</button>
             </div>
           )}
         </main>

@@ -317,25 +317,20 @@
 
 .no-products {
   text-align: center;
-  padding: 5rem 1rem;
-  background: #FFFFFF;
-  border-radius: 12px;
-  border: 1px solid #ECE5DB;
+  padding: 6rem 1rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .no-products p {
-  color: #6E5F56;
-  font-size: 1.05rem;
-  margin-bottom: 1.25rem;
-}
-
-.no-products button {
-  padding: 0.7rem 1.5rem;
-  background: #2C1E14;
-  color: #FAF7F2;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
+  color: #7A6F66;
+  font-family: var(--font-serif, 'Cormorant Garamond', serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  font-style: italic;
+  margin: 0;
 }
 
 /* Shimmer Skeleton for Smooth Loading without Fallback Flashing */
