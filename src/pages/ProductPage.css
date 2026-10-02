@@ -275,6 +275,39 @@
   font-weight: 500;
 }
 
+.pdp-rating-summary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  font-size: 0.85rem;
+  color: #6E5F56;
+  margin-bottom: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.pdp-rating-summary-link:hover {
+  opacity: 0.8;
+}
+
+.pdp-stars-gold {
+  color: #D4A76A;
+  letter-spacing: 2px;
+  font-size: 0.95rem;
+}
+
+.pdp-rating-num {
+  font-weight: 600;
+  color: #2C1E14;
+}
+
+.pdp-reviews-count {
+  color: #8C8075;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .pdp-description {
   font-size: 0.95rem;
   color: #6E5F56;

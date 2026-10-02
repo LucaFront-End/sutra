@@ -24,13 +24,13 @@ export default function FloatingActions() {
         </svg>
       </a>
 
-      {/* Wix Inbox Chat Floating Button */}
+      {/* Chat Asistencia Sutra Floating Button */}
       <button
         onClick={() => setIsChatOpen(!isChatOpen)}
         className="sutra-float-btn sutra-float-chat"
-        aria-label="Abrir Chat Wix Inbox"
+        aria-label="Abrir Chat de Atención Sutra"
       >
-        <span className="sutra-float-tooltip">Chat SUTRA (Wix Inbox)</span>
+        <span className="sutra-float-tooltip">Chat SUTRA en Vivo</span>
         <span className="sutra-float-ping" />
         {isChatOpen ? (
           <span style={{ fontSize: '1.2rem', color: '#D4A76A' }}>✕</span>

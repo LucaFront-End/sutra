@@ -211,7 +211,7 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
           </div>
           <div className="sutra-chat-info-text">
             <h3>SUTRA Atención</h3>
-            <div className="sutra-chat-status">Wix Inbox • En Línea</div>
+            <div className="sutra-chat-status">Asesor Sutra • En Línea</div>
           </div>
         </div>
         <button className="sutra-chat-close-btn" onClick={onClose} aria-label="Cerrar chat">

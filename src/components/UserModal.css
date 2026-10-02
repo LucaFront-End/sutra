@@ -1,7 +1,12 @@
+/* ================================================================
+   SUTRA MEXICO — User Modal & Customer Portal Styles
+   Quiet Luxury, Editorial Typography, Gold Accents
+   ================================================================ */
+
 .user-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(28, 20, 16, 0.65);
+  background: rgba(28, 20, 16, 0.68);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 2000;
@@ -17,11 +22,18 @@
   border: 1px solid rgba(212, 167, 106, 0.25);
   border-radius: 16px;
   width: 100%;
-  max-width: 440px;
-  padding: 2.5rem 2rem;
+  max-width: 460px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2.25rem 2rem;
   position: relative;
   box-shadow: 0 24px 60px rgba(44, 30, 20, 0.25);
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.user-modal-card.is-dashboard {
+  max-width: 680px;
 }
 
 @keyframes fadeIn {
@@ -46,6 +58,7 @@
   padding: 0.5rem;
   line-height: 1;
   transition: color 0.2s ease, transform 0.2s ease;
+  z-index: 5;
 }
 
 .user-modal-close:hover {
@@ -55,7 +68,7 @@
 
 .user-modal-header {
   text-align: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .user-modal-eyebrow {
@@ -63,27 +76,64 @@
   font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #9C7A4A;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
+  color: #B38E46;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
 }
 
 .user-modal-title {
-  font-family: var(--font-serif, 'Playfair Display', serif);
-  font-size: 1.65rem;
+  font-family: var(--font-serif, 'Cormorant Garamond', serif);
+  font-size: 2rem;
   font-weight: 500;
   color: #2C1E14;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.4rem;
   line-height: 1.2;
 }
 
 .user-modal-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   color: #7A6B63;
   line-height: 1.5;
-  margin: 0;
+  margin: 0 auto;
+  max-width: 480px;
 }
 
+/* ——— Navigation Tabs for Logged In Customer ——— */
+.user-dashboard-nav {
+  display: flex;
+  background: #EFE9E0;
+  padding: 4px;
+  border-radius: 999px;
+  margin-bottom: 1.75rem;
+  gap: 4px;
+}
+
+.dash-nav-btn {
+  flex: 1;
+  padding: 0.65rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #6E5F56;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.dash-nav-btn:hover {
+  color: #2C1E14;
+}
+
+.dash-nav-btn.active {
+  background: #FFFFFF;
+  color: #2C1E14;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(60, 36, 21, 0.08);
+}
+
+/* Fallback tabs for auth */
 .user-modal-tabs {
   display: flex;
   background: #EFE9E0;
@@ -111,6 +161,470 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
+/* ——— Orders List ——— */
+.orders-intro-text {
+  font-size: 0.82rem;
+  color: #7A6F66;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.order-review-success-banner {
+  background: #EAF4EB;
+  color: #28542C;
+  border: 1px solid #B8DFBD;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.user-order-item {
+  background: #FFFFFF;
+  border: 1px solid rgba(60, 36, 21, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.user-order-item:hover {
+  border-color: rgba(212, 167, 106, 0.4);
+  box-shadow: 0 4px 16px rgba(60, 36, 21, 0.04);
+}
+
+.order-item-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.order-product-thumb {
+  width: 68px;
+  height: 68px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ECE5DC;
+  background: #FAF7F2;
+  flex-shrink: 0;
+}
+
+.order-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.order-top-line {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+}
+
+.order-id-badge {
+  font-weight: 600;
+  color: #3C2415;
+}
+
+.order-date-label {
+  color: #9C9086;
+}
+
+.order-status-delivered {
+  color: #3B7240;
+  font-weight: 500;
+}
+
+.order-product-title {
+  font-family: var(--font-serif, 'Cormorant Garamond', serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #2C1E14;
+  margin: 0;
+}
+
+.order-variant-desc {
+  font-size: 0.78rem;
+  color: #7A6F66;
+}
+
+.order-price-val {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #B38E46;
+}
+
+/* Order Review Actions */
+.order-item-action {
+  flex-shrink: 0;
+  min-width: 170px;
+  text-align: right;
+}
+
+.btn-leave-order-review {
+  background: #3C2415;
+  color: #FFFFF0;
+  border: none;
+  border-radius: 6px;
+  padding: 0.65rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.btn-leave-order-review:hover {
+  background: #B38E46;
+  box-shadow: 0 4px 12px rgba(179, 142, 70, 0.3);
+  transform: translateY(-1px);
+}
+
+.order-reviewed-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.reviewed-stars-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.reviewed-stars {
+  color: #D4A76A;
+  font-size: 0.85rem;
+}
+
+.reviewed-badge {
+  font-size: 0.72rem;
+  color: #3B7240;
+  background: #EAF4EB;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.reviewed-snippet {
+  font-size: 0.72rem;
+  color: #7A6F66;
+  font-style: italic;
+  max-width: 190px;
+  text-align: right;
+  line-height: 1.3;
+}
+
+.btn-edit-order-review {
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  color: #B38E46;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.2rem;
+}
+
+/* ——— Inline Review Form Inside Modal ——— */
+.order-inline-review-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(212, 167, 106, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 20px rgba(60, 36, 21, 0.04);
+}
+
+.inline-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.btn-back-to-orders {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  color: #7A6F66;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0;
+}
+
+.btn-back-to-orders:hover {
+  color: #3C2415;
+  text-decoration: underline;
+}
+
+.order-badge-pill {
+  font-size: 0.72rem;
+  background: #FAF7F2;
+  color: #5A4E43;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  border: 1px solid #ECE5DC;
+}
+
+.inline-review-product-info {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem;
+  background: #FAF7F2;
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+}
+
+.inline-product-thumb {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.inline-review-product-info h4 {
+  font-family: var(--font-serif, 'Cormorant Garamond', serif);
+  font-size: 1.1rem;
+  margin: 0;
+  color: #2C1E14;
+}
+
+.inline-review-product-info p {
+  font-size: 0.78rem;
+  color: #7A6F66;
+  margin: 0;
+}
+
+.inline-review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.inline-review-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.btn-cancel-review {
+  background: none;
+  border: 1px solid #DFD7CC;
+  border-radius: 6px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.82rem;
+  color: #6E5F56;
+  cursor: pointer;
+}
+
+.btn-cancel-review:hover {
+  background: #F4EFEA;
+}
+
+.btn-submit-order-review {
+  background: #3C2415;
+  color: #FFFFF0;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-submit-order-review:hover {
+  background: #B38E46;
+  box-shadow: 0 4px 12px rgba(179, 142, 70, 0.3);
+}
+
+/* ——— Tab 2: Reviews History ——— */
+.reviews-history-intro {
+  font-size: 0.82rem;
+  color: #7A6F66;
+  margin-bottom: 1.25rem;
+}
+
+.reviewed-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.history-review-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(60, 36, 21, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.history-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.history-order-ref {
+  font-size: 0.72rem;
+  color: #9C9086;
+  display: block;
+}
+
+.history-product-name {
+  font-family: var(--font-serif, 'Cormorant Garamond', serif);
+  font-size: 1.15rem;
+  color: #2C1E14;
+  margin: 0.15rem 0 0;
+}
+
+.history-stars-gold {
+  color: #D4A76A;
+  font-size: 0.95rem;
+}
+
+.history-review-body {
+  margin-bottom: 0.85rem;
+}
+
+.history-review-title {
+  display: block;
+  font-size: 0.88rem;
+  color: #3C2415;
+  margin-bottom: 0.25rem;
+}
+
+.history-review-comment {
+  font-size: 0.82rem;
+  color: #5E534A;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.history-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(60, 36, 21, 0.06);
+  padding-top: 0.65rem;
+}
+
+.history-verified-tag {
+  font-size: 0.72rem;
+  color: #3B7240;
+  font-weight: 500;
+}
+
+.btn-history-edit {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: #B38E46;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.empty-reviews-history {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  background: #FFFFFF;
+  border-radius: 10px;
+  color: #7A6F66;
+  font-size: 0.88rem;
+}
+
+.btn-go-to-orders {
+  margin-top: 0.85rem;
+  background: #3C2415;
+  color: #FFFFF0;
+  border: none;
+  border-radius: 6px;
+  padding: 0.65rem 1.2rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* ——— Tab 3: Profile View ——— */
+.profile-info-grid {
+  background: #FFFFFF;
+  border: 1px solid rgba(60, 36, 21, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid rgba(60, 36, 21, 0.05);
+}
+
+.profile-info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.profile-label {
+  color: #7A6F66;
+  font-weight: 500;
+}
+
+.profile-val {
+  color: #2C1E14;
+  font-weight: 600;
+  text-align: right;
+}
+
+.profile-val.highlight-gold {
+  color: #B38E46;
+}
+
+.profile-actions {
+  text-align: center;
+}
+
+.btn-logout-client {
+  background: none;
+  border: 1px solid #DFD7CC;
+  border-radius: 6px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.82rem;
+  color: #6E5F56;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-logout-client:hover {
+  background: #F4EFEA;
+  color: #2C1E14;
+}
+
+/* ——— Auth Form Styles ——— */
 .user-modal-form {
   display: flex;
   flex-direction: column;
@@ -147,96 +661,112 @@
   box-shadow: 0 0 0 3px rgba(212, 167, 106, 0.15);
 }
 
-.form-extra {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: #7A6B63;
-  margin-top: -0.25rem;
-}
-
-.remember-me {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  cursor: pointer;
-}
-
-.forgot-password {
-  color: #9C7A4A;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.forgot-password:hover {
-  text-decoration: underline;
-}
-
 .user-modal-btn {
-  margin-top: 0.5rem;
-  padding: 0.85rem;
   background: #2C1E14;
   color: #FAF7F2;
   border: none;
-  border-radius: 999px;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin-top: 0.5rem;
 }
 
 .user-modal-btn:hover {
-  background: #463426;
+  background: #B38E46;
   transform: translateY(-1px);
+}
+
+.demo-login-shortcut {
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+.btn-demo-quick {
+  background: #F4EFEA;
+  border: 1px dashed #D4A76A;
+  color: #6E5325;
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-demo-quick:hover {
+  background: #EFE6DA;
 }
 
 .user-modal-success {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1rem;
 }
 
 .user-modal-success-icon {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 1rem;
+  width: 50px;
+  height: 50px;
+  background: #EAF4EB;
+  color: #3B7240;
   border-radius: 50%;
-  background: #2C1E14;
-  color: #FAF7F2;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  margin: 0 auto 1rem;
 }
 
 .user-modal-success h3 {
-  font-family: var(--font-serif, serif);
-  font-size: 1.3rem;
+  font-family: var(--font-serif, 'Cormorant Garamond', serif);
+  font-size: 1.6rem;
   color: #2C1E14;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem;
 }
 
 .user-modal-success p {
+  font-size: 0.85rem;
   color: #7A6B63;
-  font-size: 0.9rem;
+  margin: 0;
 }
 
 .user-modal-footer {
+  text-align: center;
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #EFE9E0;
-  text-align: center;
+  border-top: 1px solid rgba(60, 36, 21, 0.08);
 }
 
 .user-modal-footer p {
   font-size: 0.75rem;
-  color: #8C7E76;
-  line-height: 1.4;
+  color: #9C9086;
   margin: 0;
 }
 
-.user-modal-footer a {
-  color: #9C7A4A;
-  text-decoration: none;
+/* Responsive */
+@media (max-width: 640px) {
+  .user-modal-card {
+    padding: 1.75rem 1.25rem;
+  }
+  .user-order-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .order-item-action {
+    width: 100%;
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+  .order-reviewed-box {
+    align-items: flex-start;
+  }
+  .reviewed-snippet {
+    text-align: left;
+  }
+  .btn-leave-order-review {
+    width: 100%;
+    text-align: center;
+  }
 }

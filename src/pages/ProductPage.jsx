@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { allProducts } from '../data/shopData';
 import { useWixProducts } from '../hooks/useWixProducts';
 import { parseWixMediaUrl } from '../lib/wixProducts';
+import ProductReviews from '../components/ProductReviews';
 import './ProductPage.css';
 
 export default function ProductPage({ product: incomingProduct, onNavigate, onAddToCart }) {
@@ -292,6 +293,20 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
               )}
             </div>
 
+            <a 
+              href="#opiniones" 
+              className="pdp-rating-summary-link"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('opiniones')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              title="Ver opiniones y reseñas de la comunidad"
+            >
+              <span className="pdp-stars-gold">★★★★★</span>
+              <span className="pdp-rating-num">{product.rating || 4.9}</span>
+              <span className="pdp-reviews-count">({product.reviewCount || 38} reseñas)</span>
+            </a>
+
             {/* Rich formatted description or clean fallback */}
             {product.descriptionHtml ? (
               <div 
@@ -488,6 +503,11 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
           </div>
         </div>
       </div>
+
+      {/* ============================================================
+          COMMUNITY & CUSTOMER REVIEWS
+          ============================================================ */}
+      <ProductReviews product={product} />
 
       {/* ============================================================
           BOTTOM: COMPLEMENTARY RITUAL PRODUCTS
