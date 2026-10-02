@@ -4,6 +4,7 @@ import { allProducts } from '../data/shopData';
 import { useWixProducts } from '../hooks/useWixProducts';
 import { parseWixMediaUrl } from '../lib/wixProducts';
 import ProductReviews from '../components/ProductReviews';
+import ProductHowToUse from '../components/ProductHowToUse';
 import './ProductPage.css';
 
 export default function ProductPage({ product: incomingProduct, onNavigate, onAddToCart }) {
@@ -179,8 +180,12 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
 
   // Dynamic category eyebrow text
   const categoryEyebrow = product.subcategory 
-    ? `ACCESORIOS · ${product.subcategory.toUpperCase().replace('-', ' ')}`
-    : (product.category ? product.category.toUpperCase() : 'SUTRA MEXICO');
+    ? `OBJETOS DE RITUAL · ${product.subcategory.toUpperCase().replace('-', ' ')}`
+    : (product.category === 'accesorios'
+        ? 'OBJETOS DE RITUAL'
+        : (product.category === 'velas'
+            ? 'VELAS DE ARENA'
+            : (product.category ? product.category.toUpperCase() : 'SUTRA MEXICO')));
 
   return (
     <div className="product-page fade-in">
@@ -503,6 +508,11 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
           </div>
         </div>
       </div>
+
+      {/* ============================================================
+          VISUAL HOW-TO-USE STEP-BY-STEP GUIDE (VELAS DE ARENA / TÉS / ZEN)
+          ============================================================ */}
+      <ProductHowToUse product={product} />
 
       {/* ============================================================
           COMMUNITY & CUSTOMER REVIEWS

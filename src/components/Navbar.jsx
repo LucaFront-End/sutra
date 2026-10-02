@@ -174,8 +174,8 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                       onClick={() => handleShopSelect('velas')}
                     >
                       <div className="megamenu__cat-info">
-                        <span className="megamenu__cat-title">Velas Rituales</span>
-                        <span className="megamenu__cat-desc">Cera de soya & mecha de algodón puro</span>
+                        <span className="megamenu__cat-title">Velas de Arena</span>
+                        <span className="megamenu__cat-desc">Cera perlada vegetal & combustión limpia</span>
                       </div>
                       <span className="megamenu__cat-badge">6 piezas</span>
                     </button>
@@ -196,7 +196,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                       onClick={() => handleShopSelect('accesorios')}
                     >
                       <div className="megamenu__cat-info">
-                        <span className="megamenu__cat-title">Accesorios Sagrados</span>
+                        <span className="megamenu__cat-title">Objetos de Ritual</span>
                         <span className="megamenu__cat-desc">Jardines zen, cartas y vasijas cerámicas</span>
                       </div>
                       <span className="megamenu__cat-badge">3 piezas</span>
@@ -483,7 +483,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                   </li>
                   <li>
                     <button onClick={() => handleShopSelect('velas')}>
-                      Velas
+                      Velas de Arena
                     </button>
                   </li>
                   <li className="mobile-nested-wrap">
@@ -491,7 +491,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                       className="mobile-nested-header" 
                       onClick={() => setMobileAccOpen(!mobileAccOpen)}
                     >
-                      <span>Accesorios</span>
+                      <span>Objetos de Ritual</span>
                       <span>{mobileAccOpen ? '▾' : '▸'}</span>
                     </div>
                     {mobileAccOpen && (

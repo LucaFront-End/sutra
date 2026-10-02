@@ -13,8 +13,8 @@ import categoryTea from '../assets/images/category-tea.png';
 /* ——— Navigation ——— */
 export const navLinks = [
   { label: 'Inicio', href: '#' },
-  { label: 'Ritual Zen', href: '#categorias' },
-  { label: 'Velas', href: '#categorias' },
+  { label: 'Objetos de Ritual', href: '#categorias' },
+  { label: 'Velas de Arena', href: '#categorias' },
   { label: 'Aromas', href: '#categorias' },
   { label: 'Tés', href: '#categorias' },
   { label: 'Rituals', href: '#rituales' },
@@ -219,8 +219,8 @@ export const footerContent = {
     {
       title: 'Tienda',
       links: [
-        { label: 'Ritual Zen', href: '#' },
-        { label: 'Velas', href: '#' },
+        { label: 'Objetos de Ritual', href: '#' },
+        { label: 'Velas de Arena', href: '#' },
         { label: 'Aromas', href: '#' },
         { label: 'Tés', href: '#' },
         { label: 'Bundles', href: '#' },

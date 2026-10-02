@@ -28,10 +28,10 @@ import imgMysteryEsencial from '../assets/images/mystery-box-esencial.jpg';
 
 export const storeCategories = [
   { id: 'all', label: 'Todos los productos' },
-  { id: 'velas', label: 'Velas' },
+  { id: 'velas', label: 'Velas de Arena' },
   { 
     id: 'accesorios', 
-    label: 'Accesorios',
+    label: 'Objetos de Ritual',
     subcategories: [
       { id: 'jardin-zen', label: 'Jardín Zen' },
       { id: 'cartas-rituales', label: 'Cartas de rituales' },

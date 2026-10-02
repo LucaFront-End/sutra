@@ -64,12 +64,12 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
 
   const getCategoryTitle = () => {
     if (filter === 'all') return 'La Colección Completa';
-    if (filter === 'velas') return 'Velas & Rituales de Fuego';
+    if (filter === 'velas') return 'Velas de Arena & Rituales de Fuego';
     if (filter === 'accesorios') {
-      if (subFilter === 'jardin-zen') return 'Accesorios · Jardín Zen';
-      if (subFilter === 'cartas-rituales') return 'Accesorios · Cartas de Rituales';
-      if (subFilter === 'vasijas') return 'Accesorios · Vasijas & Cerámica';
-      return 'Accesorios & Herramientas Zen';
+      if (subFilter === 'jardin-zen') return 'Objetos de Ritual · Jardín Zen';
+      if (subFilter === 'cartas-rituales') return 'Objetos de Ritual · Cartas de Rituales';
+      if (subFilter === 'vasijas') return 'Objetos de Ritual · Vasijas & Cerámica';
+      return 'Objetos de Ritual & Herramientas Zen';
     }
     if (filter === 'aromas') return 'Aromas & Brumas Botánicas';
     if (filter === 'te') return 'Tés & Ceremonias de Presencia';
@@ -108,7 +108,7 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
                         className={`subfilter-btn ${subFilter === null ? 'active' : ''}`}
                         onClick={() => handleSubcategoryChange(null)}
                       >
-                        Todos los accesorios
+                        Todos los Objetos de Ritual
                       </button>
                     </li>
                     {cat.subcategories.map((sub) => (

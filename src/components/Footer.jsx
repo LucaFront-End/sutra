@@ -24,9 +24,11 @@ export default function Footer({ onNavigate }) {
     } else if (link.label === 'Mystery Box' || link.label === 'Suscripción') {
       if (onNavigate) onNavigate('mysterybox');
       navigate('/mysterybox');
-    } else if (['Ritual Zen', 'Velas', 'Aromas', 'Tés', 'Bundles'].includes(link.label)) {
+    } else if (['Ritual Zen', 'Objetos de Ritual', 'Velas de Arena', 'Velas', 'Aromas', 'Tés', 'Bundles'].includes(link.label)) {
       const catMap = {
         'Ritual Zen': '/tienda/accesorios/jardin-zen',
+        'Objetos de Ritual': '/tienda/accesorios',
+        'Velas de Arena': '/tienda/velas',
         'Velas': '/tienda/velas',
         'Aromas': '/tienda/aromas',
         'Tés': '/tienda/te',

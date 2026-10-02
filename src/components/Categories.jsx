@@ -9,13 +9,13 @@ import catTea from '../assets/images/cat-te-ceremonial.jpg';
 const CATEGORIES = [
   { 
     id: 'velas', 
-    title: 'Velas & Cera de Arena', 
+    title: 'Velas de Arena', 
     image: catCeraArena, 
     desc: 'Luz limpia y calidez sin límites. Cera perlada vegetal reutilizable con aromas puros.',
   },
   { 
     id: 'accesorios', 
-    title: 'Accesorios & Jardín Zen', 
+    title: 'Objetos de Ritual', 
     image: catZen, 
     desc: 'Jardines zen en nogal macizo, cartas de intención diaria y vasijas de barro horneadas.',
   },
