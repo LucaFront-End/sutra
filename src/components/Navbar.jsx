@@ -153,20 +153,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                 <div className="megamenu__col megamenu__col--main">
                   <div className="megamenu__col-header">
                     <span className="megamenu__eyebrow">COLECCIONES</span>
-                    <span className="megamenu__pill">CATÁLOGO</span>
                   </div>
-
-                  <button 
-                    className="megamenu__all-btn" 
-                    onClick={() => handleShopSelect('all')}
-                  >
-                    <div className="megamenu__all-icon">✦</div>
-                    <div className="megamenu__all-text">
-                      <strong>Todos los productos</strong>
-                      <small>Explora el catálogo completo de bienestar</small>
-                    </div>
-                    <span className="megamenu__all-arrow">→</span>
-                  </button>
 
                   <div className="megamenu__categories-list">
                     <button 
@@ -175,7 +162,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                     >
                       <div className="megamenu__cat-info">
                         <span className="megamenu__cat-title">Velas de Arena</span>
-                        <span className="megamenu__cat-desc">Cera perlada vegetal & combustión limpia</span>
+                        <span className="megamenu__cat-desc">Cera vegetal en polvo & combustión limpia</span>
                       </div>
                       <span className="megamenu__cat-badge">Colección</span>
                     </button>
@@ -186,7 +173,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                     >
                       <div className="megamenu__cat-info">
                         <span className="megamenu__cat-title">Esencias & Aromas</span>
-                        <span className="megamenu__cat-desc">11 Esencias botánicas puras y difusores</span>
+                        <span className="megamenu__cat-desc">11 esencias botánicas puras y difusores</span>
                       </div>
                       <span className="megamenu__cat-badge">11 aromas</span>
                     </button>
@@ -213,18 +200,20 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                       <span className="megamenu__cat-badge">4 blends</span>
                     </button>
                   </div>
+
+                  <button 
+                    className="megamenu__all-catalog-link" 
+                    onClick={() => handleShopSelect('all')}
+                  >
+                    <span>Explorar catálogo completo</span>
+                    <span className="megamenu__catalog-arrow">→</span>
+                  </button>
                 </div>
 
-                {/* Columna 2: Accesorios & Experiencias con Mini-Fotos */}
+                {/* Columna 2: Objetos de Ritual con Mini-Fotos */}
                 <div className="megamenu__col megamenu__col--accessories">
                   <div className="megamenu__col-header">
                     <span className="megamenu__eyebrow">OBJETOS DE RITUAL</span>
-                    <button 
-                      className="megamenu__sublink-all" 
-                      onClick={() => handleShopSelect('accesorios')}
-                    >
-                      Ver todos →
-                    </button>
                   </div>
 
                   <div className="megamenu__thumb-cards">
@@ -275,11 +264,10 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                   </div>
                 </div>
 
-                {/* Columna 3: Card Destacada "Best Seller" */}
+                {/* Columna 3: Card Destacada "Más Vendido" */}
                 <div className="megamenu__col megamenu__col--feature">
                   <div className="megamenu__col-header">
                     <span className="megamenu__eyebrow">MÁS VENDIDO</span>
-                    <span className="megamenu__pill megamenu__pill--gold">BEST SELLER</span>
                   </div>
 
                   <div 
@@ -297,34 +285,6 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                       <p className="megamenu__feature-desc">Cera perlada botánica negro obsidiana. Rellena cualquier vasija con flama limpia.</p>
                       <span className="megamenu__feature-action">
                         Descubrir vela de arena
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Columna 4: Card Destacada "Experiencia & Ceremonia" */}
-                <div className="megamenu__col megamenu__col--feature">
-                  <div className="megamenu__col-header">
-                    <span className="megamenu__eyebrow">NOVEDAD</span>
-                    <span className="megamenu__pill">CEREMONIA</span>
-                  </div>
-
-                  <div 
-                    className="megamenu__feature-card" 
-                    onClick={() => handleShopSelect('te')}
-                  >
-                    <div className="megamenu__feature-media">
-                      <img src={teCeremonialImg} alt="Té Ceremonial Sutra" loading="lazy" />
-                      <div className="megamenu__feature-gradient" />
-                      <span className="megamenu__feature-badge megamenu__feature-badge--gold">NUEVO</span>
-                    </div>
-                    <div className="megamenu__feature-content">
-                      <span className="megamenu__feature-kicker">INFUSIÓN BOTÁNICA</span>
-                      <h4 className="megamenu__feature-title">Té Ceremonial en Lata</h4>
-                      <p className="megamenu__feature-desc">Mezcla floral de lavanda silvestre, manzanilla y pétalos en lata hermética.</p>
-                      <span className="megamenu__feature-action">
-                        Ver experiencia
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                       </span>
                     </div>

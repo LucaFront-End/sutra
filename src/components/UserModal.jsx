@@ -148,27 +148,7 @@ export default function UserModal({ isOpen, onClose }) {
           </p>
         </div>
 
-        {/* Auth mode toggle for logged out users */}
-        {!isLoggedIn && (
-          <div className="user-auth-tabs">
-            <button
-              type="button"
-              className={`auth-tab-btn ${authMode === 'login' ? 'active' : ''}`}
-              onClick={() => setAuthMode('login')}
-            >
-              Iniciar Sesión
-            </button>
-            <button
-              type="button"
-              className={`auth-tab-btn ${authMode === 'register' ? 'active' : ''}`}
-              onClick={() => setAuthMode('register')}
-            >
-              Crear Cuenta
-            </button>
-          </div>
-        )}
-
-        {/* Navigation Tabs for logged in user */}
+        {/* Navigation Tabs for logged in user / Auth switch for visitor */}
         {isLoggedIn ? (
           <div className="user-dashboard-nav">
             <button
@@ -194,18 +174,20 @@ export default function UserModal({ isOpen, onClose }) {
             </button>
           </div>
         ) : (
-          <div className="user-modal-tabs">
-            <button 
-              className={`user-modal-tab ${authMode === 'login' ? 'active' : ''}`}
+          <div className="user-auth-tabs">
+            <button
+              type="button"
+              className={`auth-tab-btn ${authMode === 'login' ? 'active' : ''}`}
               onClick={() => setAuthMode('login')}
             >
               Iniciar Sesión
             </button>
-            <button 
-              className={`user-modal-tab ${authMode === 'register' ? 'active' : ''}`}
+            <button
+              type="button"
+              className={`auth-tab-btn ${authMode === 'register' ? 'active' : ''}`}
               onClick={() => setAuthMode('register')}
             >
-              Registrarme
+              Crear Cuenta
             </button>
           </div>
         )}
