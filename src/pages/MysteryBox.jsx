@@ -12,8 +12,6 @@ export default function MysteryBox({ onNavigate }) {
   const { addToCart, setIsCartOpen } = useCart();
 
   const [selectedPlan, setSelectedPlan] = useState('completo');
-  const [aromaPref, setAromaPref] = useState('sorpresa');
-  const [vesselPref, setVesselPref] = useState('gres');
   const [addedPlanId, setAddedPlanId] = useState(null);
   const [openFaq, setOpenFaq] = useState(0);
 
@@ -28,11 +26,11 @@ export default function MysteryBox({ onNavigate }) {
       tierName: 'Ritual Completo',
       tag: 'MÁS ELEGIDO · EXPERIENCIA TOTAL',
       badge: 'BIMESTRAL',
-      price: '$1,450 MXN',
-      priceNum: 1450,
+      price: '$990 MXN',
+      priceNum: 990,
       period: 'cada 2 meses',
-      storeValue: '$2,150 MXN',
-      savings: 'Ahorro de $700 MXN',
+      storeValue: '$1,590 MXN',
+      savings: 'Ahorro de $600 MXN',
       desc: 'La experiencia definitiva para iniciar o enriquecer tu santuario con una vasija artesanal nueva y piezas completas cada 2 meses.',
       img: mysteryHeroImg,
       includes: [
@@ -50,11 +48,11 @@ export default function MysteryBox({ onNavigate }) {
       tierName: 'Ritual Esencial',
       tag: 'RECARGA CONSCIENTE',
       badge: 'BIMESTRAL',
-      price: '$1,050 MXN',
-      priceNum: 1050,
+      price: '$590 MXN',
+      priceNum: 590,
       period: 'cada 2 meses',
-      storeValue: '$1,480 MXN',
-      savings: 'Ahorro de $430 MXN',
+      storeValue: '$950 MXN',
+      savings: 'Ahorro de $360 MXN',
       desc: 'Ideal para quienes ya cuentan con su vasija favorita en casa y desean recargar su cera de arena, aromas y mechas cada 60 días.',
       img: mysteryEsencialImg,
       includes: [
@@ -76,12 +74,11 @@ export default function MysteryBox({ onNavigate }) {
       priceNum: plan.priceNum,
       category: 'suscripciones',
       img: plan.img,
-      selectedVariant: `Entrega cada 2 meses | Aroma: ${aromaPref}${planKey === 'completo' ? ` | Vasija: ${vesselPref}` : ''}`,
+      selectedVariant: `Entrega bimestral | Selección Sorpresa Exclusiva${planKey === 'completo' ? ' (Con Vasija)' : ' (Recarga)'}`,
       subscription: {
         frequency: 'Cada 2 meses',
         tier: plan.tierName,
-        aromaPref,
-        vesselPref: planKey === 'completo' ? vesselPref : 'N/A',
+        type: 'Selección Sorpresa Misteriosa',
       },
     };
 
@@ -240,33 +237,12 @@ export default function MysteryBox({ onNavigate }) {
                   </ul>
                 </div>
 
-                {/* Customization options */}
-                <div className="mystery-options-group">
-                  <div className="mystery-option-field">
-                    <label className="option-label">Perfil de aroma preferido:</label>
-                    <select 
-                      className="mystery-select"
-                      value={aromaPref}
-                      onChange={(e) => setAromaPref(e.target.value)}
-                    >
-                      <option value="sorpresa">✦ Selección sorpresa del Maestro Aromático (Recomendado)</option>
-                      <option value="amaderado">Amaderado & Santal Ancestral (Meditativo)</option>
-                      <option value="floral">Lavanda Salvaje & Manzanilla (Descanso Nocturno)</option>
-                      <option value="citrico">Bergamota & Azahar (Energía y Vitalidad)</option>
-                    </select>
-                  </div>
-
-                  <div className="mystery-option-field">
-                    <label className="option-label">Estilo de vasija artesanal:</label>
-                    <select 
-                      className="mystery-select"
-                      value={vesselPref}
-                      onChange={(e) => setVesselPref(e.target.value)}
-                    >
-                      <option value="gres">Cerámica Gres Moteada Arena (Esmalte mineral crudo)</option>
-                      <option value="barro">Barro Volcánico Ahumado Negro (Wabi-Sabi rústico)</option>
-                      <option value="rotativa">Rotativa (Una pieza diferente en cada entrega)</option>
-                    </select>
+                {/* 100% Surprise Curation Notice */}
+                <div className="mystery-curation-box">
+                  <div className="mystery-curation-icon">✨</div>
+                  <div className="mystery-curation-content">
+                    <strong>Experiencia 100% Sorpresa</strong>
+                    <p>Curación exclusiva del Maestro Aromático con vasija artesanal nueva y aromas de temporada seleccionados para ti. ¡Sin opciones que elegir, cada entrega es un misterio sensorial!</p>
                   </div>
                 </div>
 
@@ -340,26 +316,18 @@ export default function MysteryBox({ onNavigate }) {
                   </ul>
                 </div>
 
-                {/* Customization options */}
-                <div className="mystery-options-group">
-                  <div className="mystery-option-field">
-                    <label className="option-label">Perfil de aroma preferido:</label>
-                    <select 
-                      className="mystery-select"
-                      value={aromaPref}
-                      onChange={(e) => setAromaPref(e.target.value)}
-                    >
-                      <option value="sorpresa">✦ Selección sorpresa del Maestro Aromático (Recomendado)</option>
-                      <option value="amaderado">Amaderado & Santal Ancestral (Meditativo)</option>
-                      <option value="floral">Lavanda Salvaje & Manzanilla (Descanso Nocturno)</option>
-                      <option value="citrico">Bergamota & Azahar (Energía y Vitalidad)</option>
-                    </select>
+                {/* 100% Surprise Curation Notice */}
+                <div className="mystery-curation-box">
+                  <div className="mystery-curation-icon">✨</div>
+                  <div className="mystery-curation-content">
+                    <strong>Experiencia 100% Sorpresa</strong>
+                    <p>Cera en arena botánica y formulaciones aromáticas estacionales sorpresa para recargar tus propios recipientes favoritos.</p>
                   </div>
+                </div>
 
-                  <div className="mystery-option-note">
-                    <span className="note-icon">💡</span>
-                    <span>No incluye vasija. Ideal para recargar tus propios recipientes y vasijas Sutra.</span>
-                  </div>
+                <div className="mystery-option-note" style={{ marginBottom: '1.75rem' }}>
+                  <span className="note-icon">💡</span>
+                  <span>No incluye vasija. Ideal para recargar tus propios recipientes y vasijas Sutra.</span>
                 </div>
 
                 <button
@@ -524,12 +492,12 @@ export default function MysteryBox({ onNavigate }) {
               <tr>
                 <td>Precio bimestral</td>
                 <td className="td-highlight price-cell">
-                  <span className="tbl-price">$1,450 MXN</span>
-                  <small className="tbl-save">Ahorras $700 MXN</small>
+                  <span className="tbl-price">$990 MXN</span>
+                  <small className="tbl-save">Ahorras $600 MXN</small>
                 </td>
                 <td className="price-cell">
-                  <span className="tbl-price">$1,050 MXN</span>
-                  <small className="tbl-save">Ahorras $430 MXN</small>
+                  <span className="tbl-price">$590 MXN</span>
+                  <small className="tbl-save">Ahorras $360 MXN</small>
                 </td>
               </tr>
             </tbody>
@@ -581,14 +549,14 @@ export default function MysteryBox({ onNavigate }) {
               className="btn btn--gold"
               onClick={() => handleSubscribe('completo')}
             >
-              Suscribirme al Ritual Completo ($1,450 MXN)
+              Suscribirme al Ritual Completo ($990 MXN)
             </button>
             <button 
               type="button" 
               className="btn btn--outline"
               onClick={() => handleSubscribe('esencial')}
             >
-              Ritual Esencial ($1,050 MXN)
+              Ritual Esencial ($590 MXN)
             </button>
           </div>
         </div>

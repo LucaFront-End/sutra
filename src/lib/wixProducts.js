@@ -194,40 +194,39 @@ export function normalizeProduct(wixProduct) {
     shortDesc = words.length > 10 ? words.slice(0, 10).join(' ') + '...' : firstSentence;
   }
 
-  // Deduce category dynamically from name & description
-  const lowerName = (name || '').toLowerCase();
-  const lowerDesc = cleanDescription.toLowerCase();
+  // Deduce category dynamically from name & description with accent insensitivity
+  const cleanStr = (s) => (s || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const normName = cleanStr(name);
+  const normDesc = cleanStr(cleanDescription);
   let category = 'velas';
   let subcategory = null;
 
-  if (
-    lowerName.includes('esencia') ||
-    lowerName.includes('aroma') ||
-    lowerName.includes('spray') ||
-    lowerName.includes('bruma') ||
-    lowerName.includes('mist') ||
-    lowerName.includes('difusor') ||
-    lowerName.includes('aceite') ||
-    lowerName.includes('incienso') ||
-    lowerName.includes('fragancia') ||
-    lowerName.includes('rosewood') ||
-    lowerName.includes('copal') ||
-    lowerName.includes('patchouli') ||
-    lowerName.includes('ylang')
-  ) {
+  // Aroma keywords & known names for the 11 Sutra aromas
+  const aromaKeywords = [
+    'esencia', 'aroma', 'spray', 'bruma', 'mist', 'difusor', 'aceite', 
+    'gotero', 'fragancia', 'rosewood', 'copal', 'patchouli', 'ylang',
+    'amanecer vivo', 'noche serena', 'abrazo de calma', 'deseo dorado', 
+    'luz alegre', 'sol interior', 'menta clara', 'raiz profunda', 'templo interior', 
+    'limpia aura', 'madre rose', 'madre rosa', 'botanica'
+  ];
+
+  const hasAromaKw = aromaKeywords.some((kw) => normName.includes(kw) || normDesc.includes(kw));
+  const isVelaExplicit = normName.includes('vela') || normName.includes('cera en arena') || normName.includes('kit vela');
+
+  if (hasAromaKw && !isVelaExplicit) {
     category = 'aromas';
-  } else if (lowerName.includes('té') || lowerName.includes('te') || lowerName.includes('infusión') || lowerName.includes('infusion')) {
+  } else if (!isVelaExplicit && (/\bte\b/i.test(normName) || normName.includes('infusion') || normName.includes('tisana') || normName.includes('matcha') || normName.includes('chawan'))) {
     category = 'te';
-  } else if (lowerName.includes('zen') || lowerDesc.includes('jardín zen') || lowerDesc.includes('jardin zen')) {
+  } else if (normName.includes('zen') || normName.includes('jardin') || normDesc.includes('jardin zen')) {
     category = 'accesorios';
     subcategory = 'jardin-zen';
-  } else if (lowerName.includes('carta') || lowerName.includes('baraja') || lowerDesc.includes('cartas de ritual')) {
+  } else if (normName.includes('carta') || normName.includes('baraja') || normDesc.includes('cartas de ritual')) {
     category = 'accesorios';
     subcategory = 'cartas-rituales';
-  } else if (lowerName.includes('vasija') || lowerName.includes('cerámica') || lowerDesc.includes('vasija wabi')) {
+  } else if (normName.includes('vasija') || normName.includes('ceramica') || normDesc.includes('vasija wabi')) {
     category = 'accesorios';
     subcategory = 'vasijas';
-  } else if (lowerName.includes('mistery') || lowerName.includes('mystery') || lowerName.includes('suscripci')) {
+  } else if (normName.includes('mistery') || normName.includes('mystery') || normName.includes('suscripci')) {
     category = 'suscripciones';
   } else {
     category = 'velas';
@@ -239,7 +238,8 @@ export function normalizeProduct(wixProduct) {
     productOptions.forEach((pOpt) => {
       const optName = pOpt.name || 'Opción';
       const isColor = pOpt.optionType === 'COLOR' || optName.toLowerCase().includes('color');
-      const optType = isColor ? 'color' : 'pills';
+      const isSelect = !isColor && ((pOpt.choices && pOpt.choices.length > 4) || optName.toLowerCase().includes('aroma') || optName.toLowerCase().includes('esencia'));
+      const optType = isColor ? 'color' : (isSelect ? 'select' : 'pills');
 
       const choices = (pOpt.choices || []).map((ch, idx) => ({
         label: ch.description || ch.value || `Opción ${idx + 1}`,

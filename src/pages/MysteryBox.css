@@ -482,6 +482,40 @@
   border-color: #D4A76A;
 }
 
+.mystery-curation-box {
+  background: rgba(212, 167, 106, 0.1);
+  border: 1px dashed rgba(212, 167, 106, 0.55);
+  border-radius: 14px;
+  padding: 1.15rem 1.25rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.mystery-curation-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+  color: #9C7A4A;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.mystery-curation-content strong {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #2C1E14;
+  margin-bottom: 0.35rem;
+}
+
+.mystery-curation-content p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #6E5F56;
+  line-height: 1.5;
+}
+
 .mystery-option-note {
   display: flex;
   align-items: center;

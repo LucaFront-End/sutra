@@ -4,10 +4,11 @@
  */
 
 const WIX_API_BASE = 'https://www.wixapis.com';
+const DEFAULT_SITE_ID = 'd33fa0f4-e839-48dc-9ba7-f71199a5796e';
 
 async function wixFetch(path, options = {}) {
-  const apiKey = process.env.WIX_API_KEY || '';
-  const siteId = process.env.WIX_SITE_ID || '';
+  const apiKey = process.env.WIX_API_KEY || process.env.VITE_WIX_API_KEY || '';
+  const siteId = process.env.WIX_SITE_ID || process.env.VITE_WIX_SITE_ID || DEFAULT_SITE_ID;
 
   const url = `${WIX_API_BASE}${path}`;
   const res = await fetch(url, {
@@ -46,7 +47,7 @@ async function wixFetch(path, options = {}) {
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Content-Type', 'application/json');
 
   if (req.method === 'OPTIONS') {
@@ -59,9 +60,58 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing action parameter' });
   }
 
-  if (!process.env.WIX_API_KEY || !process.env.WIX_SITE_ID) {
+  const apiKey = process.env.WIX_API_KEY || process.env.VITE_WIX_API_KEY || '';
+  const siteId = process.env.WIX_SITE_ID || process.env.VITE_WIX_SITE_ID || DEFAULT_SITE_ID;
+
+  // ─── STATUS ACTION ────────────────────────────────────────────────────────
+  if (action === 'status') {
+    return res.status(200).json({
+      configured: Boolean(apiKey && siteId),
+      hasApiKey: Boolean(apiKey),
+      hasSiteId: Boolean(siteId),
+      siteId: siteId ? siteId.slice(0, 8) + '...' : null,
+    });
+  }
+
+  // ─── DIAGNOSTIC ACTION ────────────────────────────────────────────────────
+  if (action === 'diagnostic') {
+    const diag = {
+      siteIdConfigured: Boolean(siteId),
+      siteIdLength: siteId.length,
+      siteIdStart: siteId ? siteId.slice(0, 8) + '...' : 'none',
+      siteIdIsGuid: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(siteId.trim()),
+      apiKeyConfigured: Boolean(apiKey),
+      apiKeyLength: apiKey.length,
+      apiKeyStart: apiKey ? apiKey.slice(0, 10) + '...' : 'none',
+      apiKeyPrefix: apiKey.slice(0, 4),
+      apiKeyLooksValid: apiKey.trim().startsWith('IST.') && apiKey.trim().length > 50,
+      instructions: !apiKey
+        ? 'Genera una API Key en Wix Dashboard > Configuración > Claves API con permisos de Contacts e Inbox, y configúrala como WIX_API_KEY en Vercel.'
+        : 'WIX_API_KEY configurada.',
+    };
+
+    let testResult = null;
+    if (apiKey && siteId) {
+      try {
+        const testRes = await wixFetch('/contacts/v4/contacts/query', {
+          method: 'POST',
+          body: JSON.stringify({ query: { paging: { limit: 1 } } }),
+        });
+        testResult = { success: true, count: testRes.contacts?.length || 0 };
+      } catch (err) {
+        testResult = { success: false, error: err.message, status: err.status, wixData: err.data };
+      }
+    } else {
+      testResult = { success: false, note: 'WIX_API_KEY no configurada en variables de entorno de Vercel.' };
+    }
+
+    return res.status(200).json({ diagnostic: diag, testResult });
+  }
+
+  if (!apiKey || !siteId) {
     return res.status(500).json({
-      error: 'Wix credentials not configured. Set WIX_API_KEY and WIX_SITE_ID.',
+      error: 'Wix credentials not configured. Configure WIX_API_KEY in Vercel.',
+      hint: 'Ve a tu panel de Wix > Opciones de desarrollador / Claves API y crea una clave con permisos de Contacts e Inbox.',
     });
   }
 

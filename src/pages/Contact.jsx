@@ -47,8 +47,8 @@ export default function Contact() {
       a: 'En la Ciudad de México y área metropolitana la entrega toma entre 24 y 48 horas hábiles. Para el resto del país, el tiempo promedio es de 3 a 5 días hábiles.',
     },
     {
-      q: '¿Puedo visitar su Showroom o taller en persona?',
-      a: 'Por supuesto. Nuestro espacio en la colonia Roma Norte, CDMX recibe visitas y catas olfativas personalizadas con previa cita para ofrecerte una experiencia en calma y sin prisas.',
+      q: '¿Cuentan con tienda física o showroom?',
+      a: 'Operamos como tienda 100% digital con envíos express asegurados a toda la República Mexicana. Todo nuestro catálogo se gestiona en línea con entrega directa a la puerta de tu hogar o negocio.',
     },
     {
       q: '¿Emiten factura fiscal SAT (CFDI 4.0)?',
@@ -111,27 +111,24 @@ export default function Contact() {
             </a>
           </div>
 
-          {/* Showroom */}
+          {/* Envíos a Todo México */}
           <div className="contact-channel-card">
             <div className="channel-icon-wrap">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
+                <rect x="1" y="3" width="15" height="13" rx="1" />
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                <circle cx="5.5" cy="18.5" r="2.5" />
+                <circle cx="18.5" cy="18.5" r="2.5" />
               </svg>
             </div>
-            <span className="channel-tag">CASA SUTRA</span>
-            <h3 className="channel-title">Showroom & Taller</h3>
+            <span className="channel-tag">TIENDA EN LÍNEA</span>
+            <h3 className="channel-title">Envíos a Todo México</h3>
             <p className="channel-desc">
-              Colima 124, Roma Norte, Cuauhtémoc, Ciudad de México, CP 06700. Catas olfativas con cita previa.
+              Tienda digital y taller de diseño artesanal. Despachos rápidos y asegurados por DHL y FedEx a cualquier código postal del país.
             </p>
-            <a
-              href="https://maps.google.com/?q=Roma+Norte+CDMX"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="channel-link-btn"
-            >
-              Ver ubicación en Google Maps →
-            </a>
+            <span className="channel-link-btn" style={{ cursor: 'default' }}>
+              ✦ Envíos gratis desde $1,500 MXN
+            </span>
           </div>
 
           {/* Schedule */}

@@ -13,11 +13,11 @@ import stepTea2 from '../assets/images/step-tea-2-spoon.jpg';
 import stepTea3 from '../assets/images/step-tea-3-steep.jpg';
 import stepTea4 from '../assets/images/cat-te-ceremonial.jpg';
 
-// Zen garden steps images
-import stepZen1 from '../assets/images/cat-jardin-zen.jpg';
-import stepZen2 from '../assets/images/jardin-zen-detalle.jpg';
-import stepZen3 from '../assets/images/category-zen.png';
-import stepZen4 from '../assets/images/cartas-rituales-mesa.jpg';
+// Zen garden steps images (Authentic Sutra Kit Sensorial)
+import stepZen1 from '../assets/images/step-zen-1-sand.jpg';
+import stepZen2 from '../assets/images/step-zen-2-spheres.jpg';
+import stepZen3 from '../assets/images/step-zen-3-patterns.jpg';
+import stepZen4 from '../assets/images/step-zen-4-brush.jpg';
 
 // Aroma steps fallback
 import stepAroma1 from '../assets/images/step-candle-1-pour.jpg';
@@ -32,25 +32,28 @@ export default function ProductHowToUse({ product }) {
   const name = (product.name || '').toLowerCase();
   const subcategory = (product.subcategory || '').toLowerCase();
 
-  // Determine guide type: 'velas' | 'te' | 'zen' | 'aromas'
+  // Determine guide type: 'velas' | 'aromas' | 'te' | 'zen'
   let guideType = 'velas';
 
-  if (category === 'te' || name.includes('té') || name.includes('te') || name.includes('infus')) {
-    guideType = 'te';
-  } else if (
-    category === 'accesorios' ||
-    subcategory === 'jardin-zen' ||
-    name.includes('zen') ||
-    name.includes('jardín') ||
-    name.includes('jardin') ||
-    name.includes('carta') ||
-    name.includes('vasija')
-  ) {
-    guideType = 'zen';
-  } else if (category === 'aromas' && !name.includes('vela')) {
+  if (category === 'aromas') {
     guideType = 'aromas';
-  } else {
+  } else if (category === 'te') {
+    guideType = 'te';
+  } else if (category === 'accesorios') {
+    guideType = 'zen';
+  } else if (category === 'velas') {
     guideType = 'velas';
+  } else {
+    // Strict pattern matching without false positives (e.g. avoids matching 'te' in 'paquete' or 'aceite')
+    const isVela = name.includes('vela') || name.includes('cera') || name.includes('arena') || name.includes('pabilo');
+    const isAroma = !isVela && (name.includes('esencia') || name.includes('aroma') || name.includes('spray') || name.includes('bruma') || name.includes('difusor') || name.includes('aceite') || name.includes('gotero'));
+    const isTe = !isVela && !isAroma && (/\bté\b/i.test(name) || /\bte\b/i.test(name) || name.includes('infusión') || name.includes('tisana') || name.includes('chawan'));
+    const isZen = !isVela && !isAroma && (name.includes('zen') || name.includes('jardín') || name.includes('carta') || name.includes('baraja') || name.includes('vasija'));
+
+    if (isAroma) guideType = 'aromas';
+    else if (isTe) guideType = 'te';
+    else if (isZen) guideType = 'zen';
+    else guideType = 'velas';
   }
 
   // Configurations for each product type
@@ -62,29 +65,29 @@ export default function ProductHowToUse({ product }) {
       steps: [
         {
           num: '1',
-          title: 'LLENA TU CONTENEDOR',
-          desc: 'Escoge el contenedor que quieras (cerámica, cristal o cuenco) y llénalo con la cera en arena Sutra®.',
+          title: 'VIERTE LA CERA',
+          desc: 'Vierte la cera en arena Sutra® desde su bolsa kraft en tu vasija, cuenco o contenedor favorito.',
           img: stepCandle1,
-          alt: 'Llenar vasija con cera en arena',
+          alt: 'Verter cera en arena Sutra desde la bolsa kraft en vasija',
         },
         {
           num: '2',
-          title: 'AGREGA LA MECHA',
-          desc: 'Inserta la mecha en el centro de las perlas de cera, dejando sobresalir únicamente 1 cm.',
+          title: 'INSERTA LA MECHA',
+          desc: 'Coloca la mecha en el centro de las perlas de cera, dejando sobresalir únicamente 1 cm.',
           img: stepCandle2,
           alt: 'Insertar mecha en la cera en arena',
         },
         {
           num: '3',
-          title: 'ENCIENDE LA VELA',
-          desc: 'Enciende la mecha y (opcional) añade unas 5 a 8 gotas de tu esencia Sutra favorita sobre la arena.',
+          title: 'GOTAS DE ESENCIA & ENCIENDE',
+          desc: 'Añade de 5 a 8 gotas de tu esencia botánica Sutra cerca del pabilo y enciende con fósforo de madera.',
           img: stepCandle3,
-          alt: 'Encender vela de cera en arena con llama viva',
+          alt: 'Encender vela de cera en arena con esencia botánica',
         },
         {
           num: '4',
-          title: 'REEMPLAZA EL PABILO',
-          desc: 'Al consumirse, retira el cono de cera derretida, inserta una nueva mecha y ¡tienes una vela nueva en segundos!',
+          title: 'RENUEVA AL INSTANTE',
+          desc: 'Al consumirse, retira el cono de cera solidificada, inserta una nueva mecha y ¡tienes una vela nueva siempre!',
           img: stepCandle4,
           alt: 'Vela renovada y reutilizable con nuevo pabilo',
         },
@@ -128,37 +131,37 @@ export default function ProductHowToUse({ product }) {
     },
 
     zen: {
-      eyebrow: 'OBJETOS DE RITUAL',
-      title: '¿Cómo uso mi jardín zen?',
-      subtitle: 'Medita con las manos y aquieta el flujo de pensamientos a través del trazo consciente',
+      eyebrow: 'OBJETOS RITUALES',
+      title: '¿Cómo uso mi jardín zen sensorial?',
+      subtitle: 'Medita con las manos y aquieta tu mente a través del contacto táctil y el trazo consciente',
       steps: [
         {
           num: '1',
-          title: 'EXTIENDE LA ARENA',
-          desc: 'Vierte la arena de cuarzo blanco de manera homogénea sobre la base circular de madera de nogal macizo.',
+          title: 'VIERTE LA ARENA DE CUARZO',
+          desc: 'Vierte la arena de la botella sobre la base circular de bambú natural y extiéndela creando tu lienzo.',
           img: stepZen1,
-          alt: 'Extender arena en la base del jardín zen',
+          alt: 'Verter arena de cuarzo en la bandeja circular de bambú',
         },
         {
           num: '2',
-          title: 'UBICA LOS ELEMENTOS',
-          desc: 'Coloca las rocas naturales buscando armonía visual, equilibrio asimétrico y sensación de espacio abierto.',
+          title: 'ACOPLA EL SOPORTE Y ESFERAS',
+          desc: 'Ubica la media luna con las 4 esferas sensoriales de cerámica artesanal, cada una con su textura ritual.',
           img: stepZen2,
-          alt: 'Disposición de piedras y rocas en la arena',
+          alt: 'Colocar soporte y esferas sensoriales con texturas',
         },
         {
           num: '3',
-          title: 'TRAZA TUS PATRONES',
-          desc: 'Toma el rastrillo de madera y dibuja ondas concéntricas con movimientos lentos y respiración pausada.',
+          title: 'TRAZA ONDAS Y PATRONES',
+          desc: 'Haz rodar las esferas sobre la arena o usa el peine de madera para dibujar surcos fluidos y concéntricos.',
           img: stepZen3,
-          alt: 'Trazar patrones zen con rastrillo de madera',
+          alt: 'Rodar esfera sensorial de terracota y trazar ondas con peine',
         },
         {
           num: '4',
-          title: 'TOMA UNA CARTA RITUAL',
-          desc: 'Elige una de las cartas reflexivas Sutra para anclar una intención positiva y presente para tu día.',
+          title: 'SUAVIZA Y RENUEVA TU CALMA',
+          desc: 'Pasa la brocha de cerdas naturales para suavizar la superficie, soltar tensiones y reiniciar tu práctica.',
           img: stepZen4,
-          alt: 'Cartas de rituales y meditación Sutra',
+          alt: 'Suavizar arena con la brocha de madera para calma y presencia',
         },
       ],
     },

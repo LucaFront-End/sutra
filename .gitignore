@@ -26,3 +26,6 @@ dist-ssr
 # Archives & Temporary extractions
 *.zip
 extracted_logos/
+scratch/
+*.original.*
+

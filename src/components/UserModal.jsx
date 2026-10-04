@@ -7,13 +7,13 @@ export default function UserModal({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState('orders');
 
   // Customer session state
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({
-    name: 'Sofía Valenzuela',
-    email: 'sofia.valenzuela@sutra.mx',
-    phone: '+52 55 4921 8840',
-    address: 'Campos Elíseos 204, Polanco, CDMX',
-    subscription: 'Mystery Box · Ritual Completo (Bimestral)',
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    subscription: '',
   });
 
   // Orders list
@@ -135,16 +135,38 @@ export default function UserModal({ isOpen, onClose }) {
 
         {/* Modal Header */}
         <div className="user-modal-header">
-          <span className="user-modal-eyebrow">Círculo Sutra</span>
+          <span className="user-modal-eyebrow">{isLoggedIn ? 'Círculo Sutra' : 'Mi Cuenta Sutra'}</span>
           <h2 className="user-modal-title">
-            {isLoggedIn ? `Hola, ${currentUser.name.split(' ')[0]}` : 'Bienvenido a tu Espacio'}
+            {isLoggedIn ? `Hola, ${currentUser.name.split(' ')[0]}` : (authMode === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta')}
           </h2>
           <p className="user-modal-subtitle">
             {isLoggedIn 
               ? 'Gestiona tus compras rituales, pedidos entregados y comparte tus reseñas.' 
-              : 'Accede para calificar tus compras y consultar tus pedidos guardados.'}
+              : (authMode === 'login' 
+                  ? 'Ingresa a tu cuenta para consultar tus pedidos y dar seguimiento a tus envíos.' 
+                  : 'Regístrate para gestionar tus compras rituales y suscripciones.')}
           </p>
         </div>
+
+        {/* Auth mode toggle for logged out users */}
+        {!isLoggedIn && (
+          <div className="user-auth-tabs">
+            <button
+              type="button"
+              className={`auth-tab-btn ${authMode === 'login' ? 'active' : ''}`}
+              onClick={() => setAuthMode('login')}
+            >
+              Iniciar Sesión
+            </button>
+            <button
+              type="button"
+              className={`auth-tab-btn ${authMode === 'register' ? 'active' : ''}`}
+              onClick={() => setAuthMode('register')}
+            >
+              Crear Cuenta
+            </button>
+          </div>
+        )}
 
         {/* Navigation Tabs for logged in user */}
         {isLoggedIn ? (
@@ -516,19 +538,6 @@ export default function UserModal({ isOpen, onClose }) {
                 <button type="submit" className="user-modal-btn">
                   {authMode === 'login' ? 'Ingresar a mi Cuenta' : 'Crear mi Cuenta'}
                 </button>
-
-                <div className="demo-login-shortcut">
-                  <button
-                    type="button"
-                    className="btn-demo-quick"
-                    onClick={() => {
-                      setIsLoggedIn(true);
-                      setActiveTab('orders');
-                    }}
-                  >
-                    ✦ Ver como Sofía Valenzuela (Modo Demostración con 4 Compras)
-                  </button>
-                </div>
               </form>
             )}
           </>

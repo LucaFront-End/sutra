@@ -299,18 +299,26 @@
 
 .about-cta__box .about-tag {
   color: #D4A76A;
+  display: inline-block;
+  letter-spacing: 0.15em;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
 }
 
 .about-cta__title {
+  color: #FAF7F2 !important;
   font-family: var(--font-serif, 'Playfair Display', serif);
   font-size: clamp(2.2rem, 4vw, 3.2rem);
   font-weight: 400;
   margin: 0.25rem 0 1rem;
+  line-height: 1.2;
 }
 
 .about-cta__text {
   font-size: 1.05rem;
-  color: #D6CCC4;
+  color: #EAE3DC;
   max-width: 600px;
   margin: 0 auto 2.25rem;
   line-height: 1.65;

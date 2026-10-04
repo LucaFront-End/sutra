@@ -17,7 +17,7 @@ const CATEGORIES = [
     id: 'accesorios', 
     title: 'Objetos de Ritual', 
     image: catZen, 
-    desc: 'Jardines zen en nogal macizo, cartas de intención diaria y vasijas de barro horneadas.',
+    desc: 'Kit sensorial de jardín zen en bambú con 4 esferas táctiles, cartas de intención diaria y vasijas artesanales.',
   },
   { 
     id: 'aromas', 

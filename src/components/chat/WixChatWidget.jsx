@@ -17,6 +17,7 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
   const [isSending, setIsSending] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [initError, setInitError] = useState('');
 
   // Form for visitor registration
   const [initForm, setInitForm] = useState({ name: '', email: '', phone: '' });
@@ -35,6 +36,15 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
       return () => clearTimeout(timer);
     }
   }, [messages, isOpen, isTyping]);
+
+  // Poll for new messages every 5 seconds when online and open
+  useEffect(() => {
+    if (status !== 'online' || !isOpen || !conversationId) return;
+    const interval = setInterval(() => {
+      fetchMessages(conversationId);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [status, isOpen, conversationId]);
 
   // Initial check for member session
   useEffect(() => {
@@ -65,6 +75,7 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
   // Start chat session
   const startConversation = async (name, email, phone) => {
     setLoading(true);
+    setInitError('');
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -72,38 +83,26 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
         body: JSON.stringify({ action: 'init', name, email, phone }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.conversationId) {
-          setConversationId(data.conversationId);
-          try {
-            localStorage.setItem('sutra_chat_convo_id', data.conversationId);
-          } catch {}
-          setStatus('online');
-          fetchMessages(data.conversationId);
-          setLoading(false);
-          return;
-        }
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.conversationId) {
+        setConversationId(data.conversationId);
+        try {
+          localStorage.setItem('sutra_chat_convo_id', data.conversationId);
+          localStorage.setItem('sutra_chat_contact_id', data.contactId || '');
+        } catch {}
+        setStatus('online');
+        fetchMessages(data.conversationId);
+        setLoading(false);
+        return;
+      } else {
+        const errorMsg = data.error || data.details || 'No se pudo conectar con la bandeja de Wix.';
+        setInitError(errorMsg);
       }
-    } catch {
-      // Local fallback
+    } catch (err) {
+      setInitError(err.message || 'Error de conexión con el servidor.');
+    } finally {
+      setLoading(false);
     }
-
-    const dummyConvo = `sutra-convo-${Date.now()}`;
-    setConversationId(dummyConvo);
-    try {
-      localStorage.setItem('sutra_chat_convo_id', dummyConvo);
-    } catch {}
-    setStatus('online');
-    setLoading(false);
-    setMessages([
-      {
-        id: 'welcome-msg',
-        direction: 'BUSINESS_TO_PARTICIPANT',
-        text: `Hola ${name ? name.split(' ')[0] : ''}✦ ¡Bienvenido a SUTRA! Un asesor ritual está a tu servicio. ¿En qué podemos acompañarte hoy?`,
-        createdAt: new Date().toISOString(),
-      },
-    ]);
   };
 
   const fetchMessages = async (convoId) => {
@@ -127,7 +126,7 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
   };
 
   const sendMessage = async (text) => {
-    if (!text.trim() || isSending) return;
+    if (!text.trim() || isSending || !conversationId) return;
     setIsSending(true);
 
     const newMsg = {
@@ -139,40 +138,23 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
     setMessages((prev) => [...prev, newMsg]);
 
     try {
-      await fetch('/api/chat', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'send', conversationId, text }),
       });
-    } catch {
-      // Fallback
-    }
 
-    // Smart assistant response
-    setIsTyping(true);
-    setTimeout(() => {
-      let replyText = 'Gracias por escribirnos. Nuestro equipo de rituales SUTRA ha recibido tu consulta y te responderá en breve. También puedes escribirnos directo a nuestro WhatsApp si deseas atención inmediata.';
-      const lower = text.toLowerCase();
-      if (lower.includes('vela') || lower.includes('arena') || lower.includes('preparar')) {
-        replyText = '✦ Para preparar tu vela: vierte la cera granulada en tu vasija favorita, coloca una de nuestras mechas de algodón puro dejando sobresalir 5mm, y enciende. ¡Se adapta a cualquier recipiente!';
-      } else if (lower.includes('evento') || lower.includes('boda') || lower.includes('mayoreo') || lower.includes('empresa')) {
-        replyText = '✦ ¡Excelente! Contamos con packs B2B con precios mayoristas escalonados para banqueteras, bodas, hoteles y eventos boutique. Visita nuestra sección de "Eventos" en el menú para calcular tus kilos.';
-      } else if (lower.includes('aroma') || lower.includes('fragancia') || lower.includes('olor')) {
-        replyText = '✦ Te recomendamos nuestro aroma Santal & Amber para meditación y calma, o White Tea & Bergamot para un ambiente fresco, luminoso y sofisticado.';
+      if (res.ok) {
+        await fetchMessages(conversationId);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        console.warn('[WixChat] Send failed:', data.error || res.statusText);
       }
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `reply-${Date.now()}`,
-          direction: 'BUSINESS_TO_PARTICIPANT',
-          text: replyText,
-          createdAt: new Date().toISOString(),
-        },
-      ]);
-      setIsTyping(false);
+    } catch (err) {
+      console.warn('[WixChat] Network error sending message:', err.message);
+    } finally {
       setIsSending(false);
-    }, 1000);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -227,6 +209,17 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
               <h4>Inicia tu Consulta</h4>
               <p>Conéctate directamente con nuestro equipo de bienestar y rituales.</p>
             </div>
+
+            {initError && (
+              <div className="sutra-chat-error-alert">
+                <span className="sutra-chat-error-icon">⚠️</span>
+                <div className="sutra-chat-error-info">
+                  <strong>Aviso de conexión</strong>
+                  <p>{initError}</p>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="sutra-chat-form">
               <div className="sutra-form-group">
                 <input
@@ -258,9 +251,22 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
                 />
               </div>
               <button type="submit" className="sutra-chat-btn-submit" disabled={loading}>
-                {loading ? 'Conectando...' : 'Iniciar Conversación'}
+                {loading ? 'Conectando con Wix...' : 'Iniciar Conversación'}
               </button>
             </form>
+
+            <div className="sutra-chat-divider">
+              <span>o contáctanos directo</span>
+            </div>
+
+            <a
+              href="https://wa.me/5215500000000?text=Hola%20Sutra,%20quisiera%20atenci%C3%B3n%20personalizada%20con%20un%20asesor"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="sutra-chat-wa-direct-link"
+            >
+              <span>💬 Escribir por WhatsApp</span>
+            </a>
           </div>
         ) : (
           <div className="sutra-chat-messages">

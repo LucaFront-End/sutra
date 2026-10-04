@@ -98,6 +98,37 @@
   max-width: 480px;
 }
 
+/* ——— Auth Toggle Tabs for Logged Out Customer ——— */
+.user-auth-tabs {
+  display: flex;
+  background: #EFE9E0;
+  padding: 4px;
+  border-radius: 999px;
+  margin-bottom: 1.75rem;
+  gap: 4px;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6E5F56;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-tab-btn.active {
+  background: #FFFFFF;
+  color: #2C1E14;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(44, 30, 20, 0.08);
+}
+
 /* ——— Navigation Tabs for Logged In Customer ——— */
 .user-dashboard-nav {
   display: flex;

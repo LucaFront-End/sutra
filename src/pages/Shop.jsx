@@ -62,17 +62,23 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
     return product.category === filter;
   });
 
+  const getCategoryCount = (catId) => {
+    if (!catalog || catalog.length === 0) return 0;
+    if (catId === 'all') return catalog.length;
+    return catalog.filter((p) => p.category === catId).length;
+  };
+
   const getCategoryTitle = () => {
-    if (filter === 'all') return 'La Colección Completa';
-    if (filter === 'velas') return 'Velas de Arena & Rituales de Fuego';
+    if (filter === 'all') return 'Todos los Productos';
+    if (filter === 'velas') return 'Velas de Arena & Rituales';
+    if (filter === 'aromas') return 'Esencias Aromáticas';
+    if (filter === 'te') return 'Té Rituales';
     if (filter === 'accesorios') {
-      if (subFilter === 'jardin-zen') return 'Objetos de Ritual · Jardín Zen';
-      if (subFilter === 'cartas-rituales') return 'Objetos de Ritual · Cartas de Rituales';
-      if (subFilter === 'vasijas') return 'Objetos de Ritual · Vasijas & Cerámica';
-      return 'Objetos de Ritual & Herramientas Zen';
+      if (subFilter === 'jardin-zen') return 'Objetos Rituales · Jardín Zen';
+      if (subFilter === 'cartas-rituales') return 'Objetos Rituales · Cartas de Rituales';
+      if (subFilter === 'vasijas') return 'Objetos Rituales · Vasijas & Cerámica';
+      return 'Objetos Rituales';
     }
-    if (filter === 'aromas') return 'Aromas & Brumas Botánicas';
-    if (filter === 'te') return 'Tés & Ceremonias de Presencia';
     return 'La Colección';
   };
 
@@ -97,7 +103,10 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
                   className={`filter-btn ${filter === cat.id ? 'active' : ''}`}
                   onClick={() => handleCategoryChange(cat.id)}
                 >
-                  {cat.label}
+                  <span className="filter-btn-label">{cat.label}</span>
+                  {!wixLoading && catalog.length > 0 && (
+                    <span className="filter-count-badge">({getCategoryCount(cat.id)})</span>
+                  )}
                 </button>
 
                 {/* Subcategories for Accesorios */}

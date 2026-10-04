@@ -29,17 +29,17 @@ import imgMysteryEsencial from '../assets/images/mystery-box-esencial.jpg';
 export const storeCategories = [
   { id: 'all', label: 'Todos los productos' },
   { id: 'velas', label: 'Velas de Arena' },
+  { id: 'aromas', label: 'Esencias Aromáticas' },
+  { id: 'te', label: 'Té Rituales' },
   { 
     id: 'accesorios', 
-    label: 'Objetos de Ritual',
+    label: 'Objetos Rituales',
     subcategories: [
       { id: 'jardin-zen', label: 'Jardín Zen' },
       { id: 'cartas-rituales', label: 'Cartas de rituales' },
       { id: 'vasijas', label: 'Vasijas' }
     ]
-  },
-  { id: 'aromas', label: 'Aromas' },
-  { id: 'te', label: 'Té' }
+  }
 ];
 
 export const allProducts = [
@@ -702,8 +702,8 @@ export const allProducts = [
     name: 'Sutra Mystery Box · Ritual Completo',
     emotionalName: 'Suscripción Bimestral',
     tag: 'Más Popular',
-    price: '1,450 MXN',
-    priceNum: 1450,
+    price: '990 MXN',
+    priceNum: 990,
     rating: 5.0,
     reviewCount: 84,
     shortDesc: 'Vela de cera en arena, vasija artesanal, 2 aromas y 5 mechas de 15 cm.',
@@ -721,8 +721,8 @@ export const allProducts = [
     name: 'Sutra Mystery Box · Ritual Esencial',
     emotionalName: 'Recarga Bimestral',
     tag: 'Suscripción',
-    price: '1,050 MXN',
-    priceNum: 1050,
+    price: '590 MXN',
+    priceNum: 590,
     rating: 4.9,
     reviewCount: 42,
     shortDesc: 'Vela de cera en arena, 2 aromas y 5 mechas de 15 cm (sin vasija).',

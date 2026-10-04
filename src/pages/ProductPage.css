@@ -346,25 +346,30 @@
   margin-top: 0.35rem;
 }
 
+/* Unboxed narrative flow for description features (no encerrar en cuadros) */
 .pdp-feature-card {
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid #ECE5DC;
-  border-radius: 12px;
-  padding: 0.85rem 1.1rem;
-  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0.75rem 0;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(212, 167, 106, 0.15);
+}
+
+.pdp-feature-card:last-child {
+  border-bottom: none;
 }
 
 .pdp-feature-card:hover {
-  background: #FFFFFF;
-  border-color: #D4A76A;
-  box-shadow: 0 4px 16px rgba(44, 30, 20, 0.04);
+  background: transparent;
+  box-shadow: none;
 }
 
 .pdp-feature-title-wrap {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.3rem;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin-bottom: 0.35rem;
 }
 
 .pdp-feature-icon {
@@ -374,27 +379,30 @@
 }
 
 .pdp-feature-title {
-  font-size: 0.92rem;
+  font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
+  font-size: 1rem;
   font-weight: 600;
   color: #2C1E14;
   letter-spacing: 0.01em;
 }
 
 .pdp-feature-body {
-  margin: 0 !important;
-  font-size: 0.88rem !important;
-  color: #6E5F56 !important;
-  line-height: 1.55 !important;
-  padding-left: 1.65rem;
+  margin: 0.35rem 0 0 !important;
+  font-size: 0.92rem !important;
+  color: #5A4B42 !important;
+  line-height: 1.65 !important;
+  padding-left: 0 !important;
 }
 
-/* What is included box */
+/* What is included section - unboxed clean presentation */
 .pdp-included-box {
-  background: #F4EFEB;
-  border: 1px solid #E5DCD1;
-  border-radius: 14px;
-  padding: 1.15rem 1.35rem;
-  margin: 0.5rem 0;
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgba(212, 167, 106, 0.25);
+  border-bottom: 1px solid rgba(212, 167, 106, 0.25);
+  border-radius: 0;
+  padding: 1.25rem 0;
+  margin: 1.25rem 0;
 }
 
 .pdp-included-title {
@@ -412,6 +420,57 @@
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
+}
+
+/* Candle Unique Value Propositions (Image 3: 4 Badges) */
+.pdp-candle-value-props {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem 1.25rem;
+  margin: 1.75rem 0 1.25rem;
+  padding: 1.6rem 0.5rem;
+  border-top: 1px solid rgba(44, 30, 20, 0.12);
+  border-bottom: 1px solid rgba(44, 30, 20, 0.12);
+}
+
+.candle-prop-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.65rem;
+}
+
+.candle-prop-icon {
+  color: #111A2E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+}
+
+.candle-prop-card:hover .candle-prop-icon {
+  transform: translateY(-2px);
+  color: #D4A76A;
+}
+
+.candle-prop-text {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: #2C1E14;
+  line-height: 1.35;
+  max-width: 210px;
+}
+
+@media (max-width: 480px) {
+  .pdp-candle-value-props {
+    gap: 1.25rem 0.75rem;
+    padding: 1.25rem 0;
+  }
+  .candle-prop-text {
+    font-size: 0.8rem;
+  }
 }
 
 .pdp-included-list li {
@@ -568,6 +627,126 @@
 
 .aroma-sensory-note p {
   margin: 0;
+}
+
+/* Luxury Select Dropdown */
+.luxury-select-box {
+  width: 100%;
+}
+
+.luxury-select-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #FAF7F2;
+  border: 1px solid #D8CEBE;
+  border-radius: 12px;
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.luxury-select-control:focus-within,
+.luxury-select-control:hover {
+  border-color: #B38E46;
+  background: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(44, 30, 20, 0.06);
+}
+
+.luxury-select-icon {
+  padding-left: 1rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.luxury-custom-select {
+  width: 100%;
+  padding: 0.85rem 2.2rem 0.85rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: #2C1E14;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.luxury-select-control::after {
+  content: '▾';
+  position: absolute;
+  right: 1.1rem;
+  pointer-events: none;
+  color: #8C7E74;
+  font-size: 0.85rem;
+}
+
+/* Collapsible Accordions */
+.pdp-accordions {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.pdp-accordion {
+  border: 1px solid #ECE5DB;
+  border-radius: 12px;
+  background: #FFFFFF;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.pdp-accordion[open] {
+  border-color: #D4A76A;
+}
+
+.pdp-accordion-summary {
+  list-style: none;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-serif, serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #2C1E14;
+}
+
+.pdp-accordion-summary::-webkit-details-marker {
+  display: none;
+}
+
+.pdp-accordion-summary .pdp-accordion-icon::after {
+  content: '+';
+  font-family: monospace;
+  font-size: 1.2rem;
+  color: #9C7A4A;
+  transition: transform 0.2s ease;
+}
+
+.pdp-accordion[open] .pdp-accordion-summary .pdp-accordion-icon::after {
+  content: '−';
+}
+
+.pdp-accordion-content {
+  padding: 0 1.25rem 1.25rem;
+  font-size: 0.92rem;
+  color: #5A4C44;
+  line-height: 1.65;
+  border-top: 1px solid #FAF7F2;
+}
+
+.pdp-accordion-content p {
+  margin: 0 0 0.65rem 0;
+}
+
+.pdp-accordion-content p:last-child {
+  margin-bottom: 0;
 }
 
 /* Vasija Cards Grid */
@@ -831,4 +1010,14 @@
   .product-gallery-collage {
     position: static;
   }
+}
+
+/* Intro lead preview paragraph */
+.pdp-intro-lead {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #5E4E45;
+  margin: 0.6rem 0 1.25rem;
+  font-family: inherit;
+  letter-spacing: 0.01em;
 }

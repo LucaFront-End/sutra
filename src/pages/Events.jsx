@@ -7,6 +7,7 @@ import imgWhiteWax from '../assets/images/cera-blanca.jpg';
 import imgBlackWax from '../assets/images/cera-negra.jpg';
 import imgCandleLit from '../assets/images/candle-lit.png';
 import imgVasijas from '../assets/images/vasijas.jpg';
+import imgCorporativo from '../assets/images/eventos-corporativo.jpg';
 
 export default function Events({ onNavigate, onAddToCart }) {
   // Calculator state
@@ -247,8 +248,8 @@ export default function Events({ onNavigate, onAddToCart }) {
       headline: 'Galas empresariales, activación olfativa y regalos VIP con tu marca',
       desc: 'Diseño integral para celebraciones corporativas, cenas de gala y espacios de bienestar. Personalizamos cajas rituales y recipientes con el logo de tu empresa para directivos, socios y clientes VIP.',
       badge: 'Regalos & Activaciones VIP',
-      image: imgVasijas,
-      imageBadge: 'Piezas Artesanales & Regalos VIP',
+      image: imgCorporativo,
+      imageBadge: 'Regalos Corporativos VIP Sutra',
       perks: [
         'Regalos corporativos de alta gama con grabado de tu logo',
         'Activaciones olfativas para congresos y lanzamientos de marca',

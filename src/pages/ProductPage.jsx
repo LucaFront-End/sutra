@@ -180,12 +180,39 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
 
   // Dynamic category eyebrow text
   const categoryEyebrow = product.subcategory 
-    ? `OBJETOS DE RITUAL · ${product.subcategory.toUpperCase().replace('-', ' ')}`
+    ? `OBJETOS RITUALES · ${product.subcategory.toUpperCase().replace('-', ' ')}`
     : (product.category === 'accesorios'
-        ? 'OBJETOS DE RITUAL'
+        ? 'OBJETOS RITUALES'
         : (product.category === 'velas'
             ? 'VELAS DE ARENA'
             : (product.category ? product.category.toUpperCase() : 'SUTRA MEXICO')));
+
+  // Extract first paragraph for initial preview and collapse the rest
+  let firstParagraphText = '';
+  let remainingDescriptionHtml = '';
+
+  if (product.descriptionHtml) {
+    const pMatch = product.descriptionHtml.match(/^(\s*<p[^>]*>([\s\S]*?)<\/p>)/i);
+    if (pMatch) {
+      firstParagraphText = pMatch[2].replace(/<[^>]*>/g, '').trim();
+      remainingDescriptionHtml = product.descriptionHtml.slice(pMatch[1].length).trim();
+    } else {
+      const matchFirstBlock = product.descriptionHtml.match(/^(\s*<[^>]+>[\s\S]*?<\/[^>]+>)/i);
+      if (matchFirstBlock) {
+        firstParagraphText = matchFirstBlock[0].replace(/<[^>]*>/g, '').trim();
+        remainingDescriptionHtml = product.descriptionHtml.slice(matchFirstBlock[0].length).trim();
+      } else {
+        firstParagraphText = (product.description || '').split(/\n+/)[0] || '';
+        remainingDescriptionHtml = product.descriptionHtml;
+      }
+    }
+  } else {
+    const rawParagraphs = (product.description || '').split(/\n\s*\n|\n/);
+    firstParagraphText = rawParagraphs[0] || '';
+    if (rawParagraphs.length > 1) {
+      remainingDescriptionHtml = rawParagraphs.slice(1).map(p => `<p>${p}</p>`).join('');
+    }
+  }
 
   return (
     <div className="product-page fade-in">
@@ -284,6 +311,9 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
         {/* ============================================================
             RIGHT SIDE: PRODUCT DETAILS & DYNAMIC CONFIGURATOR
             ============================================================ */}
+        {/* ============================================================
+            RIGHT SIDE: PRODUCT DETAILS & DYNAMIC CONFIGURATOR
+            ============================================================ */}
         <div className="product-details-panel">
           <div className="pdp-header">
             <span className="pdp-eyebrow">
@@ -312,18 +342,14 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
               <span className="pdp-reviews-count">({product.reviewCount || 38} reseñas)</span>
             </a>
 
-            {/* Rich formatted description or clean fallback */}
-            {product.descriptionHtml ? (
-              <div 
-                className="pdp-description-formatted"
-                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-              />
-            ) : (
-              <p className="pdp-description">{product.description}</p>
+            {firstParagraphText && (
+              <p className="pdp-intro-lead">
+                {firstParagraphText}
+              </p>
             )}
           </div>
 
-          {/* Dynamic Options Configurator (If options are defined for this product) */}
+          {/* Dynamic Options Configurator: Positioned prominently at top */}
           {product.options && product.options.length > 0 && (
             <div className="pdp-configurator-box">
               {product.options.map((opt) => {
@@ -362,7 +388,7 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
                       </div>
                     )}
 
-                    {/* 2. PILLS SELECTOR */}
+                    {/* 2. PILLS SELECTOR (for small amount of choices) */}
                     {opt.type === 'pills' && (
                       <div className="config-pills config-pills--wrap">
                         {opt.choices.map((choice) => {
@@ -384,23 +410,39 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
                       </div>
                     )}
 
-                    {/* 3. SELECTOR WITH SENSORY NOTE */}
+                    {/* 3. SELECT DROPDOWN WITH ICON (For aromas or many choices) */}
                     {opt.type === 'select' && (
-                      <div>
-                        <div className="config-pills config-pills--wrap">
-                          {opt.choices.map((choice) => {
-                            const isSelected = selectedChoices[opt.id] === choice.value;
-                            return (
-                              <button
-                                key={choice.value}
-                                type="button"
-                                className={`config-pill ${isSelected ? 'active' : ''}`}
-                                onClick={() => handleOptionChange(opt.id, choice)}
-                              >
-                                <span>{choice.label}</span>
-                              </button>
-                            );
-                          })}
+                      <div className="luxury-select-box">
+                        <div className="luxury-select-control">
+                          <span className="luxury-select-icon">
+                            {(() => {
+                              const l = (activeChoice?.label || '').toLowerCase();
+                              if (l.includes('mandarina') || l.includes('toronja') || l.includes('naranja') || l.includes('sol') || l.includes('alegre') || l.includes('amanecer')) return '🍊';
+                              if (l.includes('lavanda') || l.includes('serena') || l.includes('noche')) return '🌿';
+                              if (l.includes('manzanilla') || l.includes('calma') || l.includes('abrazo')) return '🌼';
+                              if (l.includes('ylang') || l.includes('dorado') || l.includes('deseo')) return '🌸';
+                              if (l.includes('menta')) return '🍃';
+                              if (l.includes('patchouli') || l.includes('raiz') || l.includes('raíz')) return '🪵';
+                              if (l.includes('incienso') || l.includes('templo')) return '✨';
+                              if (l.includes('copal') || l.includes('aura') || l.includes('limpia')) return '🕊️';
+                              if (l.includes('rosewood') || l.includes('madre') || l.includes('rosa')) return '🌹';
+                              return '✦';
+                            })()}
+                          </span>
+                          <select
+                            className="luxury-custom-select"
+                            value={currentVal}
+                            onChange={(e) => {
+                              const found = opt.choices.find((c) => c.value === e.target.value);
+                              if (found) handleOptionChange(opt.id, found);
+                            }}
+                          >
+                            {opt.choices.map((choice) => (
+                              <option key={choice.value} value={choice.value}>
+                                {choice.label}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                         {activeChoice?.desc && (
                           <div className="aroma-sensory-note">
@@ -452,6 +494,84 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
             >
               Personalizar & Añadir — ${totalPrice.toLocaleString()} MXN
             </button>
+          </div>
+
+          {/* Candle Unique Value Propositions (Úsala en el envase que quieras, etc.) */}
+          {(product.category === 'velas' || /vela|arena|cera|wax/i.test(product.name || '')) && (
+            <div className="pdp-candle-value-props">
+              <div className="candle-prop-card">
+                <span className="candle-prop-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                    <path d="M2 12h20" />
+                  </svg>
+                </span>
+                <span className="candle-prop-text">Úsala en el envase que quieras</span>
+              </div>
+
+              <div className="candle-prop-card">
+                <span className="candle-prop-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="8" r="6" />
+                    <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
+                    <path d="m9 8 2 2 4-4" />
+                  </svg>
+                </span>
+                <span className="candle-prop-text">Más del doble de duración que las velas tradicionales</span>
+              </div>
+
+              <div className="candle-prop-card">
+                <span className="candle-prop-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                  </svg>
+                </span>
+                <span className="candle-prop-text">Decoración única y original</span>
+              </div>
+
+              <div className="candle-prop-card">
+                <span className="candle-prop-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="1" y="3" width="15" height="13" />
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 8" />
+                    <circle cx="5.5" cy="18.5" r="2.5" />
+                    <circle cx="18.5" cy="18.5" r="2.5" />
+                    <line x1="1" y1="9" x2="4" y2="9" />
+                  </svg>
+                </span>
+                <span className="candle-prop-text">Envío gratis a todo México a partir de $999</span>
+              </div>
+            </div>
+          )}
+
+          {/* Collapsible Accordions: Description & Shipping */}
+          <div className="pdp-accordions">
+            {remainingDescriptionHtml ? (
+              <details className="pdp-accordion">
+                <summary className="pdp-accordion-summary">
+                  <span>✧ Ver detalles completos & características</span>
+                  <span className="pdp-accordion-icon"></span>
+                </summary>
+                <div className="pdp-accordion-content">
+                  <div 
+                    className="pdp-description-formatted"
+                    dangerouslySetInnerHTML={{ __html: remainingDescriptionHtml }}
+                  />
+                </div>
+              </details>
+            ) : null}
+
+            <details className="pdp-accordion">
+              <summary className="pdp-accordion-summary">
+                <span>🚚 Envíos & Garantía Sutra</span>
+                <span className="pdp-accordion-icon"></span>
+              </summary>
+              <div className="pdp-accordion-content">
+                <p><strong>Envíos a todo México:</strong> Entrega rápida asegurada con DHL y FedEx (24-48h en CDMX, 3-5 días hábiles al interior). Envío sin costo en compras superiores a $1,500 MXN.</p>
+                <p><strong>Garantía de Satisfacción:</strong> Empaque compostable protegido contra roturas. Si requieres asistencia con tus aromas o tu pedido, nuestro concierge en WhatsApp te asiste al instante.</p>
+              </div>
+            </details>
           </div>
 
           {/* Emotional Benefit */}
