@@ -2,6 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useWixClient } from '../../context/WixContext';
 import './WixChatWidget.css';
 
+const formatMessageTime = (msg) => {
+  const raw = msg?.createdDate || msg?._createdDate || msg?.createdAt || msg?.timestamp;
+  let d;
+  if (raw) {
+    d = new Date(raw);
+  }
+  if (!d || isNaN(d.getTime())) {
+    d = new Date();
+  }
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
 export const WixChatWidget = ({ isOpen, onClose }) => {
   const { wixClient, isReady } = useWixClient();
   const [messages, setMessages] = useState([]);
@@ -282,7 +294,7 @@ export const WixChatWidget = ({ isOpen, onClose }) => {
                     <p>{text}</p>
                   </div>
                   <span className="sutra-message-time">
-                    {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {formatMessageTime(msg)}
                   </span>
                 </div>
               );
