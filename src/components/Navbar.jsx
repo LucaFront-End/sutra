@@ -177,7 +177,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                         <span className="megamenu__cat-title">Velas de Arena</span>
                         <span className="megamenu__cat-desc">Cera perlada vegetal & combustión limpia</span>
                       </div>
-                      <span className="megamenu__cat-badge">6 piezas</span>
+                      <span className="megamenu__cat-badge">Colección</span>
                     </button>
 
                     <button 
@@ -185,10 +185,10 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                       onClick={() => handleShopSelect('aromas')}
                     >
                       <div className="megamenu__cat-info">
-                        <span className="megamenu__cat-title">Aromas & Brumas</span>
-                        <span className="megamenu__cat-desc">Sprays áuricos y difusores botánicos</span>
+                        <span className="megamenu__cat-title">Esencias & Aromas</span>
+                        <span className="megamenu__cat-desc">11 Esencias botánicas puras y difusores</span>
                       </div>
-                      <span className="megamenu__cat-badge">4 piezas</span>
+                      <span className="megamenu__cat-badge">11 aromas</span>
                     </button>
 
                     <button 
@@ -199,7 +199,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                         <span className="megamenu__cat-title">Objetos de Ritual</span>
                         <span className="megamenu__cat-desc">Jardines zen, cartas y vasijas cerámicas</span>
                       </div>
-                      <span className="megamenu__cat-badge">3 piezas</span>
+                      <span className="megamenu__cat-badge">Accesorios</span>
                     </button>
 
                     <button 
@@ -208,9 +208,9 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                     >
                       <div className="megamenu__cat-info">
                         <span className="megamenu__cat-title">Té Ceremonial</span>
-                        <span className="megamenu__cat-desc">Blends botánicos para introspección</span>
+                        <span className="megamenu__cat-desc">Blends botánicos e infusiones de ritual</span>
                       </div>
-                      <span className="megamenu__cat-badge">2 piezas</span>
+                      <span className="megamenu__cat-badge">4 blends</span>
                     </button>
                   </div>
                 </div>

@@ -201,33 +201,55 @@ export function normalizeProduct(wixProduct) {
   let category = 'velas';
   let subcategory = null;
 
-  // Aroma keywords & known names for the 11 Sutra aromas
+  // 1. Explicit Vela checks (Candle kits, granular wax, vessels, refills)
+  const isVelaExplicit = normName.includes('vela') || normName.includes('cera en arena') || normName.includes('cera perlada') || normName.includes('kit vela') || normName.includes('cera granulada');
+
+  // 2. Explicit Tea checks (Té Rituales, Infusiones, Tisanas, Matcha, etc.)
+  // Must be checked before aromas so that teas like "Té Rituales Raíz" or "Té Rituales Balance" aren't confused with aromas
+  const isTeExplicit = !isVelaExplicit && (
+    normName.includes('te rituales') ||
+    /\bte\b/i.test(normName) ||
+    normName.includes('infusion') ||
+    normName.includes('tisana') ||
+    normName.includes('matcha') ||
+    normName.includes('chawan')
+  );
+
+  // 3. Explicit Accessories checks (Jardín Zen, Cartas de rituales, Vasijas)
+  const isZenExplicit = !isVelaExplicit && !isTeExplicit && (normName.includes('zen') || normName.includes('jardin'));
+  const isCartasExplicit = !isVelaExplicit && !isTeExplicit && (normName.includes('carta') || normName.includes('baraja') || normDesc.includes('cartas de ritual'));
+  const isVasijaExplicit = !isVelaExplicit && !isTeExplicit && (normName.includes('vasija') || normName.includes('ceramica') || normDesc.includes('vasija wabi'));
+
+  // 4. Mystery Box / Subscriptions
+  const isMysteryExplicit = normName.includes('mistery') || normName.includes('mystery') || normName.includes('suscripci');
+
+  // 5. Aromas & Esencias
   const aromaKeywords = [
     'esencia', 'aroma', 'spray', 'bruma', 'mist', 'difusor', 'aceite', 
     'gotero', 'fragancia', 'rosewood', 'copal', 'patchouli', 'ylang',
     'amanecer vivo', 'noche serena', 'abrazo de calma', 'deseo dorado', 
     'luz alegre', 'sol interior', 'menta clara', 'raiz profunda', 'templo interior', 
-    'limpia aura', 'madre rose', 'madre rosa', 'botanica'
+    'limpia aura', 'madre rose', 'madre rosa'
   ];
+  const hasAromaKw = aromaKeywords.some((kw) => normName.includes(kw));
 
-  const hasAromaKw = aromaKeywords.some((kw) => normName.includes(kw) || normDesc.includes(kw));
-  const isVelaExplicit = normName.includes('vela') || normName.includes('cera en arena') || normName.includes('kit vela');
-
-  if (hasAromaKw && !isVelaExplicit) {
-    category = 'aromas';
-  } else if (!isVelaExplicit && (/\bte\b/i.test(normName) || normName.includes('infusion') || normName.includes('tisana') || normName.includes('matcha') || normName.includes('chawan'))) {
+  if (isVelaExplicit) {
+    category = 'velas';
+  } else if (isTeExplicit) {
     category = 'te';
-  } else if (normName.includes('zen') || normName.includes('jardin') || normDesc.includes('jardin zen')) {
+  } else if (isZenExplicit) {
     category = 'accesorios';
     subcategory = 'jardin-zen';
-  } else if (normName.includes('carta') || normName.includes('baraja') || normDesc.includes('cartas de ritual')) {
+  } else if (isCartasExplicit) {
     category = 'accesorios';
     subcategory = 'cartas-rituales';
-  } else if (normName.includes('vasija') || normName.includes('ceramica') || normDesc.includes('vasija wabi')) {
+  } else if (isVasijaExplicit) {
     category = 'accesorios';
     subcategory = 'vasijas';
-  } else if (normName.includes('mistery') || normName.includes('mystery') || normName.includes('suscripci')) {
+  } else if (isMysteryExplicit) {
     category = 'suscripciones';
+  } else if (hasAromaKw || normDesc.includes('esencia pura') || normDesc.includes('bruma bot')) {
+    category = 'aromas';
   } else {
     category = 'velas';
   }
