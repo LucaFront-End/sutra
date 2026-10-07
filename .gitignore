@@ -26,6 +26,7 @@ dist-ssr
 # Archives & Temporary extractions
 *.zip
 extracted_logos/
+extracted_products/
 scratch/
 *.original.*
 
