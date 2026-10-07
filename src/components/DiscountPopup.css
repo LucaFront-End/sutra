@@ -1,0 +1,413 @@
+/* ================================================================
+   SUTRA MEXICO — Welcome Discount Popup (10% OFF First Purchase)
+   Quiet Luxury, High Conversion, Elegant Backdrop & Typography
+   ================================================================ */
+
+.sutra-discount-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(14, 9, 6, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  opacity: 0;
+  animation: discountFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes discountFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.sutra-discount-modal {
+  position: relative;
+  width: 100%;
+  max-width: 820px;
+  background: #FAF7F2;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px -12px rgba(24, 17, 11, 0.5),
+    0 0 0 1px rgba(212, 167, 106, 0.3);
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  transform: scale(0.94) translateY(10px);
+  animation: discountScaleUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+}
+
+@keyframes discountScaleUp {
+  from {
+    transform: scale(0.94) translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Close Button */
+.sutra-discount-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 240, 0.85);
+  border: 1px solid rgba(60, 36, 21, 0.12);
+  color: #3C2415;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(4px);
+}
+
+.sutra-discount-close:hover {
+  background: #3C2415;
+  color: #FAF7F2;
+  transform: rotate(90deg);
+}
+
+/* Left Media Banner */
+.sutra-discount-media {
+  position: relative;
+  background: #18110B;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.sutra-discount-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sutra-discount-modal:hover .sutra-discount-media img {
+  transform: scale(1.03);
+}
+
+.sutra-discount-media-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(24, 17, 11, 0.8) 0%,
+    rgba(24, 17, 11, 0.2) 60%,
+    transparent 100%
+  );
+}
+
+.sutra-discount-media-badge {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  background: rgba(24, 17, 11, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 167, 106, 0.35);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  color: #FAF7F2;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sutra-discount-media-badge-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #D4A76A;
+  color: #18110B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.sutra-discount-media-badge-text {
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: #E8E4DE;
+}
+
+.sutra-discount-media-badge-text strong {
+  display: block;
+  color: #FAF7F2;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+/* Right Content Area */
+.sutra-discount-content {
+  padding: 3rem 2.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sutra-discount-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8B8B5E;
+  margin-bottom: 0.75rem;
+}
+
+.sutra-discount-tag::before {
+  content: '✦';
+  color: #D4A76A;
+  font-size: 0.85rem;
+}
+
+.sutra-discount-title {
+  font-family: var(--font-serif, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #3C2415;
+  margin: 0 0 0.85rem;
+  letter-spacing: -0.01em;
+}
+
+.sutra-discount-title span {
+  font-style: italic;
+  color: #8B8B5E;
+}
+
+.sutra-discount-desc {
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #6B5E55;
+  margin: 0 0 1.75rem;
+}
+
+/* Form */
+.sutra-discount-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.sutra-discount-input-wrap {
+  position: relative;
+}
+
+.sutra-discount-input {
+  width: 100%;
+  padding: 0.95rem 1.15rem;
+  border: 1.5px solid rgba(60, 36, 21, 0.15);
+  border-radius: 8px;
+  background: #FFFFFF;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.92rem;
+  color: #3C2415;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.sutra-discount-input:focus {
+  outline: none;
+  border-color: #8B8B5E;
+  box-shadow: 0 0 0 3px rgba(139, 139, 94, 0.15);
+}
+
+.sutra-discount-input::placeholder {
+  color: #A89F91;
+  font-size: 0.88rem;
+}
+
+.sutra-discount-submit {
+  width: 100%;
+  padding: 1.05rem 1.5rem;
+  background: #3C2415;
+  color: #FAF7F2;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.sutra-discount-submit:hover:not(:disabled) {
+  background: #18110B;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(60, 36, 21, 0.25);
+}
+
+.sutra-discount-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.sutra-discount-skip {
+  background: none;
+  border: none;
+  color: #A89F91;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.78rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  transition: color 0.2s ease;
+  text-align: center;
+}
+
+.sutra-discount-skip:hover {
+  color: #3C2415;
+}
+
+/* Success State */
+.sutra-discount-success {
+  text-align: center;
+  padding: 1rem 0;
+  animation: discountFadeIn 0.35s ease forwards;
+}
+
+.sutra-discount-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(139, 139, 94, 0.15);
+  color: #8B8B5E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin: 0 auto 1.25rem;
+  border: 1px solid rgba(139, 139, 94, 0.3);
+}
+
+.sutra-discount-coupon-box {
+  background: #FFFFFF;
+  border: 1.5px dashed #D4A76A;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sutra-discount-coupon-code {
+  font-family: var(--font-sans, 'Inter', monospace, sans-serif);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #3C2415;
+}
+
+.sutra-discount-copy-btn {
+  padding: 0.65rem 1.15rem;
+  background: #FAF7F2;
+  border: 1px solid rgba(60, 36, 21, 0.2);
+  border-radius: 6px;
+  color: #3C2415;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sutra-discount-copy-btn:hover {
+  background: #3C2415;
+  color: #FAF7F2;
+}
+
+.sutra-discount-copy-btn.copied {
+  background: #8B8B5E;
+  color: #FAF7F2;
+  border-color: #8B8B5E;
+}
+
+.sutra-discount-instruction {
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.82rem;
+  color: #8B8B5E;
+  margin-bottom: 1.25rem;
+}
+
+.sutra-discount-shop-btn {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: #3C2415;
+  color: #FAF7F2;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sutra-discount-shop-btn:hover {
+  background: #18110B;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sutra-discount-modal {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .sutra-discount-media {
+    height: 180px;
+  }
+
+  .sutra-discount-media-badge {
+    display: none;
+  }
+
+  .sutra-discount-content {
+    padding: 1.75rem 1.5rem 1.5rem;
+  }
+
+  .sutra-discount-title {
+    font-size: 1.6rem;
+  }
+}

@@ -17,6 +17,7 @@ import Footer from './components/Footer';
 import UserModal from './components/UserModal';
 import CartDrawer from './components/CartDrawer';
 import FloatingActions from './components/FloatingActions';
+import DiscountPopup from './components/DiscountPopup';
 
 // Pages
 import Shop from './pages/Shop';
@@ -213,6 +214,9 @@ export default function App() {
 
       {/* Dual Floating Actions: WhatsApp & Wix Inbox Chat */}
       <FloatingActions />
+
+      {/* Welcome Discount Popup (10% OFF First Purchase) */}
+      <DiscountPopup onNavigate={handleNavigate} />
     </>
   );
 }
