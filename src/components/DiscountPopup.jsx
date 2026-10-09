@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import popupImg from '../assets/images/cera-blanca.jpg';
+import { submitToContactoGeneral } from '../lib/formsService';
 import './DiscountPopup.css';
 
 const COUPON_CODE = 'SUTRA10';
@@ -55,32 +56,41 @@ export default function DiscountPopup({ onNavigate }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !email.includes('@')) return;
 
     setIsSubmitting(true);
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
 
     try {
-      // Save lead locally
+      // 1. Submit lead directly to Wix CMS ContactoGeneral
+      await submitToContactoGeneral({
+        nombre: cleanName || 'Nuevo Miembro Sutra',
+        email: cleanEmail,
+        empresa: `Cupón ${COUPON_CODE} (10% OFF)`,
+        industria: 'Lead Bienvenida / Popup',
+        mensaje: `Registro para 10% OFF en primera compra. Nombre: ${cleanName || 'No indicado'}. Cupón asignado: ${COUPON_CODE}`,
+      });
+
+      // 2. Save lead locally
       const existing = JSON.parse(localStorage.getItem(SUBSCRIBERS_KEY) || '[]');
       existing.push({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
+        name: cleanName,
+        email: cleanEmail,
         coupon: COUPON_CODE,
         date: new Date().toISOString(),
-        source: 'welcome_popup_10_off'
+        source: 'welcome_popup_10_off',
       });
       localStorage.setItem(SUBSCRIBERS_KEY, JSON.stringify(existing));
       localStorage.setItem(STORAGE_KEY, Date.now().toString());
-    } catch {
-      // Ignore
-    }
-
-    setTimeout(() => {
+    } catch (err) {
+      console.error('[DiscountPopup Submit Error]', err);
+    } finally {
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 400);
+    }
   };
 
   const handleCopyCode = async () => {

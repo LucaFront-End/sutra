@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { submitToContactoGeneral } from '../lib/formsService';
 import './Gifts.css';
 
 // Usaremos dos de nuestras imágenes de categorías para simular los Bundles de lujo
@@ -18,6 +19,14 @@ export default function Gifts({ onAddToCart }) {
     e.preventDefault();
     if (formData.to && formData.from) {
       setIsFlipped(true);
+      submitToContactoGeneral({
+        nombre: formData.from,
+        email: '',
+        telefono: '',
+        empresa: `Regalo para: ${formData.to}`,
+        industria: 'Dedicatoria de Regalo',
+        mensaje: `Dedicatoria personalizada:\nDe: ${formData.from}\nPara: ${formData.to}\nMensaje: ${formData.message || 'Sin mensaje adicional'}`,
+      }).catch(() => {});
     }
   };
 

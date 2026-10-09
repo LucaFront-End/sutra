@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { submitToContactoGeneral } from '../lib/formsService';
 import './Events.css';
 
 // Assets
@@ -34,6 +35,7 @@ export default function Events({ onNavigate, onAddToCart }) {
     urgente: false
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [folioNumber, setFolioNumber] = useState('');
   const [activeSector, setActiveSector] = useState('wedding');
 
@@ -132,12 +134,28 @@ export default function Events({ onNavigate, onAddToCart }) {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateStep3()) {
       const generatedFolio = `SUTRA-B2B-${Math.floor(1000 + Math.random() * 9000)}`;
       setFolioNumber(generatedFolio);
-      setFormSubmitted(true);
+      setIsSubmitting(true);
+
+      try {
+        await submitToContactoGeneral({
+          nombre: formData.nombre,
+          email: formData.email,
+          telefono: formData.whatsapp || '',
+          empresa: `${formData.empresa || 'Empresa/Particular'} (${formData.ciudad || 'México'})`,
+          industria: formData.tipoNegocio || 'Eventos & B2B',
+          mensaje: `Cotización B2B Folio: ${generatedFolio}\nRequerimiento: ${formData.tipoRequerimiento}\nColor Cera: ${formData.colorCera}\nVolumen Aprox: ${formData.volumenAprox || 'No especificado'}\nFecha Evento: ${formData.fechaEvento || 'Próximamente'}\nFactura SAT: ${formData.facturaSat ? 'Sí, requerida' : 'No requerida'}\nDetalles adicionales:\n${formData.detalles || 'Ninguno'}`,
+        });
+      } catch (err) {
+        console.error('[Events B2B Submit Error]', err);
+      } finally {
+        setIsSubmitting(false);
+        setFormSubmitted(true);
+      }
     }
   };
 
@@ -1186,8 +1204,9 @@ export default function Events({ onNavigate, onAddToCart }) {
                         <button 
                           type="submit" 
                           className="b2b-submit-btn step-btn-next"
+                          disabled={isSubmitting}
                         >
-                          Solicitar Cotización Mayorista Oficial →
+                          {isSubmitting ? 'Registrando Cotización en Sutra...' : 'Solicitar Cotización Mayorista Oficial →'}
                         </button>
                       </div>
 

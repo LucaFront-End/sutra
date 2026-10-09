@@ -1,20 +1,36 @@
 import { useState } from 'react';
 import { newsletterContent } from '../data/content';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { submitToContactoGeneral } from '../lib/formsService';
 import './Newsletter.css';
 
 export default function Newsletter() {
   const ref = useScrollReveal();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email.trim()) {
+    const cleanEmail = email.trim();
+    if (!cleanEmail) return;
+
+    setIsSubmitting(true);
+    try {
+      await submitToContactoGeneral({
+        nombre: 'Suscriptor Newsletter',
+        email: cleanEmail,
+        empresa: 'Newsletter Sutra',
+        industria: 'Suscripción Web',
+        mensaje: 'Nueva suscripción a novedades y rituales desde el Newsletter de la web.',
+      });
+    } catch (err) {
+      console.error('[Newsletter Submit Error]', err);
+    } finally {
+      setIsSubmitting(false);
       setSubmitted(true);
       setEmail('');
-      // In production, this connects to Wix Headless CRM
-      setTimeout(() => setSubmitted(false), 4000);
+      setTimeout(() => setSubmitted(false), 5000);
     }
   };
 
@@ -39,8 +55,13 @@ export default function Newsletter() {
                 id="newsletter-email"
                 aria-label="Tu correo electrónico"
               />
-              <button type="submit" className={`newsletter__btn ${submitted ? 'success' : ''}`} id="newsletter-submit">
-                {submitted ? 'Bienvenidx ✓' : newsletterContent.cta}
+              <button 
+                type="submit" 
+                className={`newsletter__btn ${submitted ? 'success' : ''}`} 
+                id="newsletter-submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Registrando...' : submitted ? 'Bienvenidx ✓' : newsletterContent.cta}
               </button>
             </div>
             <p className="newsletter__disclaimer">

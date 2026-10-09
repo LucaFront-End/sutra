@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { blogArticles } from '../data/shopData';
+import { submitToContactoGeneral } from '../lib/formsService';
 import './Blog.css';
 
 export default function Blog({ onNavigate }) {
   const navigate = useNavigate();
   const [selectedTag, setSelectedTag] = useState('all');
+  const [communityEmail, setCommunityEmail] = useState('');
+  const [communitySubmitted, setCommunitySubmitted] = useState(false);
+  const [communitySubmitting, setCommunitySubmitting] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -78,10 +82,48 @@ export default function Blog({ onNavigate }) {
             <span className="community-tag">Círculo Sutra</span>
             <h3>Únete a las lecturas semanales</h3>
             <p>Cada domingo enviamos una pequeña reflexión para iniciar la semana con serenidad y foco.</p>
-            <form className="community-form" onSubmit={(e) => { e.preventDefault(); alert('¡Gracias por unirte al Círculo Sutra!'); }}>
-              <input type="email" placeholder="Tu correo electrónico" required />
-              <button type="submit">Suscribirme</button>
-            </form>
+            {communitySubmitted ? (
+              <div className="community-success-notice" style={{ padding: '1rem', background: 'rgba(255,255,255,0.7)', borderRadius: '8px', color: '#3C2415' }}>
+                <strong>¡Bienvenidx al Círculo Sutra! ✓</strong>
+                <p style={{ margin: '0.4rem 0 0', fontSize: '0.9rem' }}>Te has suscrito con éxito. Cada domingo recibirás nuestras reflexiones.</p>
+              </div>
+            ) : (
+              <form 
+                className="community-form" 
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const cleanEmail = communityEmail.trim();
+                  if (!cleanEmail) return;
+                  setCommunitySubmitting(true);
+                  try {
+                    await submitToContactoGeneral({
+                      nombre: 'Lector Círculo Sutra',
+                      email: cleanEmail,
+                      empresa: 'Círculo Sutra (Blog/Comunidad)',
+                      industria: 'Comunidad Sutra',
+                      mensaje: 'Suscripción a lecturas semanales y reflexiones dominicales del Círculo Sutra desde el Blog.',
+                    });
+                  } catch (err) {
+                    console.error('[Blog Community Submit Error]', err);
+                  } finally {
+                    setCommunitySubmitting(false);
+                    setCommunitySubmitted(true);
+                    setCommunityEmail('');
+                  }
+                }}
+              >
+                <input 
+                  type="email" 
+                  placeholder="Tu correo electrónico" 
+                  value={communityEmail}
+                  onChange={(e) => setCommunityEmail(e.target.value)}
+                  required 
+                />
+                <button type="submit" disabled={communitySubmitting}>
+                  {communitySubmitting ? 'Registrando...' : 'Suscribirme'}
+                </button>
+              </form>
+            )}
           </div>
         </section>
       </div>

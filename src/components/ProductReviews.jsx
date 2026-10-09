@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getReviewsForProduct, addCustomerReview, voteHelpful } from '../lib/reviewsService';
+import { submitToContactoGeneral } from '../lib/formsService';
 import './ProductReviews.css';
 
 export default function ProductReviews({ product }) {
@@ -101,6 +102,15 @@ export default function ProductReviews({ product }) {
       comment: comment.trim(),
       variant: 'Compra en Línea',
     });
+
+    submitToContactoGeneral({
+      nombre: name.trim(),
+      email: email.trim(),
+      telefono: '',
+      empresa: `Producto: ${product?.name || 'Sutra'}`,
+      industria: `Reseña (${rating} Estrellas)`,
+      mensaje: `Reseña de producto: ${product?.name || 'Sutra'}\nCalificación: ${rating}/5 estrellas\nTítulo: ${title.trim() || 'Sin título'}\nRecomienda producto: ${recommends ? 'Sí' : 'No'}\nComentario:\n${comment.trim()}`,
+    }).catch(() => {});
 
     setSubmitted(true);
     setTimeout(() => {

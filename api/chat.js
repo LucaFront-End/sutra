@@ -200,6 +200,28 @@ export default async function handler(req, res) {
           convoRes.conversation?.id ||
           convoRes.conversationId ||
           convoRes.id;
+
+        // 4. Also register inquiry into ContactoGeneral CMS collection
+        try {
+          await wixFetch('/wix-data/v1/items', {
+            method: 'POST',
+            body: JSON.stringify({
+              dataCollectionId: 'ContactoGeneral',
+              item: {
+                nombre: (name?.trim() || 'Visitante SUTRA'),
+                email: cleanEmail,
+                telefono: phone?.trim() || '',
+                empresa: 'Chat en Vivo (Wix Inbox)',
+                industria: 'Atención al Cliente / Chat',
+                mensaje: `Nueva conversación iniciada en chat en vivo. ID Conversación: ${conversationId || 'N/A'}. Contacto CRM: ${contactId}`,
+                fecha: new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' }),
+              },
+            }),
+          });
+        } catch (cmsErr) {
+          console.warn('[WixChat] Notice saving to ContactoGeneral:', cmsErr.message);
+        }
+
         return res.status(200).json({ conversationId, contactId });
       } catch (err) {
         return res.status(500).json({

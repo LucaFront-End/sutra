@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { submitToContactoGeneral } from '../lib/formsService';
 import './Contact.css';
 
 export default function Contact() {
@@ -12,6 +13,7 @@ export default function Contact() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeFaq, setActiveFaq] = useState(0);
 
   useEffect(() => {
@@ -23,9 +25,24 @@ export default function Contact() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.name && formData.email && formData.message) {
+    if (!formData.name || !formData.email || !formData.message) return;
+
+    setIsSubmitting(true);
+    try {
+      await submitToContactoGeneral({
+        nombre: formData.name,
+        email: formData.email,
+        telefono: formData.phone || '',
+        empresa: `Asunto: ${formData.subject}`,
+        industria: 'Contacto Web / Consulta',
+        mensaje: `Motivo: ${formData.subject}\n\nMensaje:\n${formData.message}`,
+      });
+    } catch (err) {
+      console.error('[Contact Submit Error]', err);
+    } finally {
+      setIsSubmitting(false);
       setSubmitted(true);
     }
   };
@@ -264,9 +281,9 @@ export default function Contact() {
                   />
                 </div>
 
-                <button type="submit" className="form-submit-btn" id="contact-submit-btn">
-                  <span>Enviar mensaje a Sutra</span>
-                  <span className="submit-arrow">→</span>
+                <button type="submit" className="form-submit-btn" id="contact-submit-btn" disabled={isSubmitting}>
+                  <span>{isSubmitting ? 'Enviando a Sutra...' : 'Enviar mensaje a Sutra'}</span>
+                  <span className="submit-arrow">{isSubmitting ? '✦' : '→'}</span>
                 </button>
               </form>
             )}
