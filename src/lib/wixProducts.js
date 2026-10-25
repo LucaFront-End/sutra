@@ -263,13 +263,27 @@ export function normalizeProduct(wixProduct) {
       const isSelect = !isColor && ((pOpt.choices && pOpt.choices.length > 4) || optName.toLowerCase().includes('aroma') || optName.toLowerCase().includes('esencia'));
       const optType = isColor ? 'color' : (isSelect ? 'select' : 'pills');
 
-      const choices = (pOpt.choices || []).map((ch, idx) => ({
-        label: ch.description || ch.value || `Opción ${idx + 1}`,
-        value: ch.value || ch.description || `opt-${idx}`,
-        hex: isColor && ch.value && ch.value.startsWith('#') ? ch.value : (isColor ? '#D4A76A' : undefined),
-        isDefault: idx === 0,
-        img: ch.media?.mainMedia?.image?.url ? parseWixMediaUrl(ch.media.mainMedia.image.url) : undefined,
-      }));
+      const choices = (pOpt.choices || []).map((ch, idx) => {
+        let chImg = ch.media?.mainMedia?.image?.url ? parseWixMediaUrl(ch.media.mainMedia.image.url) : undefined;
+        // If choice has no direct media, look in wixVariants for an image corresponding to this choice
+        if (!chImg && Array.isArray(wixVariants)) {
+          const val = ch.value || ch.description;
+          const matchingVar = wixVariants.find((v) => {
+            return v.choices && (v.choices[pOpt.name] === val || Object.values(v.choices).includes(val));
+          });
+          const rawVarImg = matchingVar?.media?.mainMedia?.image?.url 
+            || matchingVar?.media?.items?.[0]?.image?.url 
+            || matchingVar?.image?.url;
+          if (rawVarImg) chImg = parseWixMediaUrl(rawVarImg);
+        }
+        return {
+          label: ch.description || ch.value || `Opción ${idx + 1}`,
+          value: ch.value || ch.description || `opt-${idx}`,
+          hex: isColor && ch.value && ch.value.startsWith('#') ? ch.value : (isColor ? '#D4A76A' : undefined),
+          isDefault: idx === 0,
+          img: chImg,
+        };
+      });
 
       if (choices.length > 0) {
         options.push({

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Categories.css';
-import catCeraArena from '../assets/images/cat-cera-arena.jpg';
+import catCeraArena from '../assets/images/sutra-arena-negocios.jpg';
 import catAromas from '../assets/images/cat-aromas-wide.jpg';
 import catZen from '../assets/images/cat-jardin-zen.jpg';
 import catTea from '../assets/images/cat-te-ceremonial.jpg';

@@ -242,7 +242,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                       </div>
                       <div className="megamenu__thumb-body">
                         <strong>Cartas de Rituales</strong>
-                        <span>Baraja de 44 intenciones con guía dorada</span>
+                        <span>Baraja de 30 cartas de intención</span>
                         <em className="megamenu__thumb-tag">Introspección diaria</em>
                       </div>
                     </button>

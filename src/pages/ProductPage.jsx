@@ -24,8 +24,51 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
 
   // Dynamic gallery images safely parsed whether object or string
   const rawImages = (product.images && product.images.length > 0)
-    ? product.images
+    ? [...product.images]
     : [product.img || '/assets/images/cera-blanca.jpg'];
+
+  // Add any variant choice images not already in rawImages
+  if (product.options && Array.isArray(product.options)) {
+    product.options.forEach((opt) => {
+      opt.choices?.forEach((ch) => {
+        if (ch.img) {
+          const exists = rawImages.some((img) => {
+            const s = typeof img === 'string' ? img : (img?.src || img?.url);
+            return s === ch.img || parseWixMediaUrl(s) === parseWixMediaUrl(ch.img);
+          });
+          if (!exists) {
+            rawImages.push({
+              id: `opt-img-${ch.value}`,
+              src: ch.img,
+              label: ch.label || '',
+              color: ch.value,
+            });
+          }
+        }
+      });
+    });
+  }
+
+  // Also include images from wixVariants if any
+  if (product.wixVariants && Array.isArray(product.wixVariants)) {
+    product.wixVariants.forEach((v, idx) => {
+      const vImg = v.media?.mainMedia?.image?.url || v.media?.items?.[0]?.image?.url || v.image?.url || v.img;
+      if (vImg) {
+        const parsedVImg = parseWixMediaUrl(vImg);
+        const exists = rawImages.some((img) => {
+          const s = typeof img === 'string' ? img : (img?.src || img?.url);
+          return parseWixMediaUrl(s) === parsedVImg;
+        });
+        if (!exists) {
+          rawImages.push({
+            id: `wix-var-img-${idx}`,
+            src: parsedVImg,
+            label: Object.values(v.choices || {}).join(' - '),
+          });
+        }
+      }
+    });
+  }
 
   const galleryImages = rawImages.map((img, idx) => {
     const rawSrc = typeof img === 'string' ? img : (img?.src || img?.url || product.img);
@@ -99,17 +142,135 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
 
   const totalPrice = Math.max(0, basePrice + priceDeltaSum);
 
-  // Handle option change
-  const handleOptionChange = (optionId, choice) => {
-    setSelectedChoices((prev) => ({
-      ...prev,
-      [optionId]: choice.value,
-    }));
+  // Helper to normalize strings for accent-insensitive matching
+  const normStr = (s = '') => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 
-    // If choice has an associated image (e.g. Color Blanco vs Negro), switch active image
+  // Helper to extract non-stop words (>= 3 chars) dynamically
+  const getKeywords = (str = '') => {
+    const stopWords = new Set(['con', 'del', 'los', 'las', 'para', 'por', 'una', 'uno', 'sin', 'set', 'pack']);
+    return normStr(str)
+      .split(/[^a-z0-9]+/i)
+      .filter((w) => w.length >= 3 && !stopWords.has(w));
+  };
+
+  // Handle option change with 100% dynamic bidirectional variant-to-image resolution
+  const handleOptionChange = (optionId, choice) => {
+    const updated = {
+      ...selectedChoices,
+      [optionId]: choice.value,
+    };
+    setSelectedChoices(updated);
+
+    let resolvedImg = null;
+
+    // 1. Direct image configured on choice
     if (choice.img) {
-      setActiveImg(choice.img);
+      resolvedImg = parseWixMediaUrl(choice.img);
     }
+
+    // 2. Wix variants matching updated choices (multi-attribute combination)
+    if (!resolvedImg && product.wixVariants && Array.isArray(product.wixVariants) && product.wixVariants.length > 0) {
+      const match = product.wixVariants.find((v) => {
+        if (!v.choices) return false;
+        return Object.entries(updated).every(([optKey, optVal]) => {
+          const optObj = product.options?.find((o) => o.id === optKey);
+          const optLabel = optObj?.label || optKey;
+          const normKey = normStr(optLabel);
+          const normVal = normStr(optVal);
+
+          const matchKey = Object.keys(v.choices).find((k) => normStr(k) === normKey || normStr(k) === normStr(optKey));
+          if (matchKey) {
+            return normStr(v.choices[matchKey]) === normVal;
+          }
+          return Object.values(v.choices).some((vVal) => normStr(vVal) === normVal);
+        });
+      });
+      if (match) {
+        const rawVar = match.media?.mainMedia?.image?.url 
+          || match.media?.items?.[0]?.image?.url 
+          || match.image?.url 
+          || match.img;
+        if (rawVar) resolvedImg = parseWixMediaUrl(rawVar);
+      }
+    }
+
+    // 3. Dynamic color or keyword match across galleryImages (completely generic)
+    if (!resolvedImg && galleryImages && galleryImages.length > 0) {
+      const choiceValNorm = normStr(choice.value);
+      const choiceLabelNorm = normStr(choice.label);
+
+      // 3a. Exact or partial color match in gallery
+      const colorMatch = galleryImages.find((img) => {
+        if (!img.color) return false;
+        const cNorm = normStr(img.color);
+        return cNorm === choiceValNorm || cNorm === choiceLabelNorm || choiceValNorm.includes(cNorm) || choiceLabelNorm.includes(cNorm);
+      });
+
+      if (colorMatch) {
+        resolvedImg = colorMatch.src;
+      } else {
+        // 3b. Generic keyword match: dynamically score image relevance based on shared words
+        const kws = getKeywords(`${choice.value} ${choice.label}`);
+        if (kws.length > 0) {
+          let bestImg = null;
+          let bestScore = 0;
+
+          galleryImages.forEach((img) => {
+            const imgText = `${normStr(img.label)} ${normStr(img.id)} ${normStr(img.src)}`;
+            const score = kws.reduce((acc, kw) => (imgText.includes(kw) ? acc + 1 : acc), 0);
+            if (score > bestScore) {
+              bestScore = score;
+              bestImg = img;
+            }
+          });
+
+          if (bestImg && bestScore > 0) {
+            resolvedImg = bestImg.src;
+          }
+        }
+      }
+    }
+
+    if (resolvedImg) {
+      setActiveImg(resolvedImg);
+    }
+  };
+
+  // Bidirectional sync: clicking a thumbnail dynamically selects the matching option/variant choice
+  const syncOptionFromImage = (imgItem) => {
+    if (!product.options || !Array.isArray(product.options)) return;
+    const imgKws = getKeywords(`${imgItem.label} ${imgItem.id} ${imgItem.src}`);
+
+    product.options.forEach((opt) => {
+      const matchedChoice = opt.choices?.find((choice) => {
+        const chVal = normStr(choice.value);
+        const chLabel = normStr(choice.label);
+
+        // 1. Direct src or choice.img match
+        if (choice.img && (choice.img === imgItem.src || parseWixMediaUrl(choice.img) === imgItem.src)) {
+          return true;
+        }
+        // 2. Direct color match
+        if (imgItem.color) {
+          const cNorm = normStr(imgItem.color);
+          if (cNorm === chVal || cNorm === chLabel || chVal.includes(cNorm)) return true;
+        }
+        // 3. Dynamic keyword match
+        if (imgKws.length > 0) {
+          const chKws = getKeywords(`${choice.value} ${choice.label}`);
+          const hasCommonWord = chKws.some((ckw) => imgKws.includes(ckw));
+          if (hasCommonWord) return true;
+        }
+        return false;
+      });
+
+      if (matchedChoice) {
+        setSelectedChoices((prev) => ({
+          ...prev,
+          [opt.id]: matchedChoice.value,
+        }));
+      }
+    });
   };
 
   // Carousel navigation
@@ -118,25 +279,19 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
     const newIdx = (currentImgIndex - 1 + galleryImages.length) % galleryImages.length;
     const item = galleryImages[newIdx];
     setActiveImg(item.src);
-    if (item.color && selectedChoices['color'] !== undefined) {
-      setSelectedChoices((prev) => ({ ...prev, color: item.color }));
-    }
+    syncOptionFromImage(item);
   };
 
   const handleNextImg = () => {
     const newIdx = (currentImgIndex + 1) % galleryImages.length;
     const item = galleryImages[newIdx];
     setActiveImg(item.src);
-    if (item.color && selectedChoices['color'] !== undefined) {
-      setSelectedChoices((prev) => ({ ...prev, color: item.color }));
-    }
+    syncOptionFromImage(item);
   };
 
   const handleThumbnailClick = (imgItem) => {
     setActiveImg(imgItem.src);
-    if (imgItem.color && selectedChoices['color'] !== undefined) {
-      setSelectedChoices((prev) => ({ ...prev, color: item.color }));
-    }
+    syncOptionFromImage(imgItem);
   };
 
   // Add to cart handler
@@ -540,7 +695,7 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
                     <line x1="1" y1="9" x2="4" y2="9" />
                   </svg>
                 </span>
-                <span className="candle-prop-text">Envío gratis a todo México a partir de $999</span>
+                <span className="candle-prop-text">Envío gratis a todo México a partir de $1,500 MXN</span>
               </div>
             </div>
           )}
@@ -621,7 +776,21 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
               <summary>Envíos y Garantía de Bienestar</summary>
               <div className="details-content">
                 <p>
-                  Envíos express protegidos a todo México en 2 a 4 días hábiles. Empaque 100% sustentable y libre de plásticos vírgenes. Si tu pieza llega con algún detalle, la reemplazamos de inmediato sin costo.
+                  Envíos protegidos a todo México en 3 a 7 días hábiles. Empaque 100% sustentable y libre de plásticos vírgenes. Si tu pieza llega con algún detalle, la reemplazamos de inmediato sin costo.
+                </p>
+                <p className="pdp-terms-link-wrap" style={{ marginTop: '0.75rem' }}>
+                  <a 
+                    href="/contacto" 
+                    onClick={(e) => { 
+                      e.preventDefault(); 
+                      if (onNavigate) onNavigate('contact'); 
+                      navigate('/contacto'); 
+                    }} 
+                    className="pdp-terms-link"
+                    style={{ color: '#9C7A4A', textDecoration: 'underline', fontSize: '0.88rem', fontWeight: 500 }}
+                  >
+                    Revisar términos y condiciones
+                  </a>
                 </p>
               </div>
             </details>

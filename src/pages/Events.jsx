@@ -8,6 +8,8 @@ import imgWhiteWax from '../assets/images/cera-blanca.jpg';
 import imgBlackWax from '../assets/images/cera-negra.jpg';
 import imgCandleLit from '../assets/images/candle-lit.png';
 import imgVasijas from '../assets/images/vasijas.jpg';
+import imgVelasParafina from '../assets/images/velas-parafina-tradicionales.jpg';
+import imgSutraNegocios from '../assets/images/sutra-arena-negocios.jpg';
 import imgCorporativo from '../assets/images/eventos-corporativo.jpg';
 
 export default function Events({ onNavigate, onAddToCart }) {
@@ -422,7 +424,7 @@ export default function Events({ onNavigate, onAddToCart }) {
             {/* Tradicionales con Media */}
             <div className="comp-card comp-card--bad">
               <div className="comp-media-header comp-media-header--bad">
-                <img src={imgCandleLit} alt="Velas tradicionales con goteo y túnel" />
+                <img src={imgVelasParafina} alt="Velas tradicionales de parafina con goteo y túnel" />
                 <div className="comp-media-caption-bar comp-media-caption-bar--bad">
                   <span className="comp-caption-icon">✕</span>
                   <span>Cera de Parafina Rígida de Pilar</span>
@@ -465,7 +467,7 @@ export default function Events({ onNavigate, onAddToCart }) {
             {/* Sutra Granulada con Media */}
             <div className="comp-card comp-card--good">
               <div className="comp-media-header comp-media-header--good">
-                <img src={imgWhiteWax} alt="Cera de arena Sutra en vaso de cristal" />
+                <img src={imgSutraNegocios} alt="Cera de arena Sutra ambientada en negocios y eventos" />
                 <div className="comp-media-caption-bar comp-media-caption-bar--good">
                   <span className="comp-caption-icon">✦</span>
                   <span>Cera de Arena Granulada Sutra</span>
@@ -740,7 +742,8 @@ export default function Events({ onNavigate, onAddToCart }) {
       {/* ============================================================
           B2B PACKS & PRICING
           ============================================================ */}
-      <section className="b2b-packs-section">
+      {/* Oculto temporalmente según solicitud del usuario - No eliminar
+<section className="b2b-packs-section">
         <div className="container">
           <div className="section-head text-center">
             <span className="section-tag">Packs Mayoristas</span>
@@ -787,6 +790,7 @@ export default function Events({ onNavigate, onAddToCart }) {
           </div>
         </div>
       </section>
+*/}
 
       {/* ============================================================
           B2B CONTACT / MULTI-STEP QUOTE FORM

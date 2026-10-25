@@ -4,16 +4,26 @@ import './UserModal.css';
 
 export default function UserModal({ isOpen, onClose }) {
   // Main view tab: 'orders' | 'reviews' | 'profile' | 'auth'
-  const [activeTab, setActiveTab] = useState('orders');
+  // Main view tab: Directamente en la ventana donde se guardan las reseñas
+  const [activeTab, setActiveTab] = useState('reviews');
 
-  // Customer session state
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    subscription: '',
+  const DEFAULT_USER = {
+    name: 'Sofía Valenzuela',
+    email: 'sofia.valenzuela@sutra.mx',
+    phone: '+52 55 4892 1034',
+    address: 'Av. Horacio 1420, Polanco, CDMX',
+    subscription: 'Suscripción Activa: Ritual Completo (Bimestral)',
+  };
+
+  // Customer session state (activa por defecto para acceder al panel de compras y reseñas)
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sutra_customer_profile_v1');
+      return saved ? JSON.parse(saved) : DEFAULT_USER;
+    } catch (e) {
+      return DEFAULT_USER;
+    }
   });
 
   // Orders list

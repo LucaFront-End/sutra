@@ -303,8 +303,8 @@ export const allProducts = [
     priceNum: 780,
     rating: 5.0,
     reviewCount: 52,
-    shortDesc: '44 cartas con foil dorado y guía de meditación.',
-    description: 'Mazo de 44 cartas de alta gramatura impresas en papel de algodón con estampación en foil dorado. Cada carta contiene una micro-práctica de presencia, un mantra y una reflexión consciente.',
+    shortDesc: '30 cartas de intención con guía de meditación.',
+    description: 'Mazo de 30 cartas de intención de alta gramatura impresas en papel de algodón. Cada carta contiene una micro-práctica de presencia, un mantra y una reflexión consciente.',
     benefit: 'Funciona como tu brújula matutina: extrae una carta cada amanecer para orientar tu estado de ánimo.',
     img: imgCartasMesa,
     images: [
@@ -319,13 +319,13 @@ export const allProducts = [
         label: 'Edición',
         type: 'cards',
         choices: [
-          { label: 'Edición Estándar', value: 'estandar', sub: 'Mazo 44 cartas en caja rígida con foil oro', priceDelta: 0, isDefault: true },
-          { label: 'Set con Atril de Madera', value: 'atril', sub: 'Incluye atril de nogal para exhibir tu carta diaria en tu escritorio', priceDelta: 280 },
+          { label: 'Edición Estándar', value: 'estandar', sub: 'Mazo de 30 cartas en caja rígida', priceDelta: 0, isDefault: true, img: imgCartas },
+          { label: 'Set con Atril de Madera', value: 'atril', sub: 'Incluye atril de nogal para exhibir tu carta diaria en tu escritorio', priceDelta: 280, img: imgCartasMesa },
         ]
       }
     ],
     specs: [
-      { label: 'Cartas', value: '44 cartas de 350g con tacto sedoso y cantos dorados' },
+      { label: 'Cartas', value: '30 cartas de 350g con tacto sedoso' },
       { label: 'Guía', value: 'Libreto impreso de 60 páginas con ejercicios de mindfulness' },
       { label: 'Empaque', value: 'Caja magnética rígida con cierre suave' },
     ],
@@ -363,8 +363,8 @@ export const allProducts = [
         label: 'Acabado & Esmalte Mineral',
         type: 'pills',
         choices: [
-          { label: 'Gres Blanco Crudo Texturizado', value: 'blanco-gres', priceDelta: 0, isDefault: true },
-          { label: 'Barro Volcánico Negro Ahumado', value: 'negro-barro', priceDelta: 0 },
+          { label: 'Gres Blanco Crudo Texturizado', value: 'blanco-gres', priceDelta: 0, isDefault: true, img: imgWhiteWax },
+          { label: 'Barro Volcánico Negro Ahumado', value: 'negro-barro', priceDelta: 0, img: imgVasijas },
           { label: 'Terracota Cálida Mate', value: 'terracota', priceDelta: 0 },
         ]
       },
@@ -633,8 +633,8 @@ export const allProducts = [
         label: 'Presentación',
         type: 'pills',
         choices: [
-          { label: 'Lata Hermética Crema & Oro (80g)', value: 'lata-80g', priceDelta: 0, isDefault: true },
-          { label: 'Bolsa Kraft Recarga Ecológica (150g)', value: 'recarga-150g', priceDelta: 160 },
+          { label: 'Lata Hermética Crema & Oro (80g)', value: 'lata-80g', priceDelta: 0, isDefault: true, img: imgTeaLata },
+          { label: 'Bolsa Kraft Recarga Ecológica (150g)', value: 'recarga-150g', priceDelta: 160, img: imgTea },
           { label: 'Set Completo (Lata + Infusor Pinza Oro)', value: 'set-infusor', priceDelta: 240 },
         ]
       }
@@ -677,8 +677,8 @@ export const allProducts = [
         label: 'Presentación',
         type: 'pills',
         choices: [
-          { label: 'Lata Hermética 80g', value: 'lata-80g', priceDelta: 0, isDefault: true },
-          { label: 'Bolsa Kraft Recarga 150g', value: 'recarga-150g', priceDelta: 160 },
+          { label: 'Lata Hermética 80g', value: 'lata-80g', priceDelta: 0, isDefault: true, img: imgTeaLata },
+          { label: 'Bolsa Kraft Recarga 150g', value: 'recarga-150g', priceDelta: 160, img: imgTea },
           { label: 'Set con Cuchara Medidora & Infusor Oro', value: 'set-completo', priceDelta: 260 },
         ]
       }

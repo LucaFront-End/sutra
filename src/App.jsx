@@ -28,6 +28,7 @@ import BlogPost from './pages/BlogPost';
 import Events from './pages/Events';
 import Contact from './pages/Contact';
 import MysteryBox from './pages/MysteryBox';
+import Account from './pages/Account';
 
 export default function App() {
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ export default function App() {
       <ScrollToTop />
       <Navbar 
         onNavigate={handleNavigate} 
-        onOpenUser={() => setIsUserModalOpen(true)}
+        onOpenUser={() => handleNavigate('cuenta')}
         onOpenCart={() => setIsCartOpen(true)}
         cartCount={getItemCount()}
       />
@@ -188,6 +189,20 @@ export default function App() {
           <Route 
             path="/suscripcion" 
             element={<MysteryBox onNavigate={handleNavigate} />} 
+          />
+
+          {/* Mi Cuenta / Santuario de Usuario */}
+          <Route 
+            path="/cuenta" 
+            element={<Account onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+          <Route 
+            path="/mi-cuenta" 
+            element={<Account onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+          <Route 
+            path="/login" 
+            element={<Account onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
           />
 
           {/* Catch-all */}

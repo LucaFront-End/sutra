@@ -1,0 +1,1058 @@
+/* ================================================================
+   SUTRA MEXICO — Dedicated Account Page (/cuenta)
+   "Quiet Luxury" Aesthetic · Bespoke User Experience
+   ================================================================ */
+
+.account-page {
+  background-color: var(--sutra-cream, #FAF7F2);
+  min-height: 80vh;
+  padding-bottom: 5rem;
+}
+
+.account-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ——— Page Header & Breadcrumbs ——— */
+.account-header {
+  padding: 2.5rem 0 2rem;
+  border-bottom: 1px solid rgba(60, 36, 21, 0.08);
+}
+
+.account-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--sutra-warm-gray, #A89F91);
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.account-breadcrumb-link {
+  background: none;
+  border: none;
+  color: var(--sutra-warm-gray, #A89F91);
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  transition: color 0.2s ease;
+}
+
+.account-breadcrumb-link:hover {
+  color: var(--sutra-espresso, #3C2415);
+}
+
+.account-breadcrumb-sep {
+  opacity: 0.5;
+}
+
+.account-breadcrumb-current {
+  color: var(--sutra-espresso, #3C2415);
+  font-weight: 500;
+}
+
+.account-hero {
+  max-width: 680px;
+}
+
+.account-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #C5A059;
+  margin-bottom: 0.5rem;
+}
+
+.account-title {
+  font-family: var(--font-serif, "Cinzel", Georgia, serif);
+  font-size: 2.25rem;
+  font-weight: 400;
+  color: var(--sutra-espresso, #3C2415);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.account-subtitle {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #6B5E51;
+}
+
+/* ——— Main Layout ——— */
+.account-main {
+  padding-top: 2.5rem;
+}
+
+/* ================================================================
+   1. UNAUTHENTICATED: LOGIN & REGISTRATION
+   ================================================================ */
+.account-auth-wrapper {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .account-auth-wrapper {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.account-auth-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid rgba(60, 36, 21, 0.08);
+  padding: 2.5rem;
+  box-shadow: 0 4px 24px rgba(60, 36, 21, 0.04);
+}
+
+.account-auth-tabs {
+  display: flex;
+  border-bottom: 1px solid #EAE3D9;
+  margin-bottom: 2rem;
+}
+
+.account-auth-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.875rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #8C7F72;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+
+.account-auth-tab.active {
+  color: var(--sutra-espresso, #3C2415);
+  border-bottom-color: var(--sutra-espresso, #3C2415);
+  font-weight: 600;
+}
+
+.account-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.account-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.account-field label,
+.composer-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #5A4839;
+}
+
+.account-field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.account-forgot-link {
+  font-size: 0.75rem;
+  color: #8C7F72;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.account-forgot-link:hover {
+  color: var(--sutra-espresso, #3C2415);
+}
+
+.account-field input,
+.account-field textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #DED7CB;
+  background: #FAF7F2;
+  font-size: 0.9375rem;
+  color: #2D1E13;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.account-field input:focus,
+.account-field textarea:focus {
+  outline: none;
+  border-color: #3C2415;
+  box-shadow: 0 0 0 2px rgba(60, 36, 21, 0.1);
+  background: #FFFFFF;
+}
+
+.account-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.account-btn--primary {
+  background: var(--sutra-espresso, #3C2415);
+  color: #FFFFFF;
+}
+
+.account-btn--primary:hover {
+  background: #25160C;
+  transform: translateY(-1px);
+}
+
+.account-btn--outline {
+  background: transparent;
+  color: #3C2415;
+  border: 1px solid #C4B9AA;
+}
+
+.account-btn--outline:hover {
+  background: rgba(60, 36, 21, 0.05);
+  border-color: #3C2415;
+}
+
+.account-btn--demo {
+  width: 100%;
+  background: rgba(197, 160, 89, 0.12);
+  color: #8C6D2D;
+  border: 1px solid rgba(197, 160, 89, 0.35);
+}
+
+.account-btn--demo:hover {
+  background: rgba(197, 160, 89, 0.22);
+}
+
+.account-btn--review {
+  background: #C5A059;
+  color: #FFFFFF;
+  padding: 0.625rem 1.125rem;
+  font-size: 0.8125rem;
+}
+
+.account-btn--review:hover {
+  background: #B38E46;
+  transform: translateY(-1px);
+}
+
+.account-auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: #A89F91;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.account-auth-divider::before,
+.account-auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #EAE3D9;
+}
+
+.account-auth-divider span {
+  padding: 0 1rem;
+}
+
+.account-auth-error {
+  background: #FDF2F2;
+  border: 1px solid #F0B3B3;
+  color: #9C2A2A;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.account-auth-success {
+  background: #F0F9F4;
+  border: 1px solid #B8E2CA;
+  color: #1A693B;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+/* Aside: Benefits */
+.account-benefits-card {
+  background: #F5EFE6;
+  border-radius: 12px;
+  padding: 2.25rem;
+  border: 1px solid #E6DCCD;
+}
+
+.account-benefits-title {
+  font-family: var(--font-serif, "Cinzel", Georgia, serif);
+  font-size: 1.25rem;
+  color: #3C2415;
+  margin-bottom: 1.5rem;
+}
+
+.account-benefits-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.account-benefits-list li {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.benefit-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  margin-top: 0.125rem;
+}
+
+.account-benefits-list strong {
+  display: block;
+  font-size: 0.875rem;
+  color: #3C2415;
+  margin-bottom: 0.25rem;
+}
+
+.account-benefits-list p {
+  font-size: 0.8125rem;
+  color: #6B5E51;
+  line-height: 1.5;
+}
+
+/* ================================================================
+   2. AUTHENTICATED: DASHBOARD
+   ================================================================ */
+.account-profile-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid rgba(60, 36, 21, 0.08);
+  padding: 1.75rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 16px rgba(60, 36, 21, 0.03);
+}
+
+@media (max-width: 640px) {
+  .account-profile-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+}
+
+.account-profile-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.account-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #3C2415;
+  color: #FAF7F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-family: var(--font-serif, "Cinzel", Georgia, serif);
+  border: 2px solid #C5A059;
+}
+
+.account-user-name {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #3C2415;
+}
+
+.account-verified-tag {
+  font-size: 0.6875rem;
+  background: rgba(39, 110, 75, 0.1);
+  color: #1E663F;
+  padding: 0.25rem 0.625rem;
+  border-radius: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.account-user-meta {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #7D7063;
+  margin-top: 0.25rem;
+}
+
+.account-subscription-badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8C6D2D;
+  background: rgba(197, 160, 89, 0.12);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid rgba(197, 160, 89, 0.3);
+}
+
+/* Tabs Navigation */
+.account-tabs-nav {
+  display: flex;
+  gap: 0.75rem;
+  border-bottom: 1px solid #E4DCD0;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.account-tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.account-nav-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #7D7063;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.account-nav-tab:hover {
+  color: #3C2415;
+}
+
+.account-nav-tab.active {
+  color: #3C2415;
+  border-bottom-color: #3C2415;
+  font-weight: 600;
+}
+
+.tab-count {
+  font-size: 0.75rem;
+  background: #EAE3D8;
+  color: #5A4A3C;
+  padding: 0.125rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.account-nav-tab.active .tab-count {
+  background: #3C2415;
+  color: #FFFFFF;
+}
+
+/* Subhead */
+.section-subhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-subhead-title {
+  font-family: var(--font-serif, "Cinzel", Georgia, serif);
+  font-size: 1.5rem;
+  color: #3C2415;
+  margin-bottom: 0.25rem;
+}
+
+.section-subhead-desc {
+  font-size: 0.875rem;
+  color: #6B5E51;
+}
+
+/* Toast */
+.account-toast-success {
+  background: #EBF7EE;
+  border: 1px solid #A8DCB3;
+  color: #176535;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ================================================================
+   ORDERS LIST
+   ================================================================ */
+.account-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.account-order-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid rgba(60, 36, 21, 0.08);
+  padding: 1.75rem;
+  box-shadow: 0 2px 16px rgba(60, 36, 21, 0.02);
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #F0EAE1;
+  margin-bottom: 1.25rem;
+}
+
+.order-id {
+  font-weight: 600;
+  color: #3C2415;
+  font-size: 0.9375rem;
+}
+
+.order-date {
+  font-size: 0.8125rem;
+  color: #7D7063;
+  margin-left: 0.25rem;
+}
+
+.order-header-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.status-pill {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-entregado {
+  background: #E8F5EB;
+  color: #1E663F;
+}
+
+.status-en-preparación,
+.status-en-camino {
+  background: #FFF8E6;
+  color: #8C6D2D;
+}
+
+.order-total {
+  font-weight: 600;
+  color: #3C2415;
+  font-size: 0.9375rem;
+}
+
+.order-card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .order-card-body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .order-actions-col {
+    width: 100%;
+  }
+  .order-actions-col .account-btn {
+    width: 100%;
+  }
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.order-item-img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #EAE3D9;
+}
+
+.order-item-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #3C2415;
+  margin-bottom: 0.25rem;
+}
+
+.order-item-variant {
+  font-size: 0.8125rem;
+  color: #7D7063;
+  margin-bottom: 0.125rem;
+}
+
+.order-item-qty {
+  font-size: 0.75rem;
+  color: #9E9183;
+}
+
+.order-tracking-info {
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: #8C6D2D;
+}
+
+.reviewed-badge-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .reviewed-badge-box {
+    align-items: flex-start;
+  }
+}
+
+.reviewed-stars {
+  color: #C5A059;
+  letter-spacing: 0.1em;
+  font-size: 0.9375rem;
+}
+
+.reviewed-text {
+  font-size: 0.75rem;
+  color: #1E663F;
+  font-weight: 600;
+}
+
+.edit-review-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.75rem;
+  color: #7D7063;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.edit-review-link:hover {
+  color: #3C2415;
+}
+
+/* Empty State */
+.account-empty-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px dashed #D6CBC0;
+  padding: 3.5rem 2rem;
+  text-align: center;
+  color: #7D7063;
+}
+
+.account-empty-card p {
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+}
+
+.account-empty-sub {
+  font-size: 0.875rem;
+  color: #9E9183;
+}
+
+/* ================================================================
+   REVIEW COMPOSER
+   ================================================================ */
+.account-review-composer {
+  background: #FBF8F3;
+  border-radius: 12px;
+  border: 1.5px solid #C5A059;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(197, 160, 89, 0.1);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.composer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #EAE1D3;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.composer-eyebrow {
+  font-size: 0.75rem;
+  color: #C5A059;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.composer-title {
+  font-family: var(--font-serif, "Cinzel", Georgia, serif);
+  font-size: 1.375rem;
+  color: #3C2415;
+  margin-top: 0.25rem;
+}
+
+.composer-subtitle {
+  font-size: 0.8125rem;
+  color: #7D7063;
+  margin-top: 0.125rem;
+}
+
+.composer-cancel-btn {
+  background: none;
+  border: none;
+  font-size: 0.8125rem;
+  color: #8C7F72;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.composer-cancel-btn:hover {
+  color: #3C2415;
+}
+
+.composer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.rating-select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.star-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.star-select-btn {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: #D6CBC0;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.star-select-btn:hover,
+.star-select-btn.selected {
+  color: #C5A059;
+}
+
+.star-select-btn:hover {
+  transform: scale(1.15);
+}
+
+.star-rating-meaning {
+  margin-left: 0.75rem;
+  font-size: 0.8125rem;
+  color: #6B5E51;
+  font-weight: 500;
+}
+
+.composer-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  color: #5A4A3C;
+  cursor: pointer;
+}
+
+.composer-checkbox-label input {
+  accent-color: #3C2415;
+  width: 16px;
+  height: 16px;
+}
+
+.composer-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* ================================================================
+   REVIEWS GRID
+   ================================================================ */
+.account-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.account-review-item-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid rgba(60, 36, 21, 0.08);
+  padding: 1.5rem;
+}
+
+.review-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.review-product-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rev-prod-thumb {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #EAE3D9;
+}
+
+.review-product-tag strong {
+  display: block;
+  font-size: 0.875rem;
+  color: #3C2415;
+}
+
+.review-product-tag span {
+  font-size: 0.75rem;
+  color: #8C7F72;
+}
+
+.review-verified-pill {
+  font-size: 0.6875rem;
+  background: #EBF7EE;
+  color: #176535;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.review-rating-stars {
+  color: #C5A059;
+  letter-spacing: 0.1em;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.review-rating-number {
+  font-size: 0.8125rem;
+  color: #7D7063;
+  font-weight: 600;
+}
+
+.review-card-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #3C2415;
+  margin-bottom: 0.375rem;
+}
+
+.review-card-body {
+  font-size: 0.875rem;
+  color: #6B5E51;
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+}
+
+.review-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #9E9183;
+  border-top: 1px solid #F5EFE6;
+  padding-top: 0.75rem;
+}
+
+/* Community Reviews Feed */
+.community-reviews-preview {
+  margin-top: 3rem;
+  background: #F6F1E9;
+  border-radius: 12px;
+  padding: 2.25rem;
+}
+
+.community-reviews-title {
+  font-family: var(--font-serif, "Cinzel", Georgia, serif);
+  font-size: 1.25rem;
+  color: #3C2415;
+  margin-bottom: 1.5rem;
+}
+
+.community-reviews-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.community-rev-card {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 1.25rem;
+  border: 1px solid #EAE3D9;
+}
+
+.comm-rev-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.comm-author {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #3C2415;
+}
+
+.comm-stars {
+  color: #C5A059;
+  font-size: 0.75rem;
+}
+
+.comm-title {
+  display: block;
+  font-size: 0.8125rem;
+  color: #3C2415;
+  margin-bottom: 0.375rem;
+}
+
+.comm-text {
+  font-size: 0.75rem;
+  color: #6B5E51;
+  line-height: 1.45;
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+.comm-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6875rem;
+  color: #9E9183;
+}
+
+.comm-helpful-btn {
+  background: none;
+  border: 1px solid #E0D7CB;
+  border-radius: 4px;
+  padding: 0.125rem 0.375rem;
+  font-size: inherit;
+  color: #6B5E51;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.comm-helpful-btn:hover {
+  background: #FAF7F2;
+  border-color: #3C2415;
+}
+
+/* ================================================================
+   PROFILE TAB
+   ================================================================ */
+.account-profile-section {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid rgba(60, 36, 21, 0.08);
+  padding: 2.5rem;
+}
+
+.account-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 720px;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+.profile-form-actions {
+  margin-top: 1rem;
+}
