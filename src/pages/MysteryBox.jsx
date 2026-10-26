@@ -5,6 +5,11 @@ import mysteryHeroImg from '../assets/images/mystery-box-hero.jpg';
 import mysteryEsencialImg from '../assets/images/mystery-box-esencial.jpg';
 import ceraBlancaImg from '../assets/images/cera-blanca.jpg';
 import ceraNegraImg from '../assets/images/cera-negra.jpg';
+import mysteryCompletoImg from '../assets/images/mystery-box-completo.jpg';
+import vasijasImg from '../assets/images/vasijas.jpg';
+import cartasImg from '../assets/images/cartas-rituales.jpg';
+import cartasMesaImg from '../assets/images/cartas-rituales-mesa.jpg';
+import catAromasImg from '../assets/images/cat-aromas-wide.jpg';
 import './MysteryBox.css';
 
 export default function MysteryBox({ onNavigate }) {
@@ -12,6 +17,8 @@ export default function MysteryBox({ onNavigate }) {
   const { addToCart, setIsCartOpen } = useCart();
 
   const [selectedPlan, setSelectedPlan] = useState('completo');
+  const [activeCompletoImg, setActiveCompletoImg] = useState(0);
+  const [activeEsencialImg, setActiveEsencialImg] = useState(0);
   const [addedPlanId, setAddedPlanId] = useState(null);
   const [openFaq, setOpenFaq] = useState(0);
 

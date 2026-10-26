@@ -44,13 +44,21 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
   };
 
   const handleProductClick = (product) => {
+    if (product.category === 'suscripciones' || product.id?.includes('mystery')) {
+      navigate('/mysterybox');
+      return;
+    }
     const slug = product.slug || product._wixId || product.id;
     if (onNavigate) onNavigate('product', product);
     navigate(`/producto/${slug}`);
   };
 
-  // Strictly dynamic catalog from Wix Stores — no fallback flashing!
-  const catalog = wixProducts || [];
+  // Strictly dynamic catalog from Wix Stores, preserving subscription products
+  const catalog = (wixProducts && wixProducts.length > 0)
+    ? (wixProducts.some((p) => p.category === 'suscripciones')
+        ? wixProducts
+        : [...wixProducts, ...allProducts.filter((p) => p.category === 'suscripciones')])
+    : allProducts;
 
   // Filter products logic
   const filteredProducts = catalog.filter((product) => {
@@ -73,6 +81,7 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
     if (filter === 'velas') return 'Velas de Arena & Rituales';
     if (filter === 'aromas') return 'Esencias Aromáticas';
     if (filter === 'te') return 'Té Rituales';
+    if (filter === 'suscripciones') return 'Sutra Mystery Box · Suscripciones';
     if (filter === 'accesorios') {
       if (subFilter === 'jardin-zen') return 'Objetos Rituales · Jardín Zen';
       if (subFilter === 'cartas-rituales') return 'Objetos Rituales · Cartas de Rituales';

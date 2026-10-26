@@ -39,7 +39,8 @@ export const storeCategories = [
       { id: 'cartas-rituales', label: 'Cartas de rituales' },
       { id: 'vasijas', label: 'Vasijas' }
     ]
-  }
+  },
+  { id: 'suscripciones', label: 'Mystery Box' }
 ];
 
 export const allProducts = [
@@ -306,10 +307,10 @@ export const allProducts = [
     shortDesc: '30 cartas de intención con guía de meditación.',
     description: 'Mazo de 30 cartas de intención de alta gramatura impresas en papel de algodón. Cada carta contiene una micro-práctica de presencia, un mantra y una reflexión consciente.',
     benefit: 'Funciona como tu brújula matutina: extrae una carta cada amanecer para orientar tu estado de ánimo.',
-    img: imgCartasMesa,
+    img: imgCartas,
     images: [
+      { id: 'cartas-box', src: imgCartas, label: 'Baraja de 30 Cartas de Intención Sutra' },
       { id: 'cartas-mesa', src: imgCartasMesa, label: 'Cartas en Atril de Madera' },
-      { id: 'cartas-box', src: imgCartas, label: 'Caja Rígida de Colección' },
       { id: 'lifestyle', src: imgLifestyle, label: 'Ritual Matutino' },
       { id: 'calma', src: imgCalma, label: 'Claridad Emocional' },
     ],
@@ -775,7 +776,7 @@ export const blogArticles = [
     readTime: '4 min de lectura',
     excerpt: 'Antes de revisar tu teléfono o tu lista de pendientes, consulta una carta de intención para orientar tu día.',
     content: `Nuestras mañanas suelen estar dictadas por las demandas externas: notificaciones, correos y alarmas. Las cartas de intención Sutra fueron diseñadas para recuperar el control de tu primera hora del día.\n\nAl extraer una carta tras un par de respiraciones conscientes, tu mente adopta una perspectiva receptiva: calma, gratitud, claridad o presencia.`,
-    image: imgCartasMesa
+    image: imgCartas
   }
 ];
 
