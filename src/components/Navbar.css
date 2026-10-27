@@ -512,7 +512,8 @@
 
 .megamenu__feature-badge--gold {
   background: #D4A76A;
-  color: #FFFFFF;
+  color: #1C1917;
+  font-weight: 700;
 }
 
 .megamenu__feature-content {

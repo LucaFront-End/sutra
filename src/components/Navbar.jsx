@@ -7,6 +7,7 @@ import cartasImg from '../assets/images/cartas-rituales.jpg';
 import vasijasImg from '../assets/images/vasijas.jpg';
 import ceraNegraImg from '../assets/images/cera-negra.jpg';
 import teCeremonialImg from '../assets/images/cat-te-ceremonial.jpg';
+import mysteryHeroImg from '../assets/images/mystery-box-hero.jpg';
 import './Navbar.css';
 
 export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart, cartCount = 0 }) {
@@ -264,27 +265,30 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                   </div>
                 </div>
 
-                {/* Columna 3: Card Destacada "Más Vendido" */}
+                {/* Columna 3: Card Destacada "Mystery Box" */}
                 <div className="megamenu__col megamenu__col--feature">
                   <div className="megamenu__col-header">
-                    <span className="megamenu__eyebrow">MÁS VENDIDO</span>
+                    <span className="megamenu__eyebrow">SUSCRIPCIÓN EXCLUSIVA</span>
                   </div>
 
                   <div 
                     className="megamenu__feature-card" 
-                    onClick={() => handleShopSelect('velas')}
+                    onClick={() => handleLinkClick('/mysterybox')}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Ir a Sutra Mystery Box"
                   >
                     <div className="megamenu__feature-media">
-                      <img src={ceraNegraImg} alt="Vela de arena Negra" loading="lazy" />
+                      <img src={mysteryHeroImg} alt="Sutra Mystery Box" loading="lazy" />
                       <div className="megamenu__feature-gradient" />
-                      <span className="megamenu__feature-badge">BEST SELLER</span>
+                      <span className="megamenu__feature-badge megamenu__feature-badge--gold">✦ BIMESTRAL</span>
                     </div>
                     <div className="megamenu__feature-content">
-                      <span className="megamenu__feature-kicker">VELA DE ARENA</span>
-                      <h4 className="megamenu__feature-title">Vela de arena Negra</h4>
-                      <p className="megamenu__feature-desc">Cera perlada botánica negro obsidiana. Rellena cualquier vasija con flama limpia.</p>
+                      <span className="megamenu__feature-kicker">MYSTERY BOX</span>
+                      <h4 className="megamenu__feature-title">Sutra Mystery Box</h4>
+                      <p className="megamenu__feature-desc">Un santuario sensorial cada 2 meses: cera de arena, vasija artesanal y aromas sorpresa.</p>
                       <span className="megamenu__feature-action">
-                        Descubrir vela de arena
+                        Descubrir Mystery Box
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                       </span>
                     </div>
