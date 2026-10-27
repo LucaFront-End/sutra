@@ -19,7 +19,6 @@ export default function MysteryBox({ onNavigate }) {
   const { addToCart, setIsCartOpen } = useCart();
   const { products: wixProducts } = useWixProducts();
 
-  const [selectedPlan, setSelectedPlan] = useState('completo');
   const [activeCompletoImg, setActiveCompletoImg] = useState(0);
   const [activeEsencialImg, setActiveEsencialImg] = useState(0);
   const [addedPlanId, setAddedPlanId] = useState(null);
@@ -250,37 +249,34 @@ export default function MysteryBox({ onNavigate }) {
             </p>
           </div>
 
-          {/* Plan Cards Grid */}
+          {/* Plan Cards Split Showcase */}
           <div className="mystery-split-showcase">
             {/* TIER 1: RITUAL COMPLETO */}
-            <div 
-              className={`mystery-split-panel ${selectedPlan === 'completo' ? 'is-extended' : 'is-collapsed'}`}
-              onClick={() => { if (selectedPlan !== 'completo') setSelectedPlan('completo'); }}
-            >
+            <div className="mystery-split-card mystery-split-card--featured">
               {/* Plan Badge */}
-              <div className="split-panel__badge">
+              <div className="split-card__badge">
                 {plans.completo.tag}
               </div>
 
               {/* Interactive Gallery Area */}
-              <div className="split-panel__gallery">
-                <div className="gallery-main-frame">
+              <div className="split-card__gallery">
+                <div className="split-card__main-frame">
                   <img 
                     src={plans.completo.gallery[activeCompletoImg]} 
                     alt={plans.completo.name}
-                    className="gallery-main-img" 
+                    className="split-card__main-img" 
                   />
-                  <span className="gallery-tier-label">Kit con Vasija Cerámica</span>
+                  <span className="split-card__tier-tag">✦ Kit con Vasija de Cerámica</span>
                 </div>
                 {/* Thumbnails */}
-                <div className="gallery-thumbs">
+                <div className="split-card__thumbs">
                   {plans.completo.gallery.map((img, idx) => (
                     <button
                       key={idx}
                       type="button"
-                      className={`thumb-btn ${activeCompletoImg === idx ? 'is-active' : ''}`}
-                      onClick={(e) => { e.stopPropagation(); setActiveCompletoImg(idx); }}
-                      aria-label={`Ver foto ${idx + 1}`}
+                      className={`split-card__thumb-btn ${activeCompletoImg === idx ? 'is-active' : ''}`}
+                      onClick={() => setActiveCompletoImg(idx)}
+                      aria-label={`Ver foto ${idx + 1} de Ritual Completo`}
                     >
                       <img src={img} alt="" />
                     </button>
@@ -288,54 +284,52 @@ export default function MysteryBox({ onNavigate }) {
                 </div>
               </div>
 
-              {/* Summary Header (Siempre visible) */}
-              <div className="split-panel__header">
-                <div className="split-panel__title-row">
-                  <h3 className="split-panel__title">{plans.completo.tierName}</h3>
-                  <div className="split-panel__price-block">
-                    <span className="split-panel__price">{plans.completo.price}</span>
-                    <span className="split-panel__period">/ cada 2 meses</span>
+              {/* Card Body */}
+              <div className="split-card__body">
+                <div className="split-card__header">
+                  <h3 className="split-card__title">{plans.completo.tierName}</h3>
+                  <div className="split-card__price-row">
+                    <span className="split-card__price">{plans.completo.price}</span>
+                    <span className="split-card__period">/ cada 2 meses</span>
+                  </div>
+                  <div className="split-card__savings-tag">
+                    <span>Valor regular: {plans.completo.storeValue}</span>
+                    <strong className="savings-badge">{plans.completo.savings}</strong>
+                  </div>
+                  <p className="split-card__desc">{plans.completo.desc}</p>
+                </div>
+
+                {/* Includes List */}
+                <div className="mystery-includes-box">
+                  <h4 className="includes-title">Qué incluye cada 2 meses:</h4>
+                  <ul className="includes-list">
+                    {plans.completo.includes.map((item, idx) => (
+                      <li key={idx} className="includes-item">
+                        <span className="item-icon">✓</span>
+                        <div className="item-text">
+                          <strong>{item.title}</strong>
+                          <small>{item.detail}</small>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* 100% Surprise Curation Notice */}
+                <div className="mystery-curation-box">
+                  <div className="mystery-curation-icon">✦</div>
+                  <div className="mystery-curation-content">
+                    <strong>Curación Exclusiva Sorpresa</strong>
+                    <p>Vasija artesanal nueva y aromas botánicos seleccionados por temporada para ti. ¡Cada entrega es un misterio sensorial!</p>
                   </div>
                 </div>
-                <div className="split-panel__savings-tag">
-                  <span>Valor regular: {plans.completo.storeValue}</span>
-                  <strong className="savings-badge">{plans.completo.savings}</strong>
-                </div>
-                <p className="split-panel__excerpt">{plans.completo.desc}</p>
-              </div>
 
-              {/* Extended Details */}
-              {selectedPlan === 'completo' ? (
-                <div className="split-panel__extended-content">
-                  {/* Includes List */}
-                  <div className="mystery-includes-box">
-                    <h4 className="includes-title">Qué incluye cada 2 meses:</h4>
-                    <ul className="includes-list">
-                      {plans.completo.includes.map((item, idx) => (
-                        <li key={idx} className="includes-item">
-                          <span className="item-icon">✓</span>
-                          <div className="item-text">
-                            <strong>{item.title}</strong>
-                            <small>{item.detail}</small>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* 100% Surprise Curation Notice */}
-                  <div className="mystery-curation-box">
-                    <div className="mystery-curation-icon">✦</div>
-                    <div className="mystery-curation-content">
-                      <strong>Experiencia 100% Sorpresa</strong>
-                      <p>Curación exclusiva del Maestro Aromático con vasija artesanal nueva y aromas de temporada seleccionados para ti. ¡Sin opciones que elegir, cada entrega es un misterio sensorial!</p>
-                    </div>
-                  </div>
-
+                {/* Action CTA pinned to bottom */}
+                <div className="split-card__cta-block">
                   <button
                     type="button"
                     className={`btn mystery-action-btn ${addedPlanId === plans.completo.id ? 'btn--added' : 'btn--gold'}`}
-                    onClick={(e) => { e.stopPropagation(); handleSubscribe('completo'); }}
+                    onClick={() => handleSubscribe('completo')}
                     id="btn-sub-completo"
                   >
                     {addedPlanId === plans.completo.id ? (
@@ -355,52 +349,38 @@ export default function MysteryBox({ onNavigate }) {
                   </button>
 
                   <p className="mystery-card__footnote">
-                    Envío gratis a todo México · Sin contratos forzosos · Cancela en 1 clic
+                    ✦ Envío asegurado gratis a todo México · Sin plazos forzosos · Cancela o pausa en 1 clic
                   </p>
                 </div>
-              ) : (
-                <div className="split-panel__collapsed-hint">
-                  <button 
-                    type="button" 
-                    className="btn-expand-panel"
-                    onClick={(e) => { e.stopPropagation(); setSelectedPlan('completo'); }}
-                  >
-                    <span>Ver detalles y qué incluye</span>
-                    <span className="arrow-icon">➔</span>
-                  </button>
-                </div>
-              )}
+              </div>
             </div>
 
             {/* TIER 2: RITUAL ESENCIAL */}
-            <div 
-              className={`mystery-split-panel ${selectedPlan === 'esencial' ? 'is-extended' : 'is-collapsed'}`}
-              onClick={() => { if (selectedPlan !== 'esencial') setSelectedPlan('esencial'); }}
-            >
+            <div className="mystery-split-card">
               {/* Plan Badge */}
-              <div className="split-panel__badge split-panel__badge--muted">
+              <div className="split-card__badge split-card__badge--muted">
                 {plans.esencial.tag}
               </div>
 
               {/* Interactive Gallery Area */}
-              <div className="split-panel__gallery">
-                <div className="gallery-main-frame">
+              <div className="split-card__gallery">
+                <div className="split-card__main-frame">
                   <img 
                     src={plans.esencial.gallery[activeEsencialImg]} 
                     alt={plans.esencial.name}
-                    className="gallery-main-img" 
+                    className="split-card__main-img" 
                   />
-                  <span className="gallery-tier-label">Kit Recarga (Usa tus vasijas)</span>
+                  <span className="split-card__tier-tag">✦ Kit Recarga (Sin Vasija)</span>
                 </div>
                 {/* Thumbnails */}
-                <div className="gallery-thumbs">
+                <div className="split-card__thumbs">
                   {plans.esencial.gallery.map((img, idx) => (
                     <button
                       key={idx}
                       type="button"
-                      className={`thumb-btn ${activeEsencialImg === idx ? 'is-active' : ''}`}
-                      onClick={(e) => { e.stopPropagation(); setActiveEsencialImg(idx); }}
-                      aria-label={`Ver foto ${idx + 1}`}
+                      className={`split-card__thumb-btn ${activeEsencialImg === idx ? 'is-active' : ''}`}
+                      onClick={() => setActiveEsencialImg(idx)}
+                      aria-label={`Ver foto ${idx + 1} de Ritual Esencial`}
                     >
                       <img src={img} alt="" />
                     </button>
@@ -408,59 +388,57 @@ export default function MysteryBox({ onNavigate }) {
                 </div>
               </div>
 
-              {/* Summary Header (Siempre visible) */}
-              <div className="split-panel__header">
-                <div className="split-panel__title-row">
-                  <h3 className="split-panel__title">{plans.esencial.tierName}</h3>
-                  <div className="split-panel__price-block">
-                    <span className="split-panel__price">{plans.esencial.price}</span>
-                    <span className="split-panel__period">/ cada 2 meses</span>
+              {/* Card Body */}
+              <div className="split-card__body">
+                <div className="split-card__header">
+                  <h3 className="split-card__title">{plans.esencial.tierName}</h3>
+                  <div className="split-card__price-row">
+                    <span className="split-card__price">{plans.esencial.price}</span>
+                    <span className="split-card__period">/ cada 2 meses</span>
+                  </div>
+                  <div className="split-card__savings-tag">
+                    <span>Valor regular: {plans.esencial.storeValue}</span>
+                    <strong className="savings-badge">{plans.esencial.savings}</strong>
+                  </div>
+                  <p className="split-card__desc">{plans.esencial.desc}</p>
+                </div>
+
+                {/* Includes List */}
+                <div className="mystery-includes-box">
+                  <h4 className="includes-title">Qué incluye cada 2 meses:</h4>
+                  <ul className="includes-list">
+                    {plans.esencial.includes.map((item, idx) => (
+                      <li key={idx} className="includes-item">
+                        <span className="item-icon">✓</span>
+                        <div className="item-text">
+                          <strong>{item.title}</strong>
+                          <small>{item.detail}</small>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* 100% Surprise Curation Notice */}
+                <div className="mystery-curation-box">
+                  <div className="mystery-curation-icon">✦</div>
+                  <div className="mystery-curation-content">
+                    <strong>Curación Exclusiva Sorpresa</strong>
+                    <p>Cera en arena botánica, aroma estacional sorpresa y cerillos largos para recargar tus propios recipientes favoritos.</p>
                   </div>
                 </div>
-                <div className="split-panel__savings-tag">
-                  <span>Valor regular: {plans.esencial.storeValue}</span>
-                  <strong className="savings-badge">{plans.esencial.savings}</strong>
+
+                <div className="mystery-option-note" style={{ marginBottom: '1.25rem' }}>
+                  <span className="note-icon">💡</span>
+                  <span>No incluye vasija. Pensado para recargar tus recipientes y vasijas Sutra.</span>
                 </div>
-                <p className="split-panel__excerpt">{plans.esencial.desc}</p>
-              </div>
 
-              {/* Extended Details */}
-              {selectedPlan === 'esencial' ? (
-                <div className="split-panel__extended-content">
-                  {/* Includes List */}
-                  <div className="mystery-includes-box">
-                    <h4 className="includes-title">Qué incluye cada 2 meses:</h4>
-                    <ul className="includes-list">
-                      {plans.esencial.includes.map((item, idx) => (
-                        <li key={idx} className="includes-item">
-                          <span className="item-icon">✓</span>
-                          <div className="item-text">
-                            <strong>{item.title}</strong>
-                            <small>{item.detail}</small>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* 100% Surprise Curation Notice */}
-                  <div className="mystery-curation-box">
-                    <div className="mystery-curation-icon">✦</div>
-                    <div className="mystery-curation-content">
-                      <strong>Experiencia 100% Sorpresa</strong>
-                      <p>Cera en arena botánica, 1 aroma estacional sorpresa y botellita con cerillos largos para recargar tus propios recipientes favoritos.</p>
-                    </div>
-                  </div>
-
-                  <div className="mystery-option-note" style={{ marginBottom: '1.75rem' }}>
-                    <span className="note-icon">💡</span>
-                    <span>No incluye vasija. Ideal para recargar tus propios recipientes y vasijas Sutra.</span>
-                  </div>
-
+                {/* Action CTA pinned to bottom */}
+                <div className="split-card__cta-block">
                   <button
                     type="button"
-                    className={`btn mystery-action-btn ${addedPlanId === plans.esencial.id ? 'btn--added' : 'btn--outline-dark'}`}
-                    onClick={(e) => { e.stopPropagation(); handleSubscribe('esencial'); }}
+                    className={`btn mystery-action-btn ${addedPlanId === plans.esencial.id ? 'btn--added' : 'btn--gold'}`}
+                    onClick={() => handleSubscribe('esencial')}
                     id="btn-sub-esencial"
                   >
                     {addedPlanId === plans.esencial.id ? (
@@ -480,23 +458,13 @@ export default function MysteryBox({ onNavigate }) {
                   </button>
 
                   <p className="mystery-card__footnote">
-                    Envío gratis a todo México · Sin contratos forzosos · Cancela en 1 clic
+                    ✦ Envío asegurado gratis a todo México · Sin plazos forzosos · Cancela o pausa en 1 clic
                   </p>
                 </div>
-              ) : (
-                <div className="split-panel__collapsed-hint">
-                  <button 
-                    type="button" 
-                    className="btn-expand-panel"
-                    onClick={(e) => { e.stopPropagation(); setSelectedPlan('esencial'); }}
-                  >
-                    <span>Ver detalles y qué incluye</span>
-                    <span className="arrow-icon">➔</span>
-                  </button>
-                </div>
-              )}
+              </div>
             </div>
           </div>
+
         </div>
       </section>
 

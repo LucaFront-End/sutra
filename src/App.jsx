@@ -187,6 +187,10 @@ export default function App() {
             element={<MysteryBox onNavigate={handleNavigate} />} 
           />
           <Route 
+            path="/mystery-box" 
+            element={<MysteryBox onNavigate={handleNavigate} />} 
+          />
+          <Route 
             path="/misterybox" 
             element={<MysteryBox onNavigate={handleNavigate} />} 
           />
