@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useWixClient } from './WixContext';
-import { WIX_STORES_APP_ID } from '../lib/wixClient';
+import { WIX_STORES_APP_ID, KNOWN_SUBSCRIPTION_OPTIONS } from '../lib/wixClient';
 
 export const CartContext = createContext(null);
 
@@ -59,15 +59,30 @@ export const CartProvider = ({ children }) => {
           }
         }
 
+        const subOptionId = product.subscriptionOptionId
+          || product.subscription?.subscriptionOptionId
+          || KNOWN_SUBSCRIPTION_OPTIONS[product._wixId || product.id]
+          || product.subscriptionDetails?.subscriptions?.[0]?._id;
+
         const catalogReference = {
           appId: WIX_STORES_APP_ID,
           catalogItemId: product._wixId || product.id,
         };
 
+        const optionsPayload = {};
+
         if (resolvedVariantId) {
-          catalogReference.options = { variantId: resolvedVariantId };
+          optionsPayload.variantId = resolvedVariantId;
         } else if (selectedVariant && typeof selectedVariant === 'string' && !selectedVariant.includes('|') && !selectedVariant.includes('(')) {
-          catalogReference.options = { options: { 'Color:': selectedVariant } };
+          optionsPayload.options = { 'Color:': selectedVariant };
+        }
+
+        if (subOptionId) {
+          optionsPayload.subscriptionOptionId = subOptionId;
+        }
+
+        if (Object.keys(optionsPayload).length > 0) {
+          catalogReference.options = optionsPayload;
         }
 
         const addRes = await wixClient.currentCart.addToCurrentCart({
@@ -85,6 +100,11 @@ export const CartProvider = ({ children }) => {
 
     // If not added to Wix (e.g. mock product before Wix sync or offline)
     if (!addedToWix) {
+      const subOptionId = product.subscriptionOptionId
+        || product.subscription?.subscriptionOptionId
+        || KNOWN_SUBSCRIPTION_OPTIONS[product._wixId || product.id]
+        || product.subscriptionDetails?.subscriptions?.[0]?._id;
+
       setLocalCart((prev) => {
         const itemKey = `${product._wixId || product.id}-${selectedVariant || 'default'}`;
         const existing = prev.find((item) => item.key === itemKey);
@@ -100,6 +120,7 @@ export const CartProvider = ({ children }) => {
             key: itemKey,
             quantity,
             selectedVariant,
+            subscriptionOptionId: subOptionId,
             priceNum: product.priceNum || parseFloat(String(product.price || '0').replace(/[^0-9.]/g, '')) || 0,
           },
         ];
@@ -179,8 +200,53 @@ export const CartProvider = ({ children }) => {
   const handleCheckout = async () => {
     setCheckoutLoading(true);
     try {
-      // 1. If Wix Cart has items, checkout from current cart
-      if (wixCart?.lineItems?.length && wixClient) {
+      // 1. If we have any items in localCart, attempt to sync them into currentCart first
+      if (localCart?.length > 0 && wixClient) {
+        for (const localItem of localCart) {
+          try {
+            const subOptionId = localItem.subscriptionOptionId
+              || localItem.subscription?.subscriptionOptionId
+              || KNOWN_SUBSCRIPTION_OPTIONS[localItem._wixId || localItem.id];
+
+            const catalogReference = {
+              appId: WIX_STORES_APP_ID,
+              catalogItemId: localItem._wixId || localItem.id,
+            };
+            const optionsPayload = {};
+            if (subOptionId) {
+              optionsPayload.subscriptionOptionId = subOptionId;
+            }
+            if (localItem.selectedVariant && typeof localItem.selectedVariant === 'string' && !localItem.selectedVariant.includes('|') && !localItem.selectedVariant.includes('(')) {
+              optionsPayload.options = { 'Color:': localItem.selectedVariant };
+            }
+            if (Object.keys(optionsPayload).length > 0) {
+              catalogReference.options = optionsPayload;
+            }
+
+            await wixClient.currentCart.addToCurrentCart({
+              lineItems: [{ catalogReference, quantity: localItem.quantity || 1 }],
+            });
+          } catch (syncErr) {
+            console.warn('[Cart] Sync local item to currentCart notice:', syncErr?.message || syncErr);
+          }
+        }
+        setLocalCart([]);
+      }
+
+      // 2. Fetch fresh cart state from Wix
+      let activeCart = wixCart;
+      if (wixClient) {
+        try {
+          const freshCart = await wixClient.currentCart.getCurrentCart();
+          if (freshCart?.lineItems?.length) {
+            activeCart = freshCart;
+            setWixCart(freshCart);
+          }
+        } catch {}
+      }
+
+      // 3. Checkout from active Wix Cart
+      if (activeCart?.lineItems?.length && wixClient) {
         const checkoutRes = await wixClient.currentCart.createCheckoutFromCurrentCart({
           channelType: 'WEB',
         });
@@ -199,15 +265,25 @@ export const CartProvider = ({ children }) => {
         }
       }
 
-      // 2. Direct checkout fallback: if items exist in localCart (e.g. Mystery Box, custom configurations)
+      // 4. Direct checkout fallback if needed
       if (localCart?.length > 0 && wixClient && wixClient.checkout) {
-        const lineItems = localCart.map((item) => ({
-          catalogReference: {
+        const lineItems = localCart.map((item) => {
+          const subOptionId = item.subscriptionOptionId
+            || item.subscription?.subscriptionOptionId
+            || KNOWN_SUBSCRIPTION_OPTIONS[item._wixId || item.id];
+
+          const catalogReference = {
             appId: WIX_STORES_APP_ID,
             catalogItemId: item._wixId || item.id,
-          },
-          quantity: item.quantity || 1,
-        }));
+          };
+          if (subOptionId) {
+            catalogReference.options = { subscriptionOptionId: subOptionId };
+          }
+          return {
+            catalogReference,
+            quantity: item.quantity || 1,
+          };
+        });
 
         try {
           const directCheckout = await wixClient.checkout.createCheckout({
@@ -215,7 +291,7 @@ export const CartProvider = ({ children }) => {
             lineItems,
           });
 
-          if (directCheckout?._id) {
+          if (directCheckout?._id && directCheckout?.lineItems?.length > 0) {
             const { redirectSession } = await wixClient.redirects.createRedirectSession({
               ecomCheckout: { checkoutId: directCheckout._id },
               callbacks: {

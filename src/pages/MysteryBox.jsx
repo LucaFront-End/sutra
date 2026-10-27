@@ -11,6 +11,7 @@ import vasijasImg from '../assets/images/vasijas.jpg';
 import cartasImg from '../assets/images/cartas-rituales.jpg';
 import cartasMesaImg from '../assets/images/cartas-rituales-mesa.jpg';
 import catAromasImg from '../assets/images/cat-aromas-wide.jpg';
+import { KNOWN_SUBSCRIPTION_OPTIONS } from '../lib/wixClient';
 import './MysteryBox.css';
 
 export default function MysteryBox({ onNavigate }) {
@@ -53,17 +54,18 @@ export default function MysteryBox({ onNavigate }) {
     completo: {
       id: wixCompleto?._wixId || 'a9a00ce4-e102-4b47-8f45-da29e2579106',
       _wixId: wixCompleto?._wixId || 'a9a00ce4-e102-4b47-8f45-da29e2579106',
+      subscriptionOptionId: wixCompleto?.subscriptionOptionId || KNOWN_SUBSCRIPTION_OPTIONS['a9a00ce4-e102-4b47-8f45-da29e2579106'],
       slug: wixCompleto?.slug || 'misterybox-ritual-completo-velas-flotantes-y-velas-de-arena',
       isWixProduct: true,
       name: wixCompleto?.name || 'Sutra Mystery Box – Ritual Completo',
       tierName: 'Ritual Completo',
       tag: 'MÁS ELEGIDO · EXPERIENCIA TOTAL',
       badge: 'BIMESTRAL',
-      price: wixCompleto?.price || '$990 MXN',
-      priceNum: wixCompleto?.priceNum || 990,
+      price: wixCompleto?.price || '$1,440 MXN',
+      priceNum: wixCompleto?.priceNum || 1440,
       period: 'cada 2 meses',
       storeValue: '$1,590 MXN',
-      savings: 'Ahorro de $600 MXN',
+      savings: 'Ahorro de $150 MXN',
       desc: 'La experiencia definitiva para iniciar o enriquecer tu santuario con una vasija artesanal nueva y piezas completas cada 2 meses.',
       img: wixCompleto?.img || mysteryCompletoImg,
       gallery: completoGallery,
@@ -82,6 +84,7 @@ export default function MysteryBox({ onNavigate }) {
     esencial: {
       id: wixEsencial?._wixId || '6f22920a-ad94-43ca-baf5-4853d9d6dfd5',
       _wixId: wixEsencial?._wixId || '6f22920a-ad94-43ca-baf5-4853d9d6dfd5',
+      subscriptionOptionId: wixEsencial?.subscriptionOptionId || KNOWN_SUBSCRIPTION_OPTIONS['6f22920a-ad94-43ca-baf5-4853d9d6dfd5'],
       slug: wixEsencial?.slug || 'misterybox-esencial',
       isWixProduct: true,
       name: wixEsencial?.name || 'Sutra Mystery Box – Ritual Esencial',
@@ -91,8 +94,8 @@ export default function MysteryBox({ onNavigate }) {
       price: wixEsencial?.price || '$590 MXN',
       priceNum: wixEsencial?.priceNum || 590,
       period: 'cada 2 meses',
-      storeValue: '$950 MXN',
-      savings: 'Ahorro de $360 MXN',
+      storeValue: '$690 MXN',
+      savings: 'Ahorro de $100 MXN',
       desc: 'Ideal para quienes ya cuentan con su vasija favorita en casa y desean recargar su cera de arena, aromas y mechas cada 60 días.',
       img: wixEsencial?.img || mysteryEsencialImg,
       gallery: esencialGallery,
@@ -116,6 +119,7 @@ export default function MysteryBox({ onNavigate }) {
       ...(wixRef || {}),
       id: plan.id,
       _wixId: plan._wixId,
+      subscriptionOptionId: plan.subscriptionOptionId,
       isWixProduct: true,
       name: plan.name,
       price: plan.price,
@@ -129,6 +133,7 @@ export default function MysteryBox({ onNavigate }) {
         frequency: 'Cada 2 meses',
         tier: plan.tierName,
         type: 'Selección Sorpresa Misteriosa',
+        subscriptionOptionId: plan.subscriptionOptionId,
       },
     };
 

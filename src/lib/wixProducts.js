@@ -1,3 +1,5 @@
+import { KNOWN_SUBSCRIPTION_OPTIONS } from './wixClient';
+
 /**
  * Converts a raw Wix media URL (wix:image://v1/{fileId}/...) to a public Wix static CDN URL.
  * Also strips downscaled thumbnail parameters (/v1/fit/w_50... or /v1/fill/...) to return the full-resolution master.
@@ -318,6 +320,9 @@ export function normalizeProduct(wixProduct) {
     numericId: numericId || '',
     stock: wixProduct.stock || { inStock: true, inventoryStatus: 'IN_STOCK' },
     collectionIds: collectionIds || [],
+    subscriptionOptionId: wixProduct.subscriptionDetails?.subscriptions?.[0]?._id
+      || KNOWN_SUBSCRIPTION_OPTIONS[_id]
+      || null,
     isWixProduct: true,
   };
 }
