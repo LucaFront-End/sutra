@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { blogArticles, allProducts } from '../data/shopData';
 import { useCart } from '../context/CartContext';
+import SEO from '../components/SEO';
+import { getBlogPostSEO } from '../data/seoConfig';
 import './BlogPost.css';
 
 export default function BlogPost({ onNavigate }) {
@@ -68,8 +70,11 @@ export default function BlogPost({ onNavigate }) {
     window.open(`https://wa.me/?text=${text}`, '_blank');
   };
 
+  const seoData = getBlogPostSEO(article);
+
   return (
     <div className="blog-post-page fade-in">
+      <SEO {...seoData} />
       {/* Top Breadcrumb & Actions Bar */}
       <div className="blog-post-nav container">
         <div className="blog-post-breadcrumb">

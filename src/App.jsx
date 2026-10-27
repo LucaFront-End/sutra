@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useCart } from './context/CartContext';
 import ScrollToTop from './components/ScrollToTop';
+import SEO from './components/SEO';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Concept from './components/Concept';
@@ -103,6 +104,7 @@ export default function App() {
             path="/" 
             element={
               <>
+                <SEO pageKey="home" />
                 <Hero onNavigate={handleNavigate} />
                 <Concept />
                 <Marquee />

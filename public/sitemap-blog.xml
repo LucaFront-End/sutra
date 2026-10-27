@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.sutramexico.com/comunidad/arte-de-pausar</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <image:image>
+      <image:loc>https://www.sutramexico.com/assets/images/cat-velas.png</image:loc>
+      <image:title>El arte de pausar: Cómo crear un santuario de descanso en tu hogar</image:title>
+      <image:caption>En un mundo que glorifica la prisa constante, detenerte 15 minutos al día no es una pérdida de tiempo: es el acto supremo de autocuidado.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.sutramexico.com/comunidad/ritual-jardin-zen</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <image:image>
+      <image:loc>https://www.sutramexico.com/assets/images/cat-jardin-zen.jpg</image:loc>
+      <image:title>Jardines Zen: Meditación activa a través del movimiento de la arena</image:title>
+      <image:caption>Aprende cómo el trazado de líneas circulares y ondas en la arena puede reducir la sobrecarga mental en minutos.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.sutramexico.com/comunidad/ceremonia-del-te</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <image:image>
+      <image:loc>https://www.sutramexico.com/assets/images/cat-te-ceremonial.jpg</image:loc>
+      <image:title>La ceremonia del té: Cultivando presencia en cada sorbo</image:title>
+      <image:caption>El agua caliente, las hojas expandiéndose y el aroma ascendente: un ancla inmediata al momento presente.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.sutramexico.com/comunidad/cartas-de-intencion</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <image:image>
+      <image:loc>https://www.sutramexico.com/assets/images/cartas-rituales.jpg</image:loc>
+      <image:title>Cartas de rituales: Cómo establecer una brújula emocional matutina</image:title>
+      <image:caption>Antes de revisar tu teléfono o tu lista de pendientes, consulta una carta de intención para orientar tu día.</image:caption>
+    </image:image>
+  </url>
+</urlset>

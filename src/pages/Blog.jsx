@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { blogArticles } from '../data/shopData';
 import { submitToContactoGeneral } from '../lib/formsService';
+import SEO from '../components/SEO';
 import './Blog.css';
 
 export default function Blog({ onNavigate }) {
@@ -23,6 +24,7 @@ export default function Blog({ onNavigate }) {
 
   return (
     <div className="blog-page fade-in">
+      <SEO pageKey="comunidad" />
       {/* Header */}
       <header className="blog-header">
         <span className="blog-eyebrow">Comunidad & Diario Consciente</span>

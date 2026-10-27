@@ -5,6 +5,8 @@ import { useWixProducts } from '../hooks/useWixProducts';
 import { parseWixMediaUrl } from '../lib/wixProducts';
 import ProductReviews from '../components/ProductReviews';
 import ProductHowToUse from '../components/ProductHowToUse';
+import SEO from '../components/SEO';
+import { getProductSEO } from '../data/seoConfig';
 import './ProductPage.css';
 
 export default function ProductPage({ product: incomingProduct, onNavigate, onAddToCart }) {
@@ -372,8 +374,11 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
     }
   }
 
+  const seoData = getProductSEO(product);
+
   return (
     <div className="product-page fade-in">
+      <SEO {...seoData} />
       {/* Top back navigation */}
       <div className="product-nav container">
         <button 

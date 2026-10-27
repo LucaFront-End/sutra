@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Sitemap 1: Páginas Principales e Institucionales -->
+  <sitemap>
+    <loc>https://www.sutramexico.com/sitemap-main.xml</loc>
+    <lastmod>2026-10-27</lastmod>
+  </sitemap>
+  <!-- Sitemap 2: Landings Dinámicas y Categorías -->
+  <sitemap>
+    <loc>https://www.sutramexico.com/sitemap-landings.xml</loc>
+    <lastmod>2026-10-27</lastmod>
+  </sitemap>
+  <!-- Sitemap 3: Páginas Dinámicas de Productos (con Imágenes) -->
+  <sitemap>
+    <loc>https://www.sutramexico.com/sitemap-productos.xml</loc>
+    <lastmod>2026-10-27</lastmod>
+  </sitemap>
+  <!-- Sitemap 4: Páginas Dinámicas de Comunidad y Blog -->
+  <sitemap>
+    <loc>https://www.sutramexico.com/sitemap-blog.xml</loc>
+    <lastmod>2026-10-27</lastmod>
+  </sitemap>
+</sitemapindex>

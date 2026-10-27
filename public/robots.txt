@@ -1,0 +1,13 @@
+# Robots.txt oficial de Sutra México
+User-agent: *
+Allow: /
+Disallow: /cuenta
+Disallow: /mi-cuenta
+Disallow: /login
+
+# Sitemaps Index oficial con sub-sitemaps agrupados
+Sitemap: https://www.sutramexico.com/sitemap.xml
+Sitemap: https://www.sutramexico.com/sitemap-main.xml
+Sitemap: https://www.sutramexico.com/sitemap-landings.xml
+Sitemap: https://www.sutramexico.com/sitemap-productos.xml
+Sitemap: https://www.sutramexico.com/sitemap-blog.xml

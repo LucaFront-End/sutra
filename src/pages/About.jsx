@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
 import './About.css';
 import imgLifestyle from '../assets/images/hero-lifestyle.png';
 import imgZenDetalle from '../assets/images/jardin-zen-detalle.jpg';
@@ -25,6 +26,7 @@ export default function About({ onNavigate }) {
 
   return (
     <div className="about-page fade-in">
+      <SEO pageKey="nosotros" />
       {/* 1. Hero Manifesto */}
       <section className="about-hero">
         <div className="about-hero__container">

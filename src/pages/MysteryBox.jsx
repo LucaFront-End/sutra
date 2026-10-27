@@ -12,6 +12,7 @@ import cartasImg from '../assets/images/cartas-rituales.jpg';
 import cartasMesaImg from '../assets/images/cartas-rituales-mesa.jpg';
 import catAromasImg from '../assets/images/cat-aromas-wide.jpg';
 import { KNOWN_SUBSCRIPTION_OPTIONS } from '../lib/wixClient';
+import SEO from '../components/SEO';
 import './MysteryBox.css';
 
 export default function MysteryBox({ onNavigate }) {
@@ -180,6 +181,7 @@ export default function MysteryBox({ onNavigate }) {
 
   return (
     <div className="mystery-page fade-in">
+      <SEO pageKey="mysterybox" />
       {/* Breadcrumb Navigation */}
       <div className="mystery-nav container">
         <div className="mystery-breadcrumb">

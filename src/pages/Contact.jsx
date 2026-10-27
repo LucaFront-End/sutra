@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { submitToContactoGeneral } from '../lib/formsService';
+import SEO from '../components/SEO';
 import './Contact.css';
 
 export default function Contact() {
@@ -79,6 +80,7 @@ export default function Contact() {
 
   return (
     <div className="contact-page fade-in">
+      <SEO pageKey="contacto" />
       {/* Hero Header */}
       <header className="contact-hero container">
         <span className="contact-eyebrow">ATENCIÓN CONSCIENTE & ASISTENCIA</span>

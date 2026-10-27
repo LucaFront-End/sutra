@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { submitToContactoGeneral } from '../lib/formsService';
+import SEO from '../components/SEO';
 import './Events.css';
 
 // Assets
@@ -386,6 +387,7 @@ export default function Events({ onNavigate, onAddToCart }) {
 
   return (
     <div className="b2b-events-page fade-in">
+      <SEO pageKey="eventos" />
       {/* ============================================================
           HERO SECTION B2B
           ============================================================ */}

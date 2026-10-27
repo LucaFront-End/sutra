@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { storeCategories, allProducts } from '../data/shopData';
 import { useWixProducts } from '../hooks/useWixProducts';
+import SEO from '../components/SEO';
+import { getCategorySEO, SEO_DATA } from '../data/seoConfig';
 import './Shop.css';
 
 export default function Shop({ onNavigate, initialCategory = 'all', initialSubcategory = null, onAddToCart }) {
@@ -106,8 +108,13 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
     return 'La Colección';
   };
 
+  const seoData = (routeCat === 'all')
+    ? SEO_DATA.catalogo
+    : (!routeCat ? SEO_DATA.tienda : getCategorySEO(filter, subFilter));
+
   return (
     <div className="shop-page fade-in">
+      <SEO {...seoData} />
       <header className="shop-header">
         <span className="shop-tag">Tienda Sutra</span>
         <h1 className="shop-title">{getCategoryTitle()}</h1>
