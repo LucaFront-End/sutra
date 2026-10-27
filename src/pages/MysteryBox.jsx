@@ -41,13 +41,28 @@ export default function MysteryBox({ onNavigate }) {
            p.name?.toLowerCase().includes('esencial')
   );
 
-  const completoGallery = (wixCompleto?.images && wixCompleto.images.length > 0)
-    ? wixCompleto.images.map(img => img.src)
-    : [mysteryCompletoImg, mysteryHeroImg, ceraBlancaImg, vasijasImg, cartasImg];
+  // Build distinct, high-end galleries for both tiers
+  // (Completo MUST show the ceramic vasija; Esencial MUST show the refill format without vasija)
+  const filterUnique = (arr) => Array.from(new Set(arr.filter(Boolean)));
 
-  const esencialGallery = (wixEsencial?.images && wixEsencial.images.length > 0)
-    ? wixEsencial.images.map(img => img.src)
-    : [mysteryEsencialImg, ceraBlancaImg, catAromasImg, cartasMesaImg];
+  const wixCompletoImgs = (wixCompleto?.images || []).map(img => img.src);
+  const wixEsencialImgs = (wixEsencial?.images || []).map(img => img.src);
+
+  const completoGallery = filterUnique([
+    mysteryCompletoImg,
+    ...wixCompletoImgs,
+    mysteryHeroImg,
+    vasijasImg,
+    cartasImg,
+  ]);
+
+  const esencialGallery = filterUnique([
+    mysteryEsencialImg,
+    ...wixEsencialImgs,
+    ceraBlancaImg,
+    catAromasImg,
+    cartasMesaImg,
+  ]);
 
   const plans = {
     completo: {
@@ -65,7 +80,7 @@ export default function MysteryBox({ onNavigate }) {
       period: 'cada 2 meses',
       savings: 'Ahorro $150 MXN',
       desc: 'Vasija de cerámica artesanal y curación botánica estacional completa.',
-      img: wixCompleto?.img || mysteryCompletoImg,
+      img: mysteryCompletoImg,
       gallery: completoGallery,
       wixVariants: wixCompleto?.wixVariants || [],
       options: wixCompleto?.options || [],
@@ -92,7 +107,7 @@ export default function MysteryBox({ onNavigate }) {
       period: 'cada 2 meses',
       savings: 'Ahorro $100 MXN',
       desc: 'Recarga periódica de cera y aromas para acompañar tus recipientes.',
-      img: wixEsencial?.img || mysteryEsencialImg,
+      img: mysteryEsencialImg,
       gallery: esencialGallery,
       wixVariants: wixEsencial?.wixVariants || [],
       options: wixEsencial?.options || [],
