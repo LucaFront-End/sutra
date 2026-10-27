@@ -45,6 +45,172 @@ export const storeCategories = [
 
 export const allProducts = [
   // ==================== 1. VELAS ====================
+  // ——— RITUALES SUTRA (WIX) ———
+  {
+    id: '546f3049-5a01-4ae5-9410-67487195df08',
+    _wixId: '546f3049-5a01-4ae5-9410-67487195df08',
+    category: 'velas',
+    name: 'Vela en Polvo Aroma Toronja - Ritual Mente Clara',
+    emotionalName: 'Claridad Mental · Ritual Home Office',
+    slug: 'vela-en-polvo-aroma-toronja-ritual-mente-clara',
+    tag: 'Ritual Home Office',
+    price: '690 MXN',
+    priceNum: 690,
+    rating: 4.9,
+    reviewCount: 28,
+    shortDesc: 'Toronja fresca, 500g cera vegetal en polvo y 5 pabilos.',
+    description: 'Despeja tu mente y encuentra claridad en cada momento con el Kit de Vela en Polvo Sutra. Su cera vegetal perlada y su esencia Mente Clara, inspirada en la Toronja, combinan notas cítricas, frescas y revitalizantes para crear una atmósfera de concentración, creatividad y renovación.',
+    benefit: 'Ideal para escritorios y home office. Ayuda a despejar la mente y enfocar tu energía en lo esencial.',
+    img: 'https://static.wixstatic.com/media/45119e_bbf4162042e44913a8b3c074f6886a3a~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_bbf4162042e44913a8b3c074f6886a3a~mv2.png',
+      'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png'
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_bbf4162042e44913a8b3c074f6886a3a~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png' }
+        ]
+      }
+    ],
+    isWixProduct: true,
+  },
+  {
+    id: '7ab800c8-f296-4901-9a69-e22e1de26f3b',
+    _wixId: '7ab800c8-f296-4901-9a69-e22e1de26f3b',
+    category: 'velas',
+    name: 'Vela en Polvo Aroma Manzanilla - Ritual Abrazo de Calma',
+    emotionalName: 'Calma Profunda · Ritual de Descanso',
+    slug: 'vela-en-polvo-aroma-manzanilla-ritual-abrazo-de-calma',
+    tag: 'Ritual de Calma',
+    price: '690 MXN',
+    priceNum: 690,
+    rating: 5.0,
+    reviewCount: 34,
+    shortDesc: 'Manzanilla suave, 500g cera vegetal en polvo y 5 pabilos.',
+    description: 'Regálate un momento de tranquilidad y transforma tus espacios en un refugio de serenidad con el Kit de Vela en Polvo Sutra. Su esencia Abrazo de Calma crea una atmósfera cálida y relajante.',
+    benefit: 'Encuentra el equilibrio y la quietud en medio del caos cotidiano.',
+    img: 'https://static.wixstatic.com/media/45119e_3dcd6587d9c442a098762ac23c2f9d3c~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_3dcd6587d9c442a098762ac23c2f9d3c~mv2.png',
+      'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png'
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_3dcd6587d9c442a098762ac23c2f9d3c~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png' }
+        ]
+      }
+    ],
+    isWixProduct: true,
+  },
+  {
+    id: 'd8a0c992-61ea-4747-8f5d-3206a66f1c41',
+    _wixId: 'd8a0c992-61ea-4747-8f5d-3206a66f1c41',
+    category: 'velas',
+    name: 'Vela en Polvo Aroma Copal - Ritual Limpia Aura',
+    emotionalName: 'Purificación Ancestral · Ritual Limpieza',
+    slug: 'vela-en-polvo-aroma-copal-ritual-limpia-aura',
+    tag: 'Ritual Limpieza Energética',
+    price: '690 MXN',
+    priceNum: 690,
+    rating: 4.9,
+    reviewCount: 31,
+    shortDesc: 'Copal sagrado, 500g cera vegetal en polvo y 5 pabilos.',
+    description: 'Renueva la energía de tus espacios con el Kit de Vela en Polvo Sutra. Su vela en polvo y su esencia Limpia Aura, inspirada en el aroma ancestral del Copal, crean una experiencia que invita a soltar lo que ya no necesitas.',
+    benefit: 'Purifica y renueva la atmósfera del hogar con notas resinosas y acogedoras.',
+    img: 'https://static.wixstatic.com/media/45119e_566fd41b9cde44d78bcd744aac5eb39a~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_566fd41b9cde44d78bcd744aac5eb39a~mv2.png',
+      'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png'
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_566fd41b9cde44d78bcd744aac5eb39a~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png' }
+        ]
+      }
+    ],
+    isWixProduct: true,
+  },
+  {
+    id: '2b336c91-50f0-4b92-831c-769add3af8e1',
+    _wixId: '2b336c91-50f0-4b92-831c-769add3af8e1',
+    category: 'velas',
+    name: 'Vela en Polvo Aroma Mandarina - Ritual Luz Alegre',
+    emotionalName: 'Alegría y Vitalidad · Ritual para Regalar',
+    slug: 'vela-en-polvo-aroma-mandarina-ritual-luz-alegre',
+    tag: 'Ritual para Regalar',
+    price: '690 MXN',
+    priceNum: 690,
+    rating: 5.0,
+    reviewCount: 42,
+    shortDesc: 'Mandarina chispeante, 500g cera vegetal en polvo y 5 pabilos.',
+    description: 'Llena tus espacios de alegría y frescura con el Kit de Vela en Polvo Sutra. Su cera vegetal perlada y su fragancia Luz Alegre regalan momentos inolvidables.',
+    benefit: 'El obsequio perfecto: regala momentos, no objetos. Experiencias que iluminan.',
+    img: 'https://static.wixstatic.com/media/45119e_ffb1d6fa94d9458e857658e6feea2b27~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_ffb1d6fa94d9458e857658e6feea2b27~mv2.png',
+      'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png'
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_ffb1d6fa94d9458e857658e6feea2b27~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png' }
+        ]
+      }
+    ],
+    isWixProduct: true,
+  },
+  {
+    id: 'a12dd355-0d7c-435f-b3a2-2e3604e1eb56',
+    _wixId: 'a12dd355-0d7c-435f-b3a2-2e3604e1eb56',
+    category: 'velas',
+    name: 'Vela en Polvo Aroma Lavanda - Ritual Noche Serena',
+    emotionalName: 'Paz de la Noche · Ritual para Dormir',
+    slug: 'vela-en-polvo-aroma-lavanda-ritual-noche-serena',
+    tag: 'Ritual para Dormir',
+    price: '690 MXN',
+    priceNum: 690,
+    rating: 4.9,
+    reviewCount: 39,
+    shortDesc: 'Lavanda francesa, 500g cera vegetal en polvo y 5 pabilos.',
+    description: 'Transforma tus noches en un refugio de tranquilidad con el Kit de Vela en Polvo Sutra. Prepara cuerpo y mente para un descanso profundo y reparador.',
+    benefit: 'Crea un santuario nocturno que propicia el sueño profundo y la calma interior.',
+    img: 'https://static.wixstatic.com/media/45119e_85bdfa4ac0d247c582270391db2b6422~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_85bdfa4ac0d247c582270391db2b6422~mv2.png',
+      'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png'
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_85bdfa4ac0d247c582270391db2b6422~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png' }
+        ]
+      }
+    ],
+    isWixProduct: true,
+  },
   {
     id: 'p-vela-1',
     category: 'velas',

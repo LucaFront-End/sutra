@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { rituals } from '../data/content';
 import './Rituals.css';
 
-export default function Rituals() {
+export default function Rituals({ onNavigate }) {
+  const navigate = useNavigate();
   const wrapperRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(-1);
 
@@ -63,37 +65,66 @@ export default function Rituals() {
           </div>
 
           {/* Museum Cards */}
-          {rituals.map((ritual, idx) => (
-            <div className={`ritual-card ${activeIndex === idx ? 'focused' : ''}`} key={ritual.id}>
-              
-              {/* Massive Parallax Background Number */}
-              <div className="ritual-card__parallax-number">0{idx + 1}</div>
-              
-              {/* Frosted Glass Content Panel */}
-              <div className="ritual-card__glass">
-                <div className="ritual-card__header">
-                  <span className="ritual-card__time">{ritual.time}</span>
-                  <span className="ritual-card__icon">{ritual.icon}</span>
-                </div>
-                <div className="ritual-card__content">
-                  <h3 className="ritual-card__title">{ritual.name}</h3>
-                  <p className="ritual-card__desc">{ritual.description}</p>
-                  
-                  {/* ——— E-COMMERCE CTA ——— */}
-                  <div className="ritual-card__shop">
-                    <div className="shop-info">
-                      <span className="shop-label">Sugerencia</span>
-                      <span className="shop-product">Kit Esencial {ritual.time}</span>
+          {rituals.map((ritual, idx) => {
+            const productUrl = `/producto/${ritual.slug}`;
+            return (
+              <div 
+                className={`ritual-card ${activeIndex === idx ? 'focused' : ''}`} 
+                key={ritual.id}
+                onClick={() => {
+                  if (onNavigate) onNavigate('product', { slug: ritual.slug, _wixId: ritual.wixId });
+                  navigate(productUrl);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
+                
+                {/* Massive Parallax Background Number */}
+                <div className="ritual-card__parallax-number">0{idx + 1}</div>
+                
+                {/* Frosted Glass Content Panel */}
+                <div className="ritual-card__glass">
+                  <div className="ritual-card__header">
+                    <span className="ritual-card__time">{ritual.time}</span>
+                    <span className="ritual-card__icon">{ritual.icon}</span>
+                  </div>
+                  <div className="ritual-card__content">
+                    <h3 className="ritual-card__title">
+                      <Link 
+                        to={productUrl}
+                        className="ritual-card__title-link"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onNavigate) onNavigate('product', { slug: ritual.slug, _wixId: ritual.wixId });
+                        }}
+                      >
+                        {ritual.name}
+                      </Link>
+                    </h3>
+                    <p className="ritual-card__desc">{ritual.description}</p>
+                    
+                    {/* ——— E-COMMERCE CTA ——— */}
+                    <div className="ritual-card__shop">
+                      <div className="shop-info">
+                        <span className="shop-label">Sugerencia</span>
+                        <span className="shop-product">{ritual.productSuggestion || `Kit Esencial ${ritual.time}`}</span>
+                      </div>
+                      <Link 
+                        to={productUrl}
+                        className="btn-ritual-shop"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onNavigate) onNavigate('product', { slug: ritual.slug, _wixId: ritual.wixId });
+                        }}
+                      >
+                        Comprar <span className="arrow">→</span>
+                      </Link>
                     </div>
-                    <button className="btn-ritual-shop">
-                      Comprar <span className="arrow">→</span>
-                    </button>
                   </div>
                 </div>
-              </div>
 
-            </div>
-          ))}
+              </div>
+            );
+          })}
 
         </div>
 

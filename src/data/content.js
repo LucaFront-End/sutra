@@ -85,13 +85,19 @@ export const rituals = [
     name: 'Ritual Home Office',
     description: 'Comienza tu jornada con intención. Enciende, respira y enfoca.',
     time: 'Mañana',
+    slug: 'vela-en-polvo-aroma-toronja-ritual-mente-clara',
+    productSuggestion: 'Vela Toronja · Mente Clara',
+    wixId: '546f3049-5a01-4ae5-9410-67487195df08',
   },
   {
     id: 'descanso',
     icon: '🌙',
     name: 'Ritual de Descanso',
-    description: 'Prepara tu cuerpo y mente para un sueño profundo y reparador.',
+    description: 'Prepara tu cuerpo y mente para un descanso profundo y reparador.',
     time: 'Noche',
+    slug: 'vela-en-polvo-aroma-manzanilla-ritual-abrazo-de-calma',
+    productSuggestion: 'Vela Manzanilla · Abrazo de Calma',
+    wixId: '7ab800c8-f296-4901-9a69-e22e1de26f3b',
   },
   {
     id: 'limpieza',
@@ -99,6 +105,9 @@ export const rituals = [
     name: 'Ritual Limpieza Energética',
     description: 'Renueva la energía de tu hogar con aromas purificadores.',
     time: 'Cualquier momento',
+    slug: 'vela-en-polvo-aroma-copal-ritual-limpia-aura',
+    productSuggestion: 'Vela Copal · Limpia Aura',
+    wixId: 'd8a0c992-61ea-4747-8f5d-3206a66f1c41',
   },
   {
     id: 'regalo',
@@ -106,6 +115,9 @@ export const rituals = [
     name: 'Ritual para Regalar',
     description: 'Regala momentos, no objetos. Experiencias que se recuerdan.',
     time: 'Ocasión especial',
+    slug: 'vela-en-polvo-aroma-mandarina-ritual-luz-alegre',
+    productSuggestion: 'Vela Mandarina · Luz Alegre',
+    wixId: '2b336c91-50f0-4b92-831c-769add3af8e1',
   },
   {
     id: 'dormir',
@@ -113,6 +125,9 @@ export const rituals = [
     name: 'Ritual para Dormir',
     description: 'Crea un santuario nocturno con aromas de calma profunda.',
     time: 'Antes de dormir',
+    slug: 'vela-en-polvo-aroma-lavanda-ritual-noche-serena',
+    productSuggestion: 'Vela Lavanda · Noche Serena',
+    wixId: 'a12dd355-0d7c-435f-b3a2-2e3604e1eb56',
   },
 ];
 

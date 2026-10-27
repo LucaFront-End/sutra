@@ -386,6 +386,16 @@
   color: inherit; /* Overrides global h3 color so it turns white in night mode */
 }
 
+.ritual-card__title-link {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.ritual-card__title-link:hover {
+  opacity: 0.85;
+}
+
 .ritual-card__desc {
   font-family: var(--font-sans);
   font-size: 1.1rem;
@@ -448,6 +458,7 @@
   padding: 0;
   padding-bottom: 0.2rem;
   border-bottom: 1px solid transparent;
+  text-decoration: none;
   transition: all 0.3s ease;
 }
 

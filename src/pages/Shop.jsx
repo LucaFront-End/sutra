@@ -67,12 +67,18 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
       if (!subFilter) return product.category === 'accesorios';
       return product.category === 'accesorios' && product.subcategory === subFilter;
     }
+    if (filter === 'te' || filter === 'tes') {
+      return product.category === 'te' || product.category === 'tes';
+    }
     return product.category === filter;
   });
 
   const getCategoryCount = (catId) => {
     if (!catalog || catalog.length === 0) return 0;
     if (catId === 'all') return catalog.length;
+    if (catId === 'te' || catId === 'tes') {
+      return catalog.filter((p) => p.category === 'te' || p.category === 'tes').length;
+    }
     return catalog.filter((p) => p.category === catId).length;
   };
 
@@ -80,7 +86,7 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
     if (filter === 'all') return 'Todos los Productos';
     if (filter === 'velas') return 'Velas de Arena & Rituales';
     if (filter === 'aromas') return 'Esencias Aromáticas';
-    if (filter === 'te') return 'Té Rituales';
+    if (filter === 'te' || filter === 'tes') return 'Té Rituales';
     if (filter === 'suscripciones') return 'Sutra Mystery Box · Suscripciones';
     if (filter === 'accesorios') {
       if (subFilter === 'jardin-zen') return 'Objetos Rituales · Jardín Zen';
@@ -109,7 +115,7 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
             {storeCategories.map((cat) => (
               <li key={cat.id} className="filter-item">
                 <button
-                  className={`filter-btn ${filter === cat.id ? 'active' : ''}`}
+                  className={`filter-btn ${(filter === cat.id || ((cat.id === 'te' || cat.id === 'tes') && (filter === 'te' || filter === 'tes'))) ? 'active' : ''}`}
                   onClick={() => handleCategoryChange(cat.id)}
                 >
                   <span className="filter-btn-label">{cat.label}</span>

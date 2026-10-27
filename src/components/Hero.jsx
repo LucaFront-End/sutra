@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import moodDescanso from '../assets/images/sutra-descanso.png';
 import moodEnfoque from '../assets/images/sutra-enfoque.png';
 import moodCalma from '../assets/images/sutra-calma.png';
@@ -12,7 +13,9 @@ const MOODS = [
     image: moodDescanso, 
     title: 'La paz de la noche.', 
     subtitle: 'Prepara tu mente y cuerpo para un descanso profundo y reparador.',
-    overlay: 'rgba(10, 5, 20, 0.85)' /* Super dark violet/black */
+    overlay: 'rgba(10, 5, 20, 0.85)', /* Super dark violet/black */
+    targetUrl: '/tienda/velas',
+    category: 'velas'
   },
   { 
     id: 'enfoque', 
@@ -20,7 +23,9 @@ const MOODS = [
     image: moodEnfoque, 
     title: 'Claridad mental.', 
     subtitle: 'Despierta tus sentidos y centra tu atención en el presente.',
-    overlay: 'rgba(10, 15, 10, 0.8)' /* Super dark green/black */
+    overlay: 'rgba(10, 15, 10, 0.8)', /* Super dark green/black */
+    targetUrl: '/tienda/accesorios',
+    category: 'accesorios'
   },
   { 
     id: 'calma', 
@@ -28,7 +33,9 @@ const MOODS = [
     image: moodCalma, 
     title: 'Regresa al centro.', 
     subtitle: 'Encuentra el equilibrio y la quietud en medio del caos.',
-    overlay: 'rgba(20, 15, 10, 0.85)' /* Super dark brown/black */
+    overlay: 'rgba(20, 15, 10, 0.85)', /* Super dark brown/black */
+    targetUrl: '/tienda/velas',
+    category: 'velas'
   },
   { 
     id: 'energia', 
@@ -36,7 +43,9 @@ const MOODS = [
     image: moodEnergia, 
     title: 'Renueva tu vitalidad.', 
     subtitle: 'Llena tu espacio de luz y notas vibrantes para comenzar el día.',
-    overlay: 'rgba(30, 15, 5, 0.75)' /* Dark warm umber */
+    overlay: 'rgba(30, 15, 5, 0.75)', /* Dark warm umber */
+    targetUrl: '/tienda/te',
+    category: 'te'
   }
 ];
 
@@ -87,7 +96,8 @@ function AtmosphericParticles({ mood }) {
   );
 }
 
-export default function Hero() {
+export default function Hero({ onNavigate }) {
+  const navigate = useNavigate();
   const [activeMood, setActiveMood] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -162,7 +172,14 @@ export default function Hero() {
               key={mood.id}
               isActive={activeMood === mood.id}
               onMouseEnter={() => setActiveMood(mood.id)}
-              onClick={() => window.location.href = '#rituales'}
+              onClick={() => {
+                if (activeMood === mood.id) {
+                  if (onNavigate) onNavigate('shop', null, mood.category);
+                  navigate(mood.targetUrl);
+                } else {
+                  setActiveMood(mood.id);
+                }
+              }}
             >
               {mood.label}
             </MagneticPill>
@@ -178,7 +195,15 @@ export default function Hero() {
             >
               <h2>{mood.title}</h2>
               <p>{mood.subtitle}</p>
-              <a href="#rituales" className="btn btn--outline">Descubrir Ritual</a>
+              <Link 
+                to={mood.targetUrl} 
+                className="btn btn--outline"
+                onClick={() => {
+                  if (onNavigate) onNavigate('shop', null, mood.category);
+                }}
+              >
+                Descubrir Ritual
+              </Link>
             </div>
           ))}
           

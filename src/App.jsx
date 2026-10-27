@@ -99,11 +99,11 @@ export default function App() {
             path="/" 
             element={
               <>
-                <Hero />
+                <Hero onNavigate={handleNavigate} />
                 <Concept />
                 <Marquee />
                 <Categories onNavigate={handleNavigate} />
-                <Rituals />
+                <Rituals onNavigate={handleNavigate} />
                 <BestSellers onNavigate={handleNavigate} onAddToCart={handleAddToCart} />
                 <AromaExperience onNavigate={handleNavigate} />
                 <SocialProof />
