@@ -58,27 +58,24 @@ export default function MysteryBox({ onNavigate }) {
       isWixProduct: true,
       name: wixCompleto?.name || 'Sutra Mystery Box – Ritual Completo',
       tierName: 'Ritual Completo',
-      tag: 'MÁS ELEGIDO · EXPERIENCIA TOTAL',
+      tag: 'EXPERIENCIA COMPLETA',
       badge: 'BIMESTRAL',
       price: wixCompleto?.price || '$1,440 MXN',
       priceNum: wixCompleto?.priceNum || 1440,
       period: 'cada 2 meses',
-      storeValue: '$1,590 MXN',
-      savings: 'Ahorro de $150 MXN',
-      desc: 'La experiencia definitiva para iniciar o enriquecer tu santuario con una vasija artesanal nueva y piezas completas cada 2 meses.',
+      savings: 'Ahorro $150 MXN',
+      desc: 'Vasija de cerámica artesanal y curación botánica estacional completa.',
       img: wixCompleto?.img || mysteryCompletoImg,
       gallery: completoGallery,
       wixVariants: wixCompleto?.wixVariants || [],
       options: wixCompleto?.options || [],
-      includes: [
-        { title: '1 Vela de cera en Arena Sutra (500g)', detail: 'Cera perlada botánica pura de alta duración y quemado limpio infinito' },
-        { title: '1 Vasija artesanal de cerámica', detail: 'Pieza escultórica modelada y horneada a mano por alfareros mexicanos' },
-        { title: '2 Aromas botánicos sorpresa', detail: 'Selección estacional: 1 Room Mist (100ml) + 1 Esencia concentrada o difusor' },
-        { title: '1 Botellita con cerillos largos', detail: 'Frasco de vidrio estilo boticario con cerillos largos de seguridad y rascador' },
-        { title: '5 Mechas de 15 cm', detail: 'Mechas de algodón orgánico puro y madera crujiente para múltiples encendidos' },
-        { title: '1 Carta de Intención Bimestral', detail: 'Micro-práctica de meditación guiada y afirmación para tu espacio' },
+      items: [
+        '500g cera en arena botánica pura',
+        'Vasija artesanal de cerámica exclusiva',
+        '2 Aromas botánicos sorpresa estacionales',
+        'Botella de cerillos largos + 5 mechas',
+        'Carta ritual y guía de meditación',
       ],
-      idealFor: 'Quienes desean la experiencia sensorial completa con vasijas exclusivas coleccionables en cada entrega.',
     },
     esencial: {
       id: wixEsencial?._wixId || '6f22920a-ad94-43ca-baf5-4853d9d6dfd5',
@@ -88,26 +85,24 @@ export default function MysteryBox({ onNavigate }) {
       isWixProduct: true,
       name: wixEsencial?.name || 'Sutra Mystery Box – Ritual Esencial',
       tierName: 'Ritual Esencial',
-      tag: 'RECARGA CONSCIENTE',
+      tag: 'RECARGA',
       badge: 'BIMESTRAL',
       price: wixEsencial?.price || '$590 MXN',
       priceNum: wixEsencial?.priceNum || 590,
       period: 'cada 2 meses',
-      storeValue: '$690 MXN',
-      savings: 'Ahorro de $100 MXN',
-      desc: 'Ideal para quienes ya cuentan con su vasija favorita en casa y desean recargar su cera de arena, aromas y mechas cada 60 días.',
+      savings: 'Ahorro $100 MXN',
+      desc: 'Recarga periódica de cera y aromas para acompañar tus recipientes.',
       img: wixEsencial?.img || mysteryEsencialImg,
       gallery: esencialGallery,
       wixVariants: wixEsencial?.wixVariants || [],
       options: wixEsencial?.options || [],
-      includes: [
-        { title: '1 Vela de cera en Arena Sutra (500g)', detail: 'Bolsa kraft de recarga limpia de perlas vegetales sin residuos' },
-        { title: '1 Aroma botánico sorpresa', detail: '1 esencia concentrada o bruma botánica estacional con formulación de temporada' },
-        { title: '1 Botellita con cerillos largos', detail: 'Frasco de vidrio estilo boticario con cerillos largos de seguridad y rascador' },
-        { title: '5 Mechas de 15 cm', detail: 'Mechas largas de combustión lenta para cortar a la medida deseada' },
-        { title: '1 Carta de Intención Bimestral', detail: 'Reflexión y guía consciente para renovar la energía de tu hogar' },
+      items: [
+        '500g cera en arena botánica pura',
+        '1 Aroma botánico sorpresa estacional',
+        'Botella de cerillos largos + 5 mechas',
+        'Carta ritual y guía de meditación',
+        'Sin vasija · Recarga tus recipientes',
       ],
-      idealFor: 'Quienes ya tienen vasijas o recipientes en casa y solo requieren la cera de arena, mechas y nuevos aromas.',
     },
   };
 
@@ -266,7 +261,7 @@ export default function MysteryBox({ onNavigate }) {
                     alt={plans.completo.name}
                     className="split-card__main-img" 
                   />
-                  <span className="split-card__tier-tag">✦ Kit con Vasija de Cerámica</span>
+                  <span className="split-card__tier-tag">✦ Con Vasija de Cerámica</span>
                 </div>
                 {/* Thumbnails */}
                 <div className="split-card__thumbs">
@@ -287,42 +282,26 @@ export default function MysteryBox({ onNavigate }) {
               {/* Card Body */}
               <div className="split-card__body">
                 <div className="split-card__header">
-                  <h3 className="split-card__title">{plans.completo.tierName}</h3>
+                  <div className="split-card__title-row">
+                    <h3 className="split-card__title">{plans.completo.tierName}</h3>
+                    <span className="savings-badge">{plans.completo.savings}</span>
+                  </div>
                   <div className="split-card__price-row">
                     <span className="split-card__price">{plans.completo.price}</span>
                     <span className="split-card__period">/ cada 2 meses</span>
                   </div>
-                  <div className="split-card__savings-tag">
-                    <span>Valor regular: {plans.completo.storeValue}</span>
-                    <strong className="savings-badge">{plans.completo.savings}</strong>
-                  </div>
                   <p className="split-card__desc">{plans.completo.desc}</p>
                 </div>
 
-                {/* Includes List */}
-                <div className="mystery-includes-box">
-                  <h4 className="includes-title">Qué incluye cada 2 meses:</h4>
-                  <ul className="includes-list">
-                    {plans.completo.includes.map((item, idx) => (
-                      <li key={idx} className="includes-item">
-                        <span className="item-icon">✓</span>
-                        <div className="item-text">
-                          <strong>{item.title}</strong>
-                          <small>{item.detail}</small>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* 100% Surprise Curation Notice */}
-                <div className="mystery-curation-box">
-                  <div className="mystery-curation-icon">✦</div>
-                  <div className="mystery-curation-content">
-                    <strong>Curación Exclusiva Sorpresa</strong>
-                    <p>Vasija artesanal nueva y aromas botánicos seleccionados por temporada para ti. ¡Cada entrega es un misterio sensorial!</p>
-                  </div>
-                </div>
+                {/* Minimalist 1-Line Items List */}
+                <ul className="mystery-clean-list">
+                  {plans.completo.items.map((item, idx) => (
+                    <li key={idx} className="clean-list-item">
+                      <span className="clean-item-check">✓</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
 
                 {/* Action CTA pinned to bottom */}
                 <div className="split-card__cta-block">
@@ -335,7 +314,7 @@ export default function MysteryBox({ onNavigate }) {
                     {addedPlanId === plans.completo.id ? (
                       <>
                         <span>✓</span>
-                        <span>¡Agregado a la Bolsa de Compras!</span>
+                        <span>¡Agregado a la Bolsa!</span>
                       </>
                     ) : (
                       <>
@@ -349,7 +328,7 @@ export default function MysteryBox({ onNavigate }) {
                   </button>
 
                   <p className="mystery-card__footnote">
-                    ✦ Envío asegurado gratis a todo México · Sin plazos forzosos · Cancela o pausa en 1 clic
+                    Envío gratis a todo México · Sin plazos forzosos
                   </p>
                 </div>
               </div>
@@ -391,47 +370,26 @@ export default function MysteryBox({ onNavigate }) {
               {/* Card Body */}
               <div className="split-card__body">
                 <div className="split-card__header">
-                  <h3 className="split-card__title">{plans.esencial.tierName}</h3>
+                  <div className="split-card__title-row">
+                    <h3 className="split-card__title">{plans.esencial.tierName}</h3>
+                    <span className="savings-badge">{plans.esencial.savings}</span>
+                  </div>
                   <div className="split-card__price-row">
                     <span className="split-card__price">{plans.esencial.price}</span>
                     <span className="split-card__period">/ cada 2 meses</span>
                   </div>
-                  <div className="split-card__savings-tag">
-                    <span>Valor regular: {plans.esencial.storeValue}</span>
-                    <strong className="savings-badge">{plans.esencial.savings}</strong>
-                  </div>
                   <p className="split-card__desc">{plans.esencial.desc}</p>
                 </div>
 
-                {/* Includes List */}
-                <div className="mystery-includes-box">
-                  <h4 className="includes-title">Qué incluye cada 2 meses:</h4>
-                  <ul className="includes-list">
-                    {plans.esencial.includes.map((item, idx) => (
-                      <li key={idx} className="includes-item">
-                        <span className="item-icon">✓</span>
-                        <div className="item-text">
-                          <strong>{item.title}</strong>
-                          <small>{item.detail}</small>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* 100% Surprise Curation Notice */}
-                <div className="mystery-curation-box">
-                  <div className="mystery-curation-icon">✦</div>
-                  <div className="mystery-curation-content">
-                    <strong>Curación Exclusiva Sorpresa</strong>
-                    <p>Cera en arena botánica, aroma estacional sorpresa y cerillos largos para recargar tus propios recipientes favoritos.</p>
-                  </div>
-                </div>
-
-                <div className="mystery-option-note" style={{ marginBottom: '1.25rem' }}>
-                  <span className="note-icon">💡</span>
-                  <span>No incluye vasija. Pensado para recargar tus recipientes y vasijas Sutra.</span>
-                </div>
+                {/* Minimalist 1-Line Items List */}
+                <ul className="mystery-clean-list">
+                  {plans.esencial.items.map((item, idx) => (
+                    <li key={idx} className={`clean-list-item ${idx === plans.esencial.items.length - 1 ? 'clean-list-item--muted' : ''}`}>
+                      <span className="clean-item-check">{idx === plans.esencial.items.length - 1 ? '✦' : '✓'}</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
 
                 {/* Action CTA pinned to bottom */}
                 <div className="split-card__cta-block">
@@ -444,7 +402,7 @@ export default function MysteryBox({ onNavigate }) {
                     {addedPlanId === plans.esencial.id ? (
                       <>
                         <span>✓</span>
-                        <span>¡Agregado a la Bolsa de Compras!</span>
+                        <span>¡Agregado a la Bolsa!</span>
                       </>
                     ) : (
                       <>
@@ -458,7 +416,7 @@ export default function MysteryBox({ onNavigate }) {
                   </button>
 
                   <p className="mystery-card__footnote">
-                    ✦ Envío asegurado gratis a todo México · Sin plazos forzosos · Cancela o pausa en 1 clic
+                    Envío gratis a todo México · Sin plazos forzosos
                   </p>
                 </div>
               </div>

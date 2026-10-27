@@ -1068,16 +1068,24 @@
 /* Card Header */
 .split-card__header {
   border-bottom: 1px solid rgba(60, 36, 21, 0.08);
-  padding-bottom: 1.25rem;
+  padding-bottom: 1.1rem;
   margin-bottom: 1.25rem;
+}
+
+.split-card__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
 }
 
 .split-card__title {
   font-family: var(--font-serif, serif);
-  font-size: 1.85rem;
+  font-size: 1.75rem;
   font-weight: 500;
   color: #2C1E14;
-  margin: 0 0 0.5rem 0;
+  margin: 0;
   letter-spacing: -0.01em;
 }
 
@@ -1085,158 +1093,85 @@
   display: flex;
   align-items: baseline;
   gap: 0.4rem;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.45rem;
 }
 
 .split-card__price {
-  font-size: 1.85rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #2C1E14;
   letter-spacing: -0.02em;
 }
 
 .split-card__period {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: #7A685D;
   font-weight: 500;
 }
 
-.split-card__savings-tag {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  font-size: 0.85rem;
-  color: #7A685D;
-  margin-bottom: 0.75rem;
-}
-
-.split-card__savings-tag .savings-badge {
-  background: rgba(46, 125, 50, 0.12);
+.split-card__header .savings-badge {
+  background: rgba(46, 125, 50, 0.1);
   color: #2E7D32;
-  padding: 0.2rem 0.55rem;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 0.78rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.75rem;
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .split-card__desc {
-  font-size: 0.95rem;
-  color: #55443B;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  color: #6E5C50;
+  line-height: 1.5;
   margin: 0;
 }
 
-/* Includes List */
-.mystery-includes-box {
-  margin-bottom: 1.25rem;
-}
-
-.includes-title {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #7A685D;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin: 0 0 0.85rem 0;
-}
-
-.includes-list {
+/* Minimalist Clean 1-Line Items List */
+.mystery-clean-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 1.25rem 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.7rem;
 }
 
-.includes-item {
+.clean-list-item {
   display: flex;
+  align-items: center;
   gap: 0.75rem;
-  align-items: flex-start;
+  font-size: 0.92rem;
+  color: #38281E;
+  line-height: 1.35;
 }
 
-.item-icon {
+.clean-item-check {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: rgba(212, 167, 106, 0.15);
+  background: rgba(212, 167, 106, 0.16);
   color: #9C7A4A;
-  font-weight: 700;
   font-size: 0.75rem;
+  font-weight: 700;
   flex-shrink: 0;
-  margin-top: 1px;
 }
 
-.item-text strong {
-  display: block;
-  font-size: 0.92rem;
-  color: #2C1E14;
-  font-weight: 600;
-  margin-bottom: 0.1rem;
+.clean-list-item--muted {
+  color: #8A776A;
+  font-size: 0.86rem;
+  padding-top: 0.35rem;
+  border-top: 1px dashed rgba(60, 36, 21, 0.08);
+  margin-top: 0.15rem;
 }
 
-.item-text small {
-  display: block;
-  font-size: 0.82rem;
-  color: #7A685D;
-  line-height: 1.4;
-}
-
-/* Surprise Curation Box */
-.mystery-curation-box {
-  display: flex;
-  gap: 0.85rem;
-  align-items: flex-start;
-  background: #FAF7F2;
-  border: 1px dashed rgba(212, 167, 106, 0.5);
-  border-radius: 14px;
-  padding: 1rem 1.15rem;
-  margin-bottom: 1.25rem;
-}
-
-.mystery-curation-icon {
+.clean-list-item--muted .clean-item-check {
+  background: transparent;
   color: #D4A76A;
-  font-size: 1.1rem;
-  line-height: 1;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.mystery-curation-content strong {
-  display: block;
-  font-size: 0.88rem;
-  color: #2C1E14;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.mystery-curation-content p {
-  font-size: 0.82rem;
-  color: #665246;
-  line-height: 1.45;
-  margin: 0;
-}
-
-/* Option Note */
-.mystery-option-note {
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
-  background: rgba(245, 238, 227, 0.65);
-  border-radius: 12px;
-  padding: 0.7rem 0.95rem;
-  font-size: 0.84rem;
-  color: #665246;
-  line-height: 1.4;
-}
-
-.note-icon {
-  flex-shrink: 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 /* CTA Block pinned to bottom */
