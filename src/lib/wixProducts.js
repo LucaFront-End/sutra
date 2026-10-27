@@ -201,12 +201,11 @@ export function normalizeProduct(wixProduct) {
   let category = 'velas';
   let subcategory = null;
 
-  // 1. Explicit Vela checks (Candle kits, granular wax, vessels, refills)
-  const isVelaExplicit = normName.includes('vela') || normName.includes('cera en arena') || normName.includes('cera perlada') || normName.includes('kit vela') || normName.includes('cera granulada');
+  // 1. Mystery Box / Subscriptions (checked first so it isn't overridden by 'velas' in subtitle)
+  const isMysteryExplicit = normName.includes('mistery') || normName.includes('mystery') || normName.includes('suscripci');
 
   // 2. Explicit Tea checks (Té Rituales, Infusiones, Tisanas, Matcha, etc.)
-  // Must be checked before aromas so that teas like "Té Rituales Raíz" or "Té Rituales Balance" aren't confused with aromas
-  const isTeExplicit = !isVelaExplicit && (
+  const isTeExplicit = !isMysteryExplicit && (
     normName.includes('te rituales') ||
     /\bte\b/i.test(normName) ||
     normName.includes('infusion') ||
@@ -216,12 +215,14 @@ export function normalizeProduct(wixProduct) {
   );
 
   // 3. Explicit Accessories checks (Jardín Zen, Cartas de rituales, Vasijas)
-  const isZenExplicit = !isVelaExplicit && !isTeExplicit && (normName.includes('zen') || normName.includes('jardin'));
-  const isCartasExplicit = !isVelaExplicit && !isTeExplicit && (normName.includes('carta') || normName.includes('baraja') || normDesc.includes('cartas de ritual'));
-  const isVasijaExplicit = !isVelaExplicit && !isTeExplicit && (normName.includes('vasija') || normName.includes('ceramica') || normDesc.includes('vasija wabi'));
+  const isZenExplicit = !isMysteryExplicit && !isTeExplicit && (normName.includes('zen') || normName.includes('jardin'));
+  const isCartasExplicit = !isMysteryExplicit && !isTeExplicit && (normName.includes('carta') || normName.includes('baraja') || normDesc.includes('cartas de ritual'));
+  const isVasijaExplicit = !isMysteryExplicit && !isTeExplicit && (normName.includes('vasija') || normName.includes('ceramica') || normDesc.includes('vasija wabi'));
 
-  // 4. Mystery Box / Subscriptions
-  const isMysteryExplicit = normName.includes('mistery') || normName.includes('mystery') || normName.includes('suscripci');
+  // 4. Explicit Vela checks (Candle kits, granular wax, vessels, refills)
+  const isVelaExplicit = !isMysteryExplicit && !isTeExplicit && !isZenExplicit && !isCartasExplicit && !isVasijaExplicit && (
+    normName.includes('vela') || normName.includes('cera en arena') || normName.includes('cera perlada') || normName.includes('kit vela') || normName.includes('cera granulada')
+  );
 
   // 5. Aromas & Esencias
   const aromaKeywords = [
@@ -233,8 +234,8 @@ export function normalizeProduct(wixProduct) {
   ];
   const hasAromaKw = aromaKeywords.some((kw) => normName.includes(kw));
 
-  if (isVelaExplicit) {
-    category = 'velas';
+  if (isMysteryExplicit) {
+    category = 'suscripciones';
   } else if (isTeExplicit) {
     category = 'te';
   } else if (isZenExplicit) {
@@ -246,8 +247,8 @@ export function normalizeProduct(wixProduct) {
   } else if (isVasijaExplicit) {
     category = 'accesorios';
     subcategory = 'vasijas';
-  } else if (isMysteryExplicit) {
-    category = 'suscripciones';
+  } else if (isVelaExplicit) {
+    category = 'velas';
   } else if (hasAromaKw || normDesc.includes('esencia pura') || normDesc.includes('bruma bot')) {
     category = 'aromas';
   } else {

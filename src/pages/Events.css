@@ -333,10 +333,10 @@
   position: relative;
 }
 
-/* Media headers for comparison cards */
+/* Media headers for comparison cards — Enlarged for editorial prominence */
 .comp-media-header {
   position: relative;
-  height: 180px;
+  height: clamp(280px, 34vw, 380px);
   overflow: hidden;
   background: #20140E;
 }
@@ -345,43 +345,44 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .comp-card:hover .comp-media-header img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .comp-media-header--bad img {
-  filter: grayscale(25%) contrast(1.1);
-  opacity: 0.85;
+  filter: grayscale(15%) contrast(1.08);
+  opacity: 0.9;
 }
 
 .comp-media-caption-bar {
   position: absolute;
-  bottom: 0.85rem;
-  left: 1rem;
-  right: 1rem;
+  bottom: 1rem;
+  left: 1.25rem;
+  right: 1.25rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.4rem 0.85rem;
+  padding: 0.55rem 1rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .comp-media-caption-bar--bad {
-  background: rgba(44, 20, 16, 0.85);
+  background: rgba(44, 20, 16, 0.88);
   color: #FFB3A6;
-  border: 1px solid rgba(180, 56, 40, 0.35);
+  border: 1px solid rgba(180, 56, 40, 0.4);
 }
 
 .comp-media-caption-bar--good {
-  background: rgba(250, 247, 242, 0.94);
+  background: rgba(250, 247, 242, 0.95);
   color: #2C1E14;
-  border: 1px solid rgba(212, 167, 106, 0.4);
+  border: 1px solid rgba(212, 167, 106, 0.45);
 }
 
 .comp-caption-icon {
@@ -394,13 +395,13 @@
 
 .comp-card-badge {
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 0.35rem 0.85rem;
-  border-radius: 6px;
-  margin: 1.5rem 2rem 1.25rem 2rem;
+  padding: 0.4rem 0.95rem;
+  border-radius: 8px;
+  margin: 1.35rem 1.75rem 1rem 1.75rem;
   background: #EFE6E2;
   color: #8A4335;
 }
@@ -408,6 +409,147 @@
 .comp-card-badge--gold {
   background: #2C1E14;
   color: #FAF7F2;
+}
+
+/* ——— Interactive Accordion List for Comparison Points ——— */
+.comp-accordion-list {
+  padding: 0 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.comp-accordion-item {
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.comp-accordion-item--bad {
+  background: rgba(248, 233, 230, 0.45);
+  border-color: rgba(235, 218, 213, 0.7);
+}
+
+.comp-accordion-item--bad:hover {
+  background: rgba(248, 233, 230, 0.8);
+  border-color: rgba(220, 160, 150, 0.7);
+}
+
+.comp-accordion-item--bad.is-open {
+  background: #FFFFFF;
+  border-color: #E2BCB4;
+  box-shadow: 0 4px 16px rgba(180, 56, 40, 0.08);
+}
+
+.comp-accordion-item--good {
+  background: #FBF8F3;
+  border-color: rgba(212, 167, 106, 0.28);
+}
+
+.comp-accordion-item--good:hover {
+  background: rgba(250, 247, 242, 0.95);
+  border-color: rgba(212, 167, 106, 0.5);
+}
+
+.comp-accordion-item--good.is-open {
+  background: #FFFFFF;
+  border-color: #D4A76A;
+  box-shadow: 0 4px 20px rgba(212, 167, 106, 0.16);
+}
+
+.comp-accordion-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.2s ease;
+}
+
+.comp-accordion-btn .cross,
+.comp-accordion-btn .check {
+  font-size: 1.05rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cross {
+  color: #B43828;
+}
+
+.check {
+  color: #4A6342;
+  font-weight: bold;
+}
+
+.comp-accordion-title {
+  flex: 1;
+  font-size: 0.92rem;
+  color: #2C1E14;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.comp-accordion-chevron {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #9C7A4A;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(212, 167, 106, 0.15);
+  flex-shrink: 0;
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.comp-accordion-item--bad .comp-accordion-chevron {
+  color: #B43828;
+  background: rgba(180, 56, 40, 0.12);
+}
+
+.comp-accordion-item.is-open .comp-accordion-chevron {
+  background: #2C1E14;
+  color: #FAF7F2;
+}
+
+.comp-accordion-item--bad.is-open .comp-accordion-chevron {
+  background: #B43828;
+  color: #FFFFFF;
+}
+
+.comp-accordion-content {
+  padding: 0 1rem 0.95rem 2.5rem;
+  animation: compSlideDown 0.25s ease;
+}
+
+.comp-accordion-content p {
+  font-size: 0.84rem;
+  color: #6E5F56;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@keyframes compSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .comp-list {

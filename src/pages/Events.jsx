@@ -4,6 +4,8 @@ import './Events.css';
 
 // Assets
 import imgBanquetes from '../assets/images/eventos-banquetes.jpg';
+import imgCatering from '../assets/images/eventos-catering.jpg';
+import imgRestaurantes from '../assets/images/eventos-restaurantes.jpg';
 import imgWhiteWax from '../assets/images/cera-blanca.jpg';
 import imgBlackWax from '../assets/images/cera-negra.jpg';
 import imgCandleLit from '../assets/images/candle-lit.png';
@@ -40,6 +42,16 @@ export default function Events({ onNavigate, onAddToCart }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [folioNumber, setFolioNumber] = useState('');
   const [activeSector, setActiveSector] = useState('wedding');
+  const [openBadPoint, setOpenBadPoint] = useState(0);
+  const [openGoodPoint, setOpenGoodPoint] = useState(0);
+
+  const toggleBadPoint = (idx) => {
+    setOpenBadPoint(prev => prev === idx ? null : idx);
+  };
+
+  const toggleGoodPoint = (idx) => {
+    setOpenGoodPoint(prev => prev === idx ? null : idx);
+  };
 
   const toggleSector = (id) => {
     setActiveSector(prev => prev === id ? null : id);
@@ -232,8 +244,8 @@ export default function Events({ onNavigate, onAddToCart }) {
       headline: '50 mesas listas en minutos con hasta 60% de ahorro de insumos',
       desc: 'Montajes a gran escala en tiempo récord: solo vierte la cera de arena en cualquier cristalería. Al terminar el evento, retiras la mecha usada y el 90% restante vuelve intacto al saco para tu próxima fiesta.',
       badge: 'Montaje en Minutos',
-      image: imgWhiteWax,
-      imageBadge: 'Cera Granulada en Cristalería',
+      image: imgCatering,
+      imageBadge: 'Montaje de Banquetería & Catering a Gran Escala',
       perks: [
         'Ahorro del 60% frente al desecho constante de velas de pilar',
         'Cero raspado de parafina pegada al desmontar la vajilla',
@@ -250,8 +262,8 @@ export default function Events({ onNavigate, onAddToCart }) {
       headline: 'Iluminación cálida y recambios en 5 segundos entre turno y turno',
       desc: 'Centros de mesa que se renuevan en 5 segundos para el siguiente comensal. Ideal para lobbies, spas, terrazas al aire libre y cenas de autor sin olores a petróleo que interfieran con la comida.',
       badge: 'Ahorro & Recambio Rápido',
-      image: imgBlackWax,
-      imageBadge: 'Atmósfera Nocturna & Rooftops',
+      image: imgRestaurantes,
+      imageBadge: 'Terrazas, Rooftops & Restaurantes de Autor',
       perks: [
         'Recambio de mecha en 5 segundos entre reservaciones',
         'Sin olores sintéticos que alteren la experiencia gastronómica',
@@ -331,6 +343,44 @@ export default function Events({ onNavigate, onAddToCart }) {
         'Facturación fiscal deducible para empresas',
         'Atención prioritaria y reposición garantizada'
       ]
+    }
+  ];
+
+  const badPoints = [
+    {
+      title: 'Arruinan manteles y vajillas',
+      desc: 'La parafina caliente gotea sobre mantelería costosa y deja marcas de grasa imposibles de remover.'
+    },
+    {
+      title: 'Desperdicio económico del 50% al 70%',
+      desc: 'Una vela a medio consumir se ve usada, con túneles feos y se tiene que desechar para el siguiente montaje.'
+    },
+    {
+      title: 'Peligro ante caídas y viento',
+      desc: 'Si un invitado o la brisa derriba el cilindro, la parafina se expande con fuego vivo.'
+    },
+    {
+      title: 'Horas de limpieza y raspado',
+      desc: 'Tu equipo pasa horas despegando cera fría de cilindros de vidrio y candelabros con navajas y agua caliente.'
+    }
+  ];
+
+  const goodPoints = [
+    {
+      title: 'Cero cera pegada ni manchas',
+      desc: 'No se adhiere a las paredes del recipiente ni mancha tus manteles. Al apagar, la cera circundante se mantiene seca y limpia.'
+    },
+    {
+      title: '100% Reutilizable para el siguiente evento',
+      desc: 'Solo retiras la mecha usada con la pequeña perla endurecida. El 90% restante vuelve al saco para tu próxima fiesta.'
+    },
+    {
+      title: 'Autoextinguible & Máxima Seguridad',
+      desc: 'Si el cilindro se vuelca accidentalmente, la cera granulada se desparrama y ahoga la llama en 1 segundo.'
+    },
+    {
+      title: 'Montaje express en cualquier recipiente',
+      desc: 'Vierte la cantidad deseada en cilindros, copas o vasijas de cualquier tamaño y altura. Listo en segundos.'
     }
   ];
 
@@ -432,36 +482,33 @@ export default function Events({ onNavigate, onAddToCart }) {
               </div>
 
               <div className="comp-card-badge">Limitaciones de Velas Convencionales</div>
-              <ul className="comp-list">
-                <li>
-                  <span className="cross">✕</span>
-                  <div>
-                    <strong>Arruinan manteles y vajillas</strong>
-                    <p>La parafina caliente gotea sobre mantelería costosa y deja marcas de grasa imposibles de remover.</p>
-                  </div>
-                </li>
-                <li>
-                  <span className="cross">✕</span>
-                  <div>
-                    <strong>Desperdicio económico del 50% al 70%</strong>
-                    <p>Una vela a medio consumir se ve usada, con túneles feos y se tiene que desechar para el siguiente montaje.</p>
-                  </div>
-                </li>
-                <li>
-                  <span className="cross">✕</span>
-                  <div>
-                    <strong>Peligro ante caídas y viento</strong>
-                    <p>Si un invitado o la brisa derriba el cilindro, la parafina se expande con fuego vivo.</p>
-                  </div>
-                </li>
-                <li>
-                  <span className="cross">✕</span>
-                  <div>
-                    <strong>Horas de limpieza y raspado</strong>
-                    <p>Tu equipo pasa horas despegando cera fría de cilindros de vidrio y candelabros con navajas y agua caliente.</p>
-                  </div>
-                </li>
-              </ul>
+              <div className="comp-accordion-list">
+                {badPoints.map((item, idx) => {
+                  const isOpen = openBadPoint === idx;
+                  return (
+                    <div 
+                      key={idx} 
+                      className={`comp-accordion-item comp-accordion-item--bad ${isOpen ? 'is-open' : ''}`}
+                    >
+                      <button
+                        type="button"
+                        className="comp-accordion-btn"
+                        onClick={() => toggleBadPoint(idx)}
+                        aria-expanded={isOpen}
+                      >
+                        <span className="cross">✕</span>
+                        <strong className="comp-accordion-title">{item.title}</strong>
+                        <span className="comp-accordion-chevron">{isOpen ? '−' : '+'}</span>
+                      </button>
+                      {isOpen && (
+                        <div className="comp-accordion-content">
+                          <p>{item.desc}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Sutra Granulada con Media */}
@@ -475,36 +522,33 @@ export default function Events({ onNavigate, onAddToCart }) {
               </div>
 
               <div className="comp-card-badge comp-card-badge--gold">✦ Ventajas de Autor Sutra</div>
-              <ul className="comp-list">
-                <li>
-                  <span className="check">✓</span>
-                  <div>
-                    <strong>Cero cera pegada ni manchas</strong>
-                    <p>No se adhiere a las paredes del recipiente ni mancha tus manteles. Al apagar, la cera circundante se mantiene seca y limpia.</p>
-                  </div>
-                </li>
-                <li>
-                  <span className="check">✓</span>
-                  <div>
-                    <strong>100% Reutilizable para el siguiente evento</strong>
-                    <p>Solo retiras la mecha usada con la pequeña perla endurecida. El 90% restante vuelve al saco para tu próxima fiesta.</p>
-                  </div>
-                </li>
-                <li>
-                  <span className="check">✓</span>
-                  <div>
-                    <strong>Autoextinguible & Máxima Seguridad</strong>
-                    <p>Si el cilindro se vuelca accidentalmente, la cera granulada se desparrama y ahoga la llama en 1 segundo.</p>
-                  </div>
-                </li>
-                <li>
-                  <span className="check">✓</span>
-                  <div>
-                    <strong>Montaje express en cualquier recipiente</strong>
-                    <p>Vierte la cantidad deseada en cilindros, copas o vasijas de cualquier tamaño y altura. Listo en segundos.</p>
-                  </div>
-                </li>
-              </ul>
+              <div className="comp-accordion-list">
+                {goodPoints.map((item, idx) => {
+                  const isOpen = openGoodPoint === idx;
+                  return (
+                    <div 
+                      key={idx} 
+                      className={`comp-accordion-item comp-accordion-item--good ${isOpen ? 'is-open' : ''}`}
+                    >
+                      <button
+                        type="button"
+                        className="comp-accordion-btn"
+                        onClick={() => toggleGoodPoint(idx)}
+                        aria-expanded={isOpen}
+                      >
+                        <span className="check">✓</span>
+                        <strong className="comp-accordion-title">{item.title}</strong>
+                        <span className="comp-accordion-chevron">{isOpen ? '−' : '+'}</span>
+                      </button>
+                      {isOpen && (
+                        <div className="comp-accordion-content">
+                          <p>{item.desc}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

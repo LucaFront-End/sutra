@@ -50,9 +50,11 @@ export const CartProvider = ({ children }) => {
               if (!v.choices) return false;
               return Object.values(v.choices).some((val) => val === selectedVariant);
             });
-            if (matched) resolvedVariantId = matched._id;
+            if (matched && matched._id && matched._id !== '00000000-0000-0000-0000-000000000000') {
+              resolvedVariantId = matched._id;
+            }
           }
-          if (!resolvedVariantId && product.wixVariants.length === 1) {
+          if (!resolvedVariantId && product.wixVariants.length === 1 && product.wixVariants[0]._id !== '00000000-0000-0000-0000-000000000000') {
             resolvedVariantId = product.wixVariants[0]._id;
           }
         }
@@ -64,14 +66,18 @@ export const CartProvider = ({ children }) => {
 
         if (resolvedVariantId) {
           catalogReference.options = { variantId: resolvedVariantId };
+        } else if (selectedVariant && typeof selectedVariant === 'string' && !selectedVariant.includes('|') && !selectedVariant.includes('(')) {
+          catalogReference.options = { options: { 'Color:': selectedVariant } };
         }
 
-        await wixClient.currentCart.addToCurrentCart({
+        const addRes = await wixClient.currentCart.addToCurrentCart({
           lineItems: [{ catalogReference, quantity }],
         });
 
-        await refreshCart();
-        addedToWix = true;
+        if (addRes?.cart?.lineItems?.length) {
+          await refreshCart();
+          addedToWix = true;
+        }
       } catch (err) {
         console.warn('[Cart] Wix add failed, falling back to local session cart:', err?.message || err);
       }
@@ -80,7 +86,7 @@ export const CartProvider = ({ children }) => {
     // If not added to Wix (e.g. mock product before Wix sync or offline)
     if (!addedToWix) {
       setLocalCart((prev) => {
-        const itemKey = `${product.id}-${selectedVariant || 'default'}`;
+        const itemKey = `${product._wixId || product.id}-${selectedVariant || 'default'}`;
         const existing = prev.find((item) => item.key === itemKey);
         if (existing) {
           return prev.map((item) =>
@@ -173,13 +179,14 @@ export const CartProvider = ({ children }) => {
   const handleCheckout = async () => {
     setCheckoutLoading(true);
     try {
+      // 1. If Wix Cart has items, checkout from current cart
       if (wixCart?.lineItems?.length && wixClient) {
-        const checkout = await wixClient.currentCart.createCheckoutFromCurrentCart({
+        const checkoutRes = await wixClient.currentCart.createCheckoutFromCurrentCart({
           channelType: 'WEB',
         });
 
         const { redirectSession } = await wixClient.redirects.createRedirectSession({
-          ecomCheckout: { checkoutId: checkout.checkoutId },
+          ecomCheckout: { checkoutId: checkoutRes.checkoutId },
           callbacks: {
             postFlowUrl: window.location.origin,
             thankYouPageUrl: `${window.location.origin}/`,
@@ -189,6 +196,41 @@ export const CartProvider = ({ children }) => {
         if (redirectSession?.fullUrl) {
           window.location.href = redirectSession.fullUrl;
           return;
+        }
+      }
+
+      // 2. Direct checkout fallback: if items exist in localCart (e.g. Mystery Box, custom configurations)
+      if (localCart?.length > 0 && wixClient && wixClient.checkout) {
+        const lineItems = localCart.map((item) => ({
+          catalogReference: {
+            appId: WIX_STORES_APP_ID,
+            catalogItemId: item._wixId || item.id,
+          },
+          quantity: item.quantity || 1,
+        }));
+
+        try {
+          const directCheckout = await wixClient.checkout.createCheckout({
+            channelType: 'WEB',
+            lineItems,
+          });
+
+          if (directCheckout?._id) {
+            const { redirectSession } = await wixClient.redirects.createRedirectSession({
+              ecomCheckout: { checkoutId: directCheckout._id },
+              callbacks: {
+                postFlowUrl: window.location.origin,
+                thankYouPageUrl: `${window.location.origin}/`,
+              },
+            });
+
+            if (redirectSession?.fullUrl) {
+              window.location.href = redirectSession.fullUrl;
+              return;
+            }
+          }
+        } catch (directErr) {
+          console.warn('[Cart] Direct checkout attempt fallback error:', directErr);
         }
       }
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useWixProducts } from '../hooks/useWixProducts';
 import mysteryHeroImg from '../assets/images/mystery-box-hero.jpg';
 import mysteryEsencialImg from '../assets/images/mystery-box-esencial.jpg';
 import ceraBlancaImg from '../assets/images/cera-blanca.jpg';
@@ -15,6 +16,7 @@ import './MysteryBox.css';
 export default function MysteryBox({ onNavigate }) {
   const navigate = useNavigate();
   const { addToCart, setIsCartOpen } = useCart();
+  const { products: wixProducts } = useWixProducts();
 
   const [selectedPlan, setSelectedPlan] = useState('completo');
   const [activeCompletoImg, setActiveCompletoImg] = useState(0);
@@ -26,27 +28,47 @@ export default function MysteryBox({ onNavigate }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-    const plans = {
+  // Dynamically resolve real products from Wix Stores
+  const wixCompleto = (wixProducts || []).find(
+    (p) => p._wixId === 'a9a00ce4-e102-4b47-8f45-da29e2579106' ||
+           p.slug?.includes('completo') ||
+           p.name?.toLowerCase().includes('completo')
+  );
+
+  const wixEsencial = (wixProducts || []).find(
+    (p) => p._wixId === '6f22920a-ad94-43ca-baf5-4853d9d6dfd5' ||
+           p.slug?.includes('esencial') ||
+           p.name?.toLowerCase().includes('esencial')
+  );
+
+  const completoGallery = (wixCompleto?.images && wixCompleto.images.length > 0)
+    ? wixCompleto.images.map(img => img.src)
+    : [mysteryCompletoImg, mysteryHeroImg, ceraBlancaImg, vasijasImg, cartasImg];
+
+  const esencialGallery = (wixEsencial?.images && wixEsencial.images.length > 0)
+    ? wixEsencial.images.map(img => img.src)
+    : [mysteryEsencialImg, ceraBlancaImg, catAromasImg, cartasMesaImg];
+
+  const plans = {
     completo: {
-      id: 'p-mystery-completo',
-      name: 'Sutra Mystery Box – Ritual Completo',
+      id: wixCompleto?._wixId || 'a9a00ce4-e102-4b47-8f45-da29e2579106',
+      _wixId: wixCompleto?._wixId || 'a9a00ce4-e102-4b47-8f45-da29e2579106',
+      slug: wixCompleto?.slug || 'misterybox-ritual-completo-velas-flotantes-y-velas-de-arena',
+      isWixProduct: true,
+      name: wixCompleto?.name || 'Sutra Mystery Box – Ritual Completo',
       tierName: 'Ritual Completo',
       tag: 'MÁS ELEGIDO · EXPERIENCIA TOTAL',
       badge: 'BIMESTRAL',
-      price: '$990 MXN',
-      priceNum: 990,
+      price: wixCompleto?.price || '$990 MXN',
+      priceNum: wixCompleto?.priceNum || 990,
       period: 'cada 2 meses',
       storeValue: '$1,590 MXN',
       savings: 'Ahorro de $600 MXN',
       desc: 'La experiencia definitiva para iniciar o enriquecer tu santuario con una vasija artesanal nueva y piezas completas cada 2 meses.',
-      img: mysteryCompletoImg,
-      gallery: [
-        mysteryCompletoImg,
-        mysteryHeroImg,
-        ceraBlancaImg,
-        vasijasImg,
-        cartasImg
-      ],
+      img: wixCompleto?.img || mysteryCompletoImg,
+      gallery: completoGallery,
+      wixVariants: wixCompleto?.wixVariants || [],
+      options: wixCompleto?.options || [],
       includes: [
         { title: '1 Vela de cera en Arena Sutra (500g)', detail: 'Cera perlada botánica pura de alta duración y quemado limpio infinito' },
         { title: '1 Vasija artesanal de cerámica', detail: 'Pieza escultórica modelada y horneada a mano por alfareros mexicanos' },
@@ -58,24 +80,24 @@ export default function MysteryBox({ onNavigate }) {
       idealFor: 'Quienes desean la experiencia sensorial completa con vasijas exclusivas coleccionables en cada entrega.',
     },
     esencial: {
-      id: 'p-mystery-esencial',
-      name: 'Sutra Mystery Box – Ritual Esencial',
+      id: wixEsencial?._wixId || '6f22920a-ad94-43ca-baf5-4853d9d6dfd5',
+      _wixId: wixEsencial?._wixId || '6f22920a-ad94-43ca-baf5-4853d9d6dfd5',
+      slug: wixEsencial?.slug || 'misterybox-esencial',
+      isWixProduct: true,
+      name: wixEsencial?.name || 'Sutra Mystery Box – Ritual Esencial',
       tierName: 'Ritual Esencial',
       tag: 'RECARGA CONSCIENTE',
       badge: 'BIMESTRAL',
-      price: '$590 MXN',
-      priceNum: 590,
+      price: wixEsencial?.price || '$590 MXN',
+      priceNum: wixEsencial?.priceNum || 590,
       period: 'cada 2 meses',
       storeValue: '$950 MXN',
       savings: 'Ahorro de $360 MXN',
       desc: 'Ideal para quienes ya cuentan con su vasija favorita en casa y desean recargar su cera de arena, aromas y mechas cada 60 días.',
-      img: mysteryEsencialImg,
-      gallery: [
-        mysteryEsencialImg,
-        ceraBlancaImg,
-        catAromasImg,
-        cartasMesaImg
-      ],
+      img: wixEsencial?.img || mysteryEsencialImg,
+      gallery: esencialGallery,
+      wixVariants: wixEsencial?.wixVariants || [],
+      options: wixEsencial?.options || [],
       includes: [
         { title: '1 Vela de cera en Arena Sutra (500g)', detail: 'Bolsa kraft de recarga limpia de perlas vegetales sin residuos' },
         { title: '1 Aroma botánico sorpresa', detail: '1 esencia concentrada o bruma botánica estacional con formulación de temporada' },
@@ -89,14 +111,20 @@ export default function MysteryBox({ onNavigate }) {
 
   const handleSubscribe = (planKey) => {
     const plan = plans[planKey];
+    const wixRef = planKey === 'completo' ? wixCompleto : wixEsencial;
     const itemToAdd = {
+      ...(wixRef || {}),
       id: plan.id,
+      _wixId: plan._wixId,
+      isWixProduct: true,
       name: plan.name,
       price: plan.price,
       priceNum: plan.priceNum,
       category: 'suscripciones',
       img: plan.img,
       selectedVariant: `Entrega bimestral | Selección Sorpresa Exclusiva${planKey === 'completo' ? ' (Con Vasija)' : ' (Recarga)'}`,
+      wixVariants: plan.wixVariants,
+      options: plan.options,
       subscription: {
         frequency: 'Cada 2 meses',
         tier: plan.tierName,
