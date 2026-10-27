@@ -72,7 +72,6 @@ export default function Rituals({ onNavigate }) {
                 className={`ritual-card ${activeIndex === idx ? 'focused' : ''}`} 
                 key={ritual.id}
                 onClick={() => {
-                  if (onNavigate) onNavigate('product', { slug: ritual.slug, _wixId: ritual.wixId });
                   navigate(productUrl);
                 }}
                 style={{ cursor: 'pointer' }}
@@ -92,10 +91,7 @@ export default function Rituals({ onNavigate }) {
                       <Link 
                         to={productUrl}
                         className="ritual-card__title-link"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (onNavigate) onNavigate('product', { slug: ritual.slug, _wixId: ritual.wixId });
-                        }}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         {ritual.name}
                       </Link>
@@ -111,10 +107,7 @@ export default function Rituals({ onNavigate }) {
                       <Link 
                         to={productUrl}
                         className="btn-ritual-shop"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (onNavigate) onNavigate('product', { slug: ritual.slug, _wixId: ritual.wixId });
-                        }}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         Comprar <span className="arrow">→</span>
                       </Link>

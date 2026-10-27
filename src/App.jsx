@@ -46,7 +46,11 @@ export default function App() {
   } = useCart();
 
   const handleNavigate = (page, product = null, category = 'all', subcategory = null) => {
-    if (product) setSelectedProduct(product);
+    if (product && (product.name || product.priceNum !== undefined)) {
+      setSelectedProduct(product);
+    } else {
+      setSelectedProduct(null);
+    }
 
     if (page === 'home' || page === '/') {
       navigate('/');

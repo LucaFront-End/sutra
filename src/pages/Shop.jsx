@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { storeCategories } from '../data/shopData';
+import { storeCategories, allProducts } from '../data/shopData';
 import { useWixProducts } from '../hooks/useWixProducts';
 import './Shop.css';
 
@@ -53,11 +53,20 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
     navigate(`/producto/${slug}`);
   };
 
-  // Strictly dynamic catalog from Wix Stores, preserving subscription products
+  // Dynamic catalog from Wix Stores, preserving subscriptions and accessory items not yet in Wix
   const catalog = (wixProducts && wixProducts.length > 0)
-    ? (wixProducts.some((p) => p.category === 'suscripciones')
-        ? wixProducts
-        : [...wixProducts, ...allProducts.filter((p) => p.category === 'suscripciones')])
+    ? [
+        ...wixProducts,
+        ...allProducts.filter(
+          (p) =>
+            !wixProducts.some(
+              (wp) =>
+                wp.slug === p.slug ||
+                wp._wixId === p.id ||
+                wp.name.toLowerCase() === p.name.toLowerCase()
+            ) && (p.category === 'suscripciones' || p.category === 'accesorios')
+        ),
+      ]
     : allProducts;
 
   // Filter products logic

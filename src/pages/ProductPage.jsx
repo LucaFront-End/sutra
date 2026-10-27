@@ -12,13 +12,16 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
   const navigate = useNavigate();
   const { products: wixProducts, loading: wixLoading } = useWixProducts();
 
-  // Resolve product either from incoming prop, or by finding slug in dynamic wixProducts or static data
-  const matchedProduct = incomingProduct || (
+  // Resolve product either by finding slug in dynamic wixProducts/allProducts, or valid incomingProduct
+  const isCompleteProduct = (p) => p && Boolean(p.name && (p.priceNum !== undefined || p.price));
+
+  const matchedProduct = (
     slug
       ? (wixProducts || []).find((p) => p.slug === slug || p._wixId === slug || p.id === slug)
         || allProducts.find((p) => p.slug === slug || p.id === slug)
       : null
-  ) || (wixProducts && wixProducts.length > 0 ? wixProducts[0] : allProducts[0]);
+  ) || (isCompleteProduct(incomingProduct) ? incomingProduct : null)
+    || (wixProducts && wixProducts.length > 0 ? wixProducts[0] : allProducts[0]);
 
   const product = matchedProduct;
 
