@@ -1,0 +1,369 @@
+/* ============================================================
+   DYNAMIC LANDING STYLING — SUTRA MÉXICO
+   Ethereal, high-end editorial and seamless responsive layout
+   ============================================================ */
+
+.dynamic-landing-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0E0C0A;
+  color: #FAF7F2;
+  overflow-x: hidden;
+}
+
+/* --- 1. Hero Section --- */
+.landing-hero {
+  position: relative;
+  min-height: 82vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 1.5rem 5rem;
+  background: radial-gradient(circle at 50% 20%, rgba(45, 35, 25, 0.45) 0%, rgba(14, 12, 10, 0.95) 75%);
+  text-align: center;
+  overflow: hidden;
+}
+
+.landing-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('../assets/images/hero-lifestyle.png');
+  background-size: cover;
+  background-position: center center;
+  opacity: 0.18;
+  filter: blur(2px);
+  transform: scale(1.05);
+  pointer-events: none;
+}
+
+.landing-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(14, 12, 10, 0.4) 0%, rgba(14, 12, 10, 0.8) 60%, #0E0C0A 100%);
+  pointer-events: none;
+}
+
+.landing-hero__container {
+  position: relative;
+  z-index: 2;
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.landing-hero__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1.15rem;
+  border-radius: 9999px;
+  background: rgba(212, 168, 83, 0.1);
+  border: 1px solid rgba(212, 168, 83, 0.3);
+  color: #D4A853;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 1.8rem;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.pill-spark {
+  color: #E6C875;
+  font-size: 0.9rem;
+}
+
+.landing-hero__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+  font-weight: 400;
+  line-height: 1.12;
+  color: #FAF7F2;
+  margin-bottom: 1.6rem;
+  letter-spacing: -0.01em;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.landing-hero__excerpt {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.65;
+  color: rgba(250, 247, 242, 0.82);
+  max-width: 780px;
+  margin-bottom: 2.8rem;
+  font-weight: 300;
+}
+
+.landing-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  justify-content: center;
+  margin-bottom: 3.5rem;
+}
+
+.btn-landing-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 2.2rem;
+  background: linear-gradient(135deg, #D4A853 0%, #B88E3E 100%);
+  color: #0E0C0A;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(212, 168, 83, 0.25);
+  text-decoration: none;
+}
+
+.btn-landing-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(212, 168, 83, 0.4);
+  background: linear-gradient(135deg, #E6C875 0%, #C79A45 100%);
+}
+
+.btn-landing-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 2.2rem;
+  background: transparent;
+  color: #FAF7F2;
+  border: 1px solid rgba(250, 247, 242, 0.28);
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+.btn-landing-secondary:hover {
+  border-color: #D4A853;
+  color: #D4A853;
+  background: rgba(212, 168, 83, 0.06);
+  transform: translateY(-2px);
+}
+
+.landing-hero__props {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1.1rem 1.8rem;
+  border-radius: 9999px;
+  background: rgba(28, 24, 21, 0.65);
+  border: 1px solid rgba(250, 247, 242, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.landing-prop-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(250, 247, 242, 0.78);
+  font-weight: 400;
+}
+
+.prop-icon {
+  font-size: 1rem;
+}
+
+.landing-prop-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(250, 247, 242, 0.15);
+}
+
+@media (max-width: 768px) {
+  .landing-prop-divider {
+    display: none;
+  }
+  .landing-hero__props {
+    border-radius: 12px;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+  }
+}
+
+/* --- 2. Featured Editorial SEO Section --- */
+.landing-seo-section {
+  position: relative;
+  padding: 3rem 1.5rem 4.5rem;
+  background: #0E0C0A;
+}
+
+.landing-seo-container {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.landing-seo-card {
+  position: relative;
+  padding: 3.5rem;
+  background: linear-gradient(145deg, rgba(28, 24, 21, 0.85) 0%, rgba(18, 16, 14, 0.95) 100%);
+  border: 1px solid rgba(212, 168, 83, 0.22);
+  border-radius: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+.landing-seo-card::before {
+  content: '“';
+  position: absolute;
+  top: 1.5rem;
+  right: 2.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 6rem;
+  line-height: 1;
+  color: rgba(212, 168, 83, 0.08);
+  pointer-events: none;
+}
+
+.landing-seo-card__header {
+  margin-bottom: 1.75rem;
+}
+
+.landing-seo-card__tag {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #D4A853;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.landing-seo-card__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+  font-weight: 400;
+  line-height: 1.22;
+  color: #FAF7F2;
+}
+
+.landing-seo-card__body {
+  margin-bottom: 2.2rem;
+}
+
+.landing-seo-card__paragraph {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: rgba(250, 247, 242, 0.82);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+
+.landing-seo-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(250, 247, 242, 0.08);
+}
+
+.landing-meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(250, 247, 242, 0.04);
+  border: 1px solid rgba(250, 247, 242, 0.12);
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+}
+
+.chip-label {
+  color: rgba(250, 247, 242, 0.45);
+  font-weight: 400;
+}
+
+.chip-val {
+  color: #FAF7F2;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .landing-seo-card {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* --- 3. Loading & Not Found States --- */
+.landing-loading-state,
+.landing-not-found {
+  min-height: 75vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 1.5rem;
+}
+
+.landing-spinner {
+  width: 48px;
+  height: 48px;
+  border: 2px solid rgba(212, 168, 83, 0.18);
+  border-top-color: #D4A853;
+  border-radius: 50%;
+  animation: spin 0.85s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.landing-loading-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  font-style: italic;
+  color: rgba(250, 247, 242, 0.75);
+}
+
+.landing-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #D4A853;
+  margin-bottom: 1rem;
+}
+
+.landing-nf-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem;
+  font-weight: 400;
+  margin-bottom: 1.25rem;
+}
+
+.landing-nf-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  color: rgba(250, 247, 242, 0.7);
+  max-width: 540px;
+  line-height: 1.6;
+  margin-bottom: 2.2rem;
+}

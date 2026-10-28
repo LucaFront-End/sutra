@@ -30,6 +30,7 @@ import Events from './pages/Events';
 import Contact from './pages/Contact';
 import MysteryBox from './pages/MysteryBox';
 import Account from './pages/Account';
+import DynamicLanding from './pages/DynamicLanding';
 
 export default function App() {
   const navigate = useNavigate();
@@ -213,6 +214,16 @@ export default function App() {
           <Route 
             path="/login" 
             element={<Account onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+
+          {/* Landings Dinámicas SEO (Programmatic SEO desde Supabase / CSV) */}
+          <Route 
+            path="/landing/:slug" 
+            element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+          <Route 
+            path="/:slug" 
+            element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
           />
 
           {/* Catch-all */}

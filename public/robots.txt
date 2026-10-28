@@ -5,9 +5,10 @@ Disallow: /cuenta
 Disallow: /mi-cuenta
 Disallow: /login
 
-# Sitemaps Index oficial con sub-sitemaps agrupados
+# Sitemaps Index oficial con subgrupos divididos
 Sitemap: https://www.sutramexico.com/sitemap.xml
 Sitemap: https://www.sutramexico.com/sitemap-main.xml
 Sitemap: https://www.sutramexico.com/sitemap-landings.xml
+Sitemap: https://www.sutramexico.com/sitemap-seo-landings.xml
 Sitemap: https://www.sutramexico.com/sitemap-productos.xml
 Sitemap: https://www.sutramexico.com/sitemap-blog.xml

@@ -1,10 +1,12 @@
 import fs from 'fs';
 import path from 'path';
+import readline from 'readline';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PUBLIC_DIR = path.resolve(__dirname, '../public');
+const CSV_PATH = path.resolve(__dirname, '../SUTRA SEO LANDING_rows.csv');
 
 const BASE_URL = 'https://www.sutramexico.com';
 const TODAY = new Date().toISOString().split('T')[0];
@@ -194,6 +196,87 @@ const BLOG_ARTICLES = [
   },
 ];
 
+// 5. CARGA DINÁMICA DE SLUGS DE LANDINGS (Desde Supabase o CSV)
+async function loadDynamicLandingSlugs() {
+  const slugs = new Set();
+
+  // Intento 1: Si hay variables de entorno de Supabase configuradas, consultar Supabase
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+  if (supabaseUrl && supabaseKey && !supabaseUrl.includes('TU_SUPABASE_URL')) {
+    try {
+      console.log('Consultando slugs en tiempo real desde Supabase...');
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      const tableName = process.env.VITE_SUPABASE_LANDINGS_TABLE || 'sutra_seo_landings';
+
+      let page = 0;
+      const pageSize = 1000;
+      let hasMore = true;
+
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from(tableName)
+          .select('Slug, slug')
+          .range(page * pageSize, (page + 1) * pageSize - 1);
+
+        if (error || !data || data.length === 0) {
+          hasMore = false;
+        } else {
+          data.forEach((row) => {
+            const s = row.Slug || row.slug;
+            if (s) slugs.add(String(s).trim().toLowerCase());
+          });
+          page++;
+          if (data.length < pageSize) hasMore = false;
+        }
+      }
+
+      if (slugs.size > 0) {
+        console.log(`✓ Obtenidos ${slugs.size} slugs directamente desde Supabase`);
+        return Array.from(slugs);
+      }
+    } catch (err) {
+      console.warn('Advertencia consultando Supabase:', err.message);
+    }
+  }
+
+  // Intento 2: Lectura en streaming ultrarrápida del archivo CSV
+  if (fs.existsSync(CSV_PATH)) {
+    console.log('Leyendo catálogo completo de landings desde CSV...');
+    const rl = readline.createInterface({
+      input: fs.createReadStream(CSV_PATH),
+      crlfDelay: Infinity,
+    });
+
+    let isHeader = true;
+    let slugIndex = 2; // Por defecto columna 3: Slug
+
+    for await (const line of rl) {
+      if (isHeader) {
+        const headers = line.split(',');
+        const idx = headers.findIndex((h) => h.trim().toLowerCase() === 'slug');
+        if (idx !== -1) slugIndex = idx;
+        isHeader = false;
+        continue;
+      }
+
+      // Extracción rápida de la columna de slug
+      const parts = line.split(',');
+      const candidateSlug = parts[slugIndex]?.trim().replace(/^"|"$/g, '');
+      if (candidateSlug && candidateSlug.length > 2) {
+        slugs.add(candidateSlug.toLowerCase());
+      }
+    }
+
+    console.log(`✓ Procesados ${slugs.size} slugs únicos desde CSV`);
+    return Array.from(slugs);
+  }
+
+  return [];
+}
+
 // GENERADOR SITEMAP MAIN (Institucional)
 function generateMainSitemap() {
   const urls = MAIN_PAGES.map((page) => `  <url>
@@ -209,7 +292,7 @@ ${urls}
 </urlset>`;
 }
 
-// GENERADOR SITEMAP LANDINGS DINÁMICAS (Categorías y Colecciones)
+// GENERADOR SITEMAP LANDINGS CATEGORÍAS (Colecciones del catálogo)
 function generateLandingsSitemap() {
   const urls = LANDING_PAGES.map((page) => `  <url>
     <loc>${BASE_URL}${page.url}</loc>
@@ -224,7 +307,7 @@ ${urls}
 </urlset>`;
 }
 
-// GENERADOR SITEMAP PRODUCTOS DINÁMICOS (Con metadatos de imágenes de Google)
+// GENERADOR SITEMAP PRODUCTOS DINÁMICOS (Con imágenes)
 function generateProductsSitemap() {
   const urls = PRODUCTS.map((prod) => `  <url>
     <loc>${BASE_URL}/producto/${escapeXml(prod.slug)}</loc>
@@ -245,7 +328,7 @@ ${urls}
 </urlset>`;
 }
 
-// GENERADOR SITEMAP BLOG / COMUNIDAD (Con metadatos e imágenes)
+// GENERADOR SITEMAP BLOG / COMUNIDAD (Con imágenes)
 function generateBlogSitemap() {
   const urls = BLOG_ARTICLES.map((art) => `  <url>
     <loc>${BASE_URL}/comunidad/${escapeXml(art.id)}</loc>
@@ -266,26 +349,46 @@ ${urls}
 </urlset>`;
 }
 
-// GENERADOR SITEMAP INDEX (Maestro general)
+// GENERADOR SITEMAP LANDINGS DINÁMICAS SEO (Programmatic SEO por Ciudades y Búsquedas)
+function generateSeoLandingsSitemap(landingSlugs) {
+  const urls = landingSlugs.map((slug) => `  <url>
+    <loc>${BASE_URL}/${escapeXml(slug)}</loc>
+    <lastmod>${TODAY}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.70</priority>
+  </url>`).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`;
+}
+
+// GENERADOR SITEMAP INDEX (Maestro general agrupado)
 function generateIndexSitemap() {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Sitemap 1: Páginas Principales e Institucionales -->
+  <!-- Subgrupo 1: Páginas Principales e Institucionales -->
   <sitemap>
     <loc>${BASE_URL}/sitemap-main.xml</loc>
     <lastmod>${TODAY}</lastmod>
   </sitemap>
-  <!-- Sitemap 2: Landings Dinámicas y Categorías -->
+  <!-- Subgrupo 2: Landings de Categorías del Catálogo -->
   <sitemap>
     <loc>${BASE_URL}/sitemap-landings.xml</loc>
     <lastmod>${TODAY}</lastmod>
   </sitemap>
-  <!-- Sitemap 3: Páginas Dinámicas de Productos (con Imágenes) -->
+  <!-- Subgrupo 3: Landings Dinámicas Programmatic SEO (Ciudades & Estados) -->
+  <sitemap>
+    <loc>${BASE_URL}/sitemap-seo-landings.xml</loc>
+    <lastmod>${TODAY}</lastmod>
+  </sitemap>
+  <!-- Subgrupo 4: Páginas Dinámicas de Productos (con Imágenes) -->
   <sitemap>
     <loc>${BASE_URL}/sitemap-productos.xml</loc>
     <lastmod>${TODAY}</lastmod>
   </sitemap>
-  <!-- Sitemap 4: Páginas Dinámicas de Comunidad y Blog -->
+  <!-- Subgrupo 5: Páginas Dinámicas de Comunidad y Blog -->
   <sitemap>
     <loc>${BASE_URL}/sitemap-blog.xml</loc>
     <lastmod>${TODAY}</lastmod>
@@ -302,38 +405,52 @@ Disallow: /cuenta
 Disallow: /mi-cuenta
 Disallow: /login
 
-# Sitemaps Index oficial con sub-sitemaps agrupados
+# Sitemaps Index oficial con subgrupos divididos
 Sitemap: ${BASE_URL}/sitemap.xml
 Sitemap: ${BASE_URL}/sitemap-main.xml
 Sitemap: ${BASE_URL}/sitemap-landings.xml
+Sitemap: ${BASE_URL}/sitemap-seo-landings.xml
 Sitemap: ${BASE_URL}/sitemap-productos.xml
 Sitemap: ${BASE_URL}/sitemap-blog.xml
 `;
 }
 
 // EXECUTE GENERATION
-if (!fs.existsSync(PUBLIC_DIR)) {
-  fs.mkdirSync(PUBLIC_DIR, { recursive: true });
+async function run() {
+  if (!fs.existsSync(PUBLIC_DIR)) {
+    fs.mkdirSync(PUBLIC_DIR, { recursive: true });
+  }
+
+  console.log('Generando estructura de sitemaps divididos por subgrupos...');
+
+  // Carga dinámica de slugs para landings SEO
+  const landingSlugs = await loadDynamicLandingSlugs();
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), generateIndexSitemap(), 'utf-8');
+  console.log('✓ Creado: public/sitemap.xml (Sitemap Index maestro con 5 subgrupos)');
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-main.xml'), generateMainSitemap(), 'utf-8');
+  console.log('✓ Creado: public/sitemap-main.xml (Páginas principales)');
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-landings.xml'), generateLandingsSitemap(), 'utf-8');
+  console.log('✓ Creado: public/sitemap-landings.xml (Categorías y colecciones)');
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-seo-landings.xml'), generateSeoLandingsSitemap(landingSlugs), 'utf-8');
+  console.log(`✓ Creado: public/sitemap-seo-landings.xml (${landingSlugs.length} landings dinámicas SEO)`);
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-productos.xml'), generateProductsSitemap(), 'utf-8');
+  console.log('✓ Creado: public/sitemap-productos.xml (Páginas de producto con metadatos de imágenes)');
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-blog.xml'), generateBlogSitemap(), 'utf-8');
+  console.log('✓ Creado: public/sitemap-blog.xml (Artículos dinámicos de blog con imágenes)');
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'robots.txt'), generateRobotsTxt(), 'utf-8');
+  console.log('✓ Creado: public/robots.txt (Directivas de rastreo e indexación)');
+
+  console.log('¡Todos los sitemaps y robots.txt generados con éxito!');
 }
 
-console.log('Generando estructura de sitemaps divididos por grupos...');
-
-fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), generateIndexSitemap(), 'utf-8');
-console.log('✓ Creado: public/sitemap.xml (Sitemap Index maestro)');
-
-fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-main.xml'), generateMainSitemap(), 'utf-8');
-console.log('✓ Creado: public/sitemap-main.xml (Páginas principales)');
-
-fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-landings.xml'), generateLandingsSitemap(), 'utf-8');
-console.log('✓ Creado: public/sitemap-landings.xml (Landings dinámicas de categorías)');
-
-fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-productos.xml'), generateProductsSitemap(), 'utf-8');
-console.log('✓ Creado: public/sitemap-productos.xml (Páginas dinámicas de producto con metainformación de imágenes)');
-
-fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-blog.xml'), generateBlogSitemap(), 'utf-8');
-console.log('✓ Creado: public/sitemap-blog.xml (Artículos dinámicos de blog con imágenes)');
-
-fs.writeFileSync(path.join(PUBLIC_DIR, 'robots.txt'), generateRobotsTxt(), 'utf-8');
-console.log('✓ Creado: public/robots.txt (Directivas de rastreo e indexación)');
-
-console.log('¡Todos los sitemaps y robots.txt generados con éxito!');
+run().catch((err) => {
+  console.error('Error generando sitemaps:', err);
+  process.exit(1);
+});
