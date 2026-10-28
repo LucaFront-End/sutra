@@ -82,7 +82,7 @@ export default function Zonas({ onNavigate }) {
 
   const handleCardClick = (slug) => {
     if (onNavigate) onNavigate('dynamicLanding', { slug });
-    navigate(`/${slug}`);
+    navigate(`/ciudades/${slug}`);
   };
 
   // Generate pagination numbers
@@ -229,10 +229,17 @@ export default function Zonas({ onNavigate }) {
           ) : landings.length > 0 ? (
             <div className="zonas-grid">
               {landings.map((landing) => (
-                <article
+                <Link
                   key={landing.slug || landing.id}
+                  to={`/ciudades/${landing.slug}`}
                   className="zona-card"
-                  onClick={() => handleCardClick(landing.slug)}
+                  onClick={(e) => {
+                    if (onNavigate) {
+                      e.preventDefault();
+                      onNavigate('dynamicLanding', { slug: landing.slug });
+                      navigate(`/ciudades/${landing.slug}`);
+                    }
+                  }}
                 >
                   <div className="zona-card__top">
                     <span className="zona-card__location-badge">
@@ -257,7 +264,7 @@ export default function Zonas({ onNavigate }) {
                       Visitar Santuario <span className="arrow">→</span>
                     </span>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           ) : (

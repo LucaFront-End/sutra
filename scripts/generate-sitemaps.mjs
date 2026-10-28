@@ -353,7 +353,7 @@ ${urls}
 // GENERADOR SITEMAP LANDINGS DINÁMICAS SEO (Programmatic SEO por Ciudades y Búsquedas)
 function generateSeoLandingsSitemap(landingSlugs) {
   const urls = landingSlugs.map((slug) => `  <url>
-    <loc>${BASE_URL}/${escapeXml(slug)}</loc>
+    <loc>${BASE_URL}/ciudades/${escapeXml(slug)}</loc>
     <lastmod>${TODAY}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>

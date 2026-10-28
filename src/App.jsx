@@ -1,6 +1,11 @@
 import { useState } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useCart } from './context/CartContext';
+
+function LegacyLandingRedirect() {
+  const { slug } = useParams();
+  return <Navigate to={`/ciudades/${slug}`} replace />;
+}
 import ScrollToTop from './components/ScrollToTop';
 import SEO from './components/SEO';
 import Navbar from './components/Navbar';
@@ -80,6 +85,11 @@ export default function App() {
       navigate('/contacto');
     } else if (page === 'mysterybox' || page === 'misterybox' || page === 'suscripcion') {
       navigate('/mysterybox');
+    } else if (page === 'dynamicLanding') {
+      const slug = product?.slug || '';
+      navigate(`/ciudades/${slug}`);
+    } else if (page === 'zonas' || page === 'ciudades') {
+      navigate('/zonas');
     } else {
       navigate(page);
     }
@@ -222,15 +232,21 @@ export default function App() {
             path="/zonas" 
             element={<Zonas onNavigate={handleNavigate} />} 
           />
-
-          {/* Landings Dinámicas SEO (Programmatic SEO desde Supabase / CSV) */}
           <Route 
-            path="/landing/:slug" 
+            path="/ciudades" 
+            element={<Navigate to="/zonas" replace />} 
+          />
+
+          {/* Landings Dinámicas SEO por Ciudades (/ciudades/:slug) */}
+          <Route 
+            path="/ciudades/:slug" 
             element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
           />
+
+          {/* Redirecciones de compatibilidad */}
           <Route 
-            path="/:slug" 
-            element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+            path="/landing/:slug" 
+            element={<LegacyLandingRedirect />} 
           />
 
           {/* Catch-all */}

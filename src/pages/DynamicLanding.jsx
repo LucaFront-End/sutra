@@ -90,7 +90,7 @@ export default function DynamicLanding({ onNavigate, onAddToCart }) {
     '@type': 'WebPage',
     name: landing.tituloSeo || landing.tituloPagina,
     description: landing.metadescripcion || landing.excerpt,
-    url: `https://www.sutramexico.com/${landing.slug}`,
+    url: `https://www.sutramexico.com/ciudades/${landing.slug}`,
     about: {
       '@type': 'Thing',
       name: landing.fraseBusqueda || 'Velas de arena',
@@ -119,7 +119,7 @@ export default function DynamicLanding({ onNavigate, onAddToCart }) {
       <SEO
         title={landing.tituloSeo}
         description={landing.metadescripcion}
-        canonical={`https://www.sutramexico.com/${landing.slug}`}
+        canonical={`https://www.sutramexico.com/ciudades/${landing.slug}`}
         type="website"
         schema={schema}
       />
