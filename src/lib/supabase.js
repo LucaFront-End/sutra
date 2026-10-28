@@ -21,3 +21,7 @@ export const supabase = isSupabaseConfigured
 
 const rawTable = import.meta.env.VITE_SUPABASE_LANDINGS_TABLE || 'SUTRA SEO LANDING';
 export const DEFAULT_LANDINGS_TABLE = rawTable.replace(/^"|"$/g, '').trim();
+
+const rawTiendasTable = import.meta.env.VITE_SUPABASE_TIENDAS_TABLE || 'SUTRA SEO TIENDA';
+export const DEFAULT_TIENDAS_TABLE = rawTiendasTable.replace(/^"|"$/g, '').trim();
+

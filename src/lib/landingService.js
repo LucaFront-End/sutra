@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured, DEFAULT_LANDINGS_TABLE } from './supabase';
+import { supabase, isSupabaseConfigured, DEFAULT_LANDINGS_TABLE, DEFAULT_TIENDAS_TABLE } from './supabase';
 import fallbackLandings from '../data/landingFallback.json';
 import fallbackTiendas from '../data/tiendasFallback.json';
 
@@ -90,12 +90,13 @@ export async function getLandingBySlug(slug, type = 'any') {
   // Define candidate tables based on type
   let candidateTables = [];
   if (type === 'tienda') {
-    candidateTables = ['SUTRA SEO TIENDA', 'sutra_seo_tienda', 'sutra_seo_tiendas', 'tiendas'];
+    candidateTables = [DEFAULT_TIENDAS_TABLE, 'SUTRA SEO TIENDA', 'sutra_seo_tienda', 'sutra_seo_tiendas', 'tiendas'];
   } else if (type === 'ciudad') {
     candidateTables = [DEFAULT_LANDINGS_TABLE, 'SUTRA SEO LANDING', 'sutra_seo_landings', 'landings'];
   } else {
     candidateTables = [
       DEFAULT_LANDINGS_TABLE,
+      DEFAULT_TIENDAS_TABLE,
       'SUTRA SEO LANDING',
       'SUTRA SEO TIENDA',
       'sutra_seo_landings',
@@ -196,7 +197,7 @@ export async function getLandingsHub({
   const from = page * pageSize;
   const to = from + pageSize - 1;
   const isTienda = type === 'tiendas';
-  const tableName = isTienda ? 'SUTRA SEO TIENDA' : DEFAULT_LANDINGS_TABLE;
+  const tableName = isTienda ? (DEFAULT_TIENDAS_TABLE || 'SUTRA SEO TIENDA') : DEFAULT_LANDINGS_TABLE;
   const fallbackSource = isTienda ? fallbackTiendas : fallbackLandings;
   const routePrefix = isTienda ? 'tiendas' : 'ciudades';
 
