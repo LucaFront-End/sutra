@@ -36,16 +36,15 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
 
   const currentPath = location.pathname;
   const isHome = currentPath === '/';
-  const isShop = (currentPath === '/tienda' || currentPath.startsWith('/tienda/')) || currentPath.startsWith('/producto') || currentPath.startsWith('/productos');
-  const isTiendaLanding = currentPath.startsWith('/tiendas');
+  const isShop = (currentPath === '/tienda' || currentPath.startsWith('/tienda/')) || currentPath.startsWith('/producto') || currentPath.startsWith('/productos') || currentPath.startsWith('/tiendas');
   const isEvents = currentPath.startsWith('/eventos');
   const isAbout = currentPath.startsWith('/nosotros');
   const isCommunity = currentPath.startsWith('/comunidad') || currentPath.startsWith('/blog');
   const isContact = currentPath.startsWith('/contacto') || currentPath.startsWith('/contact');
   const isMystery = currentPath.startsWith('/mysterybox') || currentPath.startsWith('/misterybox') || currentPath.startsWith('/suscripcion');
 
-  // When not on home or pages with dark heroes (like /zonas or dynamic landings), treat navbar as light-theme (dark text)
-  const isDarkHero = isHome || currentPath.startsWith('/zonas') || currentPath.startsWith('/ciudades') || isTiendaLanding || (!isShop && !isAbout && !isEvents && !isCommunity && !isContact && !isMystery);
+  // When on home or pages with dark heroes (like /zonas or /ciudades), treat navbar as dark hero (light text)
+  const isDarkHero = isHome || currentPath.startsWith('/zonas') || currentPath.startsWith('/ciudades');
   const isLightTheme = !isDarkHero;
   const showDarkLogo = isLightTheme || scrolled || menuOpen;
 

@@ -17,12 +17,8 @@ import Newsletter from '../components/Newsletter';
 
 import './DynamicLanding.css';
 
-export default function DynamicLanding({ onNavigate, onAddToCart, type = null }) {
+export default function DynamicLanding({ onNavigate, onAddToCart }) {
   const { slug } = useParams();
-  const location = useLocation();
-
-  const isTienda = type === 'tienda' || location.pathname.startsWith('/tiendas');
-  const routePrefix = isTienda ? 'tiendas' : 'ciudades';
 
   const [landing, setLanding] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,12 +33,11 @@ export default function DynamicLanding({ onNavigate, onAddToCart, type = null })
       setError(false);
 
       try {
-        const queryType = isTienda ? 'tienda' : 'ciudad';
-        const data = await getLandingBySlug(slug, queryType);
+        const data = await getLandingBySlug(slug, 'ciudad');
         if (!isMounted) return;
 
         if (data) {
-          setLanding({ ...data, isTienda, routePrefix });
+          setLanding({ ...data, isTienda: false, routePrefix: 'ciudades' });
           setError(false);
         } else {
           setError(true);
@@ -60,7 +55,7 @@ export default function DynamicLanding({ onNavigate, onAddToCart, type = null })
     return () => {
       isMounted = false;
     };
-  }, [slug, isTienda, routePrefix]);
+  }, [slug]);
 
   // Loading skeleton state
   if (loading) {
@@ -95,7 +90,7 @@ export default function DynamicLanding({ onNavigate, onAddToCart, type = null })
     '@type': 'WebPage',
     name: landing.tituloSeo || landing.tituloPagina,
     description: landing.metadescripcion || landing.excerpt,
-    url: `https://www.sutramexico.com/${routePrefix}/${landing.slug}`,
+    url: `https://www.sutramexico.com/ciudades/${landing.slug}`,
     about: {
       '@type': 'Thing',
       name: landing.fraseBusqueda || 'Velas de arena',
@@ -124,7 +119,7 @@ export default function DynamicLanding({ onNavigate, onAddToCart, type = null })
       <SEO
         title={landing.tituloSeo}
         description={landing.metadescripcion}
-        canonical={`https://www.sutramexico.com/${routePrefix}/${landing.slug}`}
+        canonical={`https://www.sutramexico.com/ciudades/${landing.slug}`}
         type="website"
         schema={schema}
       />

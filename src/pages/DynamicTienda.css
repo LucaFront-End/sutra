@@ -1,0 +1,128 @@
+/* ==========================================================================
+   DYNAMIC TIENDA PAGE — LUXURY SHOP OVERLAY STYLING
+   ========================================================================== */
+
+.dynamic-tienda-breadcrumbs {
+  max-width: 1280px;
+  margin: 0 auto 1.5rem;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8C7E76;
+}
+
+.dynamic-tienda-breadcrumbs .breadcrumb-link {
+  color: #8C7E76;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.dynamic-tienda-breadcrumbs .breadcrumb-link:hover {
+  color: #9C7A4A;
+}
+
+.dynamic-tienda-breadcrumbs .breadcrumb-separator {
+  opacity: 0.45;
+}
+
+.dynamic-tienda-breadcrumbs .breadcrumb-current {
+  color: #2C1E14;
+  font-weight: 500;
+}
+
+.dynamic-tienda-header {
+  max-width: 820px !important;
+  margin-bottom: 2.5rem !important;
+}
+
+.dynamic-tienda-header .shop-tag {
+  color: #9C7A4A;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  background: rgba(156, 122, 74, 0.08);
+  border: 1px solid rgba(156, 122, 74, 0.25);
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.dynamic-tienda-header .shop-title {
+  font-size: clamp(2.1rem, 4vw, 3rem) !important;
+  line-height: 1.15;
+  color: #201D1A;
+}
+
+.dynamic-tienda-header .shop-subtitle {
+  font-size: 1.05rem;
+  color: #5A524A;
+  line-height: 1.6;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Rich SEO Narrative Box */
+.dynamic-tienda-seo-box {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(197, 168, 128, 0.3);
+  border-radius: 12px;
+  padding: 1.25rem 1.6rem;
+  margin: 1.75rem auto 0;
+  max-width: 760px;
+  box-shadow: 0 4px 16px rgba(44, 30, 20, 0.03);
+  backdrop-filter: blur(8px);
+}
+
+.dynamic-tienda-seo-box p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #6E5F56;
+  text-align: left;
+}
+
+/* Not Found State */
+.dynamic-tienda-not-found {
+  text-align: center;
+  padding: 5rem 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.btn-tienda-primary {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.9rem 2rem;
+  background: #201D1A;
+  color: #FAF8F5;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.btn-tienda-primary:hover {
+  background: #C5A880;
+  color: #201D1A;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(197, 168, 128, 0.3);
+}
+
+@media (max-width: 768px) {
+  .dynamic-tienda-breadcrumbs {
+    padding: 0 1rem;
+    font-size: 0.74rem;
+  }
+
+  .dynamic-tienda-seo-box {
+    padding: 1rem 1.2rem;
+    margin-top: 1.25rem;
+  }
+}

@@ -36,6 +36,7 @@ import Contact from './pages/Contact';
 import MysteryBox from './pages/MysteryBox';
 import Account from './pages/Account';
 import DynamicLanding from './pages/DynamicLanding';
+import DynamicTienda from './pages/DynamicTienda';
 import Zonas from './pages/Zonas';
 
 export default function App() {
@@ -102,6 +103,7 @@ export default function App() {
 
   const handleAddToCart = (product, qty = 1, variant = null) => {
     addToCart(product, qty, variant);
+    setIsCartOpen(true);
   };
 
   return (
@@ -242,16 +244,16 @@ export default function App() {
             element={<Navigate to="/zonas" replace />} 
           />
 
-          {/* Landings Dinámicas SEO por Ciudades (/ciudades/:slug) */}
+          {/* Landings Dinámicas SEO por Ciudades (/ciudades/:slug - Adapta Home) */}
           <Route 
             path="/ciudades/:slug" 
-            element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} type="ciudad" />} 
+            element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
           />
 
-          {/* Landings Dinámicas SEO Tiendas Oficiales (/tiendas/:slug) */}
+          {/* Landings Dinámicas SEO Tiendas Oficiales (/tiendas/:slug - Adapta Tienda / Shop) */}
           <Route 
             path="/tiendas/:slug" 
-            element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} type="tienda" />} 
+            element={<DynamicTienda onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
           />
           <Route 
             path="/tiendas" 
