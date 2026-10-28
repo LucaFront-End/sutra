@@ -88,6 +88,11 @@ export default function App() {
     } else if (page === 'dynamicLanding') {
       const slug = product?.slug || '';
       navigate(`/ciudades/${slug}`);
+    } else if (page === 'dynamicTienda') {
+      const slug = product?.slug || '';
+      navigate(`/tiendas/${slug}`);
+    } else if (page === 'tiendas') {
+      navigate('/tienda');
     } else if (page === 'zonas' || page === 'ciudades') {
       navigate('/zonas');
     } else {
@@ -240,7 +245,17 @@ export default function App() {
           {/* Landings Dinámicas SEO por Ciudades (/ciudades/:slug) */}
           <Route 
             path="/ciudades/:slug" 
-            element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+            element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} type="ciudad" />} 
+          />
+
+          {/* Landings Dinámicas SEO Tiendas Oficiales (/tiendas/:slug) */}
+          <Route 
+            path="/tiendas/:slug" 
+            element={<DynamicLanding onNavigate={handleNavigate} onAddToCart={handleAddToCart} type="tienda" />} 
+          />
+          <Route 
+            path="/tiendas" 
+            element={<Navigate to="/tienda" replace />} 
           />
 
           {/* Redirecciones de compatibilidad */}

@@ -164,7 +164,7 @@ export default function Hero({ onNavigate, landing = null }) {
         {landing && (
           <div className="hero__landing-badge">
             <span className="hero__landing-pill">
-              ✧ SANTUARIO EN {landing.ciudad ? `${landing.ciudad.toUpperCase()} · ${landing.estado?.toUpperCase() || 'MÉXICO'}` : 'MÉXICO'}
+              ✧ {landing.isTienda ? 'TIENDA OFICIAL EN' : 'SANTUARIO EN'} {landing.ciudad ? `${landing.ciudad.toUpperCase()} · ${landing.estado?.toUpperCase() || 'MÉXICO'}` : 'MÉXICO'}
             </span>
           </div>
         )}

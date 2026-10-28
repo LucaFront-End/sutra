@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured, DEFAULT_LANDINGS_TABLE } from './supabase';
 import fallbackLandings from '../data/landingFallback.json';
+import fallbackTiendas from '../data/tiendasFallback.json';
 
 // In-memory cache for fast repeat visits
 const landingCache = new Map();
@@ -29,6 +30,8 @@ export function normalizeLandingData(raw) {
     ),
     excerpt: clean(
       raw.Excerpt || 
+      raw['Excerpt de página'] || 
+      raw['Excerpt de pagina'] || 
       raw.excerpt || 
       raw.description || 
       'Descubre la colección de velas en polvo y velas de arena de Sutra México.'
@@ -71,37 +74,47 @@ export function normalizeLandingData(raw) {
  * 1. Si Supabase está conectado, consulta en tiempo real la tabla.
  * 2. Si no o durante desarrollo local sin credenciales, busca en el fallback.
  * 3. Si se añade una nueva fila en Supabase, se refleja de inmediato sin tocar código.
+ * @param {string} slug
+ * @param {'any' | 'ciudad' | 'tienda'} type
  */
-export async function getLandingBySlug(slug) {
+export async function getLandingBySlug(slug, type = 'any') {
   if (!slug) return null;
   const normalizedSlug = String(slug).trim().toLowerCase();
+  const cacheKey = `${type}:${normalizedSlug}`;
 
   // 1. Revisar caché en memoria
-  if (landingCache.has(normalizedSlug)) {
-    return landingCache.get(normalizedSlug);
+  if (landingCache.has(cacheKey)) {
+    return landingCache.get(cacheKey);
+  }
+
+  // Define candidate tables based on type
+  let candidateTables = [];
+  if (type === 'tienda') {
+    candidateTables = ['SUTRA SEO TIENDA', 'sutra_seo_tienda', 'sutra_seo_tiendas', 'tiendas'];
+  } else if (type === 'ciudad') {
+    candidateTables = [DEFAULT_LANDINGS_TABLE, 'SUTRA SEO LANDING', 'sutra_seo_landings', 'landings'];
+  } else {
+    candidateTables = [
+      DEFAULT_LANDINGS_TABLE,
+      'SUTRA SEO LANDING',
+      'SUTRA SEO TIENDA',
+      'sutra_seo_landings',
+      'sutra_seo_tienda',
+      'landings',
+      'tiendas',
+    ];
   }
 
   // 2. Consulta en tiempo real a Supabase (100% dinámico)
   if (isSupabaseConfigured && supabase) {
     try {
-      // Intenta primero con la tabla configurada
-      const candidateTables = [
-        DEFAULT_LANDINGS_TABLE,
-        'sutra_seo_landings',
-        'sutra_seo_landing',
-        'landings',
-        'seo_landings',
-      ];
-
       for (const table of candidateTables) {
-        // Intenta primero por 'Slug' (casing exacto del CSV en Supabase)
         let { data, error } = await supabase
           .from(table)
           .select('*')
           .eq('Slug', normalizedSlug)
           .maybeSingle();
 
-        // Si la columna 'Slug' no existe (código 42703), reintenta por 'slug' en minúsculas
         if (error && error.code === '42703') {
           const retry = await supabase
             .from(table)
@@ -114,7 +127,7 @@ export async function getLandingBySlug(slug) {
 
         if (!error && data) {
           const normalized = normalizeLandingData(data);
-          landingCache.set(normalizedSlug, normalized);
+          landingCache.set(cacheKey, normalized);
           return normalized;
         }
       }
@@ -124,17 +137,34 @@ export async function getLandingBySlug(slug) {
   }
 
   // 3. Fallback local para pruebas y resiliencia offline
-  const fallback = fallbackLandings.find(
-    (item) => String(item.Slug || item.slug).toLowerCase() === normalizedSlug
-  );
+  let fallback = null;
+  if (type === 'tienda') {
+    fallback = fallbackTiendas.find(
+      (item) => String(item.Slug || item.slug).toLowerCase() === normalizedSlug
+    );
+  } else if (type === 'ciudad') {
+    fallback = fallbackLandings.find(
+      (item) => String(item.Slug || item.slug).toLowerCase() === normalizedSlug
+    );
+  } else {
+    fallback = fallbackLandings.find(
+      (item) => String(item.Slug || item.slug).toLowerCase() === normalizedSlug
+    ) || fallbackTiendas.find(
+      (item) => String(item.Slug || item.slug).toLowerCase() === normalizedSlug
+    );
+  }
 
   if (fallback) {
     const normalized = normalizeLandingData(fallback);
-    landingCache.set(normalizedSlug, normalized);
+    landingCache.set(cacheKey, normalized);
     return normalized;
   }
 
   return null;
+}
+
+export async function getTiendaBySlug(slug) {
+  return getLandingBySlug(slug, 'tienda');
 }
 
 export const POPULAR_STATES = [
@@ -154,21 +184,26 @@ export const POPULAR_STATES = [
 
 /**
  * Consulta un conjunto paginado y filtrado de landings dinámicas desde Supabase
- * en tiempo real para el hub repetidor de Zonas.
+ * en tiempo real para el hub repetidor de Zonas (ciudades o tiendas).
  */
 export async function getLandingsHub({
   page = 0,
   pageSize = 24,
   search = '',
   estado = '',
+  type = 'ciudades', // 'ciudades' | 'tiendas'
 } = {}) {
   const from = page * pageSize;
   const to = from + pageSize - 1;
+  const isTienda = type === 'tiendas';
+  const tableName = isTienda ? 'SUTRA SEO TIENDA' : DEFAULT_LANDINGS_TABLE;
+  const fallbackSource = isTienda ? fallbackTiendas : fallbackLandings;
+  const routePrefix = isTienda ? 'tiendas' : 'ciudades';
 
   if (isSupabaseConfigured && supabase) {
     try {
       let query = supabase
-        .from(DEFAULT_LANDINGS_TABLE)
+        .from(tableName)
         .select('*', { count: 'exact' });
 
       if (estado && estado !== 'Todos' && estado !== 'all') {
@@ -186,11 +221,12 @@ export async function getLandingsHub({
 
       if (!error && data && data.length > 0) {
         return {
-          landings: data.map(normalizeLandingData),
+          landings: data.map((item) => ({ ...normalizeLandingData(item), isTienda, routePrefix })),
           totalCount: count ?? data.length,
           totalPages: Math.ceil((count ?? data.length) / pageSize),
           currentPage: page,
           pageSize,
+          type,
         };
       }
     } catch (err) {
@@ -199,7 +235,7 @@ export async function getLandingsHub({
   }
 
   // Fallback local dataset
-  let list = fallbackLandings.map(normalizeLandingData);
+  let list = fallbackSource.map((item) => ({ ...normalizeLandingData(item), isTienda, routePrefix }));
   if (estado && estado !== 'Todos' && estado !== 'all') {
     list = list.filter((item) => item.estado.toLowerCase().includes(estado.toLowerCase()));
   }
@@ -221,5 +257,6 @@ export async function getLandingsHub({
     totalPages: Math.ceil(list.length / pageSize),
     currentPage: page,
     pageSize,
+    type,
   };
 }

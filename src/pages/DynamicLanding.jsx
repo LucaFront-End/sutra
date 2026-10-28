@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { getLandingBySlug } from '../lib/landingService';
 import SEO from '../components/SEO';
 
@@ -17,8 +17,12 @@ import Newsletter from '../components/Newsletter';
 
 import './DynamicLanding.css';
 
-export default function DynamicLanding({ onNavigate, onAddToCart }) {
+export default function DynamicLanding({ onNavigate, onAddToCart, type = null }) {
   const { slug } = useParams();
+  const location = useLocation();
+
+  const isTienda = type === 'tienda' || location.pathname.startsWith('/tiendas');
+  const routePrefix = isTienda ? 'tiendas' : 'ciudades';
 
   const [landing, setLanding] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,11 +37,12 @@ export default function DynamicLanding({ onNavigate, onAddToCart }) {
       setError(false);
 
       try {
-        const data = await getLandingBySlug(slug);
+        const queryType = isTienda ? 'tienda' : 'ciudad';
+        const data = await getLandingBySlug(slug, queryType);
         if (!isMounted) return;
 
         if (data) {
-          setLanding(data);
+          setLanding({ ...data, isTienda, routePrefix });
           setError(false);
         } else {
           setError(true);
@@ -55,7 +60,7 @@ export default function DynamicLanding({ onNavigate, onAddToCart }) {
     return () => {
       isMounted = false;
     };
-  }, [slug]);
+  }, [slug, isTienda, routePrefix]);
 
   // Loading skeleton state
   if (loading) {
@@ -90,7 +95,7 @@ export default function DynamicLanding({ onNavigate, onAddToCart }) {
     '@type': 'WebPage',
     name: landing.tituloSeo || landing.tituloPagina,
     description: landing.metadescripcion || landing.excerpt,
-    url: `https://www.sutramexico.com/ciudades/${landing.slug}`,
+    url: `https://www.sutramexico.com/${routePrefix}/${landing.slug}`,
     about: {
       '@type': 'Thing',
       name: landing.fraseBusqueda || 'Velas de arena',
@@ -119,7 +124,7 @@ export default function DynamicLanding({ onNavigate, onAddToCart }) {
       <SEO
         title={landing.tituloSeo}
         description={landing.metadescripcion}
-        canonical={`https://www.sutramexico.com/ciudades/${landing.slug}`}
+        canonical={`https://www.sutramexico.com/${routePrefix}/${landing.slug}`}
         type="website"
         schema={schema}
       />

@@ -7,6 +7,7 @@ import './Zonas.css';
 export default function Zonas({ onNavigate }) {
   const navigate = useNavigate();
 
+  const [hubType, setHubType] = useState('ciudades'); // 'ciudades' | 'tiendas'
   const [landings, setLandings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
@@ -19,7 +20,7 @@ export default function Zonas({ onNavigate }) {
   const searchTimeoutRef = useRef(null);
 
   // Fetch landings from Supabase dynamically
-  const fetchLandings = async (page = 0, searchTerm = search, state = selectedState) => {
+  const fetchLandings = async (page = 0, searchTerm = search, state = selectedState, type = hubType) => {
     setLoading(true);
     try {
       const res = await getLandingsHub({
@@ -27,6 +28,7 @@ export default function Zonas({ onNavigate }) {
         pageSize,
         search: searchTerm,
         estado: state,
+        type,
       });
 
       if (res) {
@@ -44,8 +46,14 @@ export default function Zonas({ onNavigate }) {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    fetchLandings(0, search, selectedState);
-  }, [selectedState]);
+    fetchLandings(0, search, selectedState, hubType);
+  }, [selectedState, hubType]);
+
+  const handleHubTypeChange = (type) => {
+    if (type === hubType) return;
+    setHubType(type);
+    setCurrentPage(0);
+  };
 
   // Debounced search handler
   const handleSearchChange = (e) => {
@@ -58,14 +66,14 @@ export default function Zonas({ onNavigate }) {
 
     searchTimeoutRef.current = setTimeout(() => {
       setCurrentPage(0);
-      fetchLandings(0, val, selectedState);
+      fetchLandings(0, val, selectedState, hubType);
     }, 350);
   };
 
   const handleClearSearch = () => {
     setSearch('');
     setCurrentPage(0);
-    fetchLandings(0, '', selectedState);
+    fetchLandings(0, '', selectedState, hubType);
   };
 
   const handleStateClick = (state) => {
@@ -76,13 +84,16 @@ export default function Zonas({ onNavigate }) {
   const handlePageChange = (newPage) => {
     if (newPage < 0 || newPage >= totalPages) return;
     setCurrentPage(newPage);
-    fetchLandings(newPage, search, selectedState);
+    fetchLandings(newPage, search, selectedState, hubType);
     window.scrollTo({ top: 400, behavior: 'smooth' });
   };
 
-  const handleCardClick = (slug) => {
-    if (onNavigate) onNavigate('dynamicLanding', { slug });
-    navigate(`/ciudades/${slug}`);
+  const handleCardClick = (slug, prefix) => {
+    const targetPrefix = prefix || (hubType === 'tiendas' ? 'tiendas' : 'ciudades');
+    if (onNavigate) {
+      onNavigate(targetPrefix === 'tiendas' ? 'dynamicTienda' : 'dynamicLanding', { slug });
+    }
+    navigate(`/${targetPrefix}/${slug}`);
   };
 
   // Generate pagination numbers
@@ -105,8 +116,8 @@ export default function Zonas({ onNavigate }) {
   return (
     <div className="zonas-page fade-in">
       <SEO
-        title="Zonas y Cobertura de Velas de Arena en México | Sutra"
-        description="Explora todos los santuarios, ciudades y zonas de cobertura de Sutra en México. Velas de arena artesanales, esencias botánicas y cajas de ritual con envío a todo el país."
+        title={hubType === 'tiendas' ? 'Tiendas Oficiales de Velas de Arena en México | Sutra' : 'Zonas y Cobertura de Velas de Arena en México | Sutra'}
+        description={hubType === 'tiendas' ? 'Encuentra las tiendas oficiales y puntos de distribución de velas de arena Sutra en México. Aromas botánicos, cera vegetal y recipientes artesanales.' : 'Explora todos los santuarios, ciudades y zonas de cobertura de Sutra en México. Velas de arena artesanales, esencias botánicas y cajas de ritual con envío a todo el país.'}
         canonical="https://sutramexico.com/zonas"
       />
 
@@ -116,14 +127,21 @@ export default function Zonas({ onNavigate }) {
           <nav className="zonas-breadcrumbs" aria-label="Miga de pan">
             <Link to="/" className="breadcrumb-link">Inicio</Link>
             <span className="breadcrumb-separator">/</span>
-            <span className="breadcrumb-current">Zonas & Cobertura</span>
+            <span className="breadcrumb-current">
+              {hubType === 'tiendas' ? 'Tiendas Oficiales' : 'Zonas & Cobertura'}
+            </span>
           </nav>
 
-          <span className="zonas-hero__tag">✧ COBERTURA NACIONAL SUTRA</span>
-          <h1 className="zonas-hero__title">Zonas & Santuarios Sutra</h1>
+          <span className="zonas-hero__tag">
+            {hubType === 'tiendas' ? '✧ TIENDAS OFICIALES SUTRA' : '✧ COBERTURA NACIONAL SUTRA'}
+          </span>
+          <h1 className="zonas-hero__title">
+            {hubType === 'tiendas' ? 'Tiendas Oficiales Sutra' : 'Zonas & Santuarios Sutra'}
+          </h1>
           <p className="zonas-hero__subtitle">
-            Cada rincón de México donde nuestras velas de arena vegetal, aromas botánicos y rituales
-            conscientes transforman cualquier espacio en un refugio de presencia y quietud.
+            {hubType === 'tiendas' 
+              ? 'Conoce nuestras tiendas oficiales y puntos exclusivos en cada estado de México con envíos directos de velas de arena y rituales.'
+              : 'Cada rincón de México donde nuestras velas de arena vegetal, aromas botánicos y rituales conscientes transforman cualquier espacio en un refugio de presencia y quietud.'}
           </p>
 
           {/* Quick Metrics */}
@@ -132,7 +150,9 @@ export default function Zonas({ onNavigate }) {
               <span className="metric-num">
                 {totalCount > 0 ? totalCount.toLocaleString('es-MX') : '13,000+'}
               </span>
-              <span className="metric-label">Zonas y Ciudades</span>
+              <span className="metric-label">
+                {hubType === 'tiendas' ? 'Tiendas Oficiales' : 'Zonas y Ciudades'}
+              </span>
             </div>
             <div className="zonas-metric-divider" />
             <div className="zonas-metric-card">
@@ -151,6 +171,32 @@ export default function Zonas({ onNavigate }) {
       {/* Main Content & Controls */}
       <section className="zonas-content">
         <div className="container">
+          {/* Hub Type Selector Tabs */}
+          <div className="zonas-hub-tabs" role="tablist" aria-label="Tipo de catálogo">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={hubType === 'ciudades'}
+              className={`hub-tab ${hubType === 'ciudades' ? 'hub-tab--active' : ''}`}
+              onClick={() => handleHubTypeChange('ciudades')}
+            >
+              <span className="hub-tab-icon">🏙️</span>
+              <span className="hub-tab-label">Santuarios por Ciudad</span>
+              <span className="hub-tab-tag">/ciudades</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={hubType === 'tiendas'}
+              className={`hub-tab ${hubType === 'tiendas' ? 'hub-tab--active' : ''}`}
+              onClick={() => handleHubTypeChange('tiendas')}
+            >
+              <span className="hub-tab-icon">🏷️</span>
+              <span className="hub-tab-label">Tiendas Oficiales</span>
+              <span className="hub-tab-tag">/tiendas</span>
+            </button>
+          </div>
+
           {/* Search & State Filter Controls */}
           <div className="zonas-controls">
             <div className="zonas-search-box">
@@ -158,10 +204,12 @@ export default function Zonas({ onNavigate }) {
               <input
                 type="text"
                 className="zonas-search-input"
-                placeholder="Buscar por ciudad, municipio o estado (ej. Polanco, Zapopan, San Pedro, Puebla, Mérida...)"
+                placeholder={hubType === 'tiendas' 
+                  ? 'Buscar tienda oficial por ciudad o estado (ej. Aguascalientes, Guadalajara, Puebla...)' 
+                  : 'Buscar por ciudad, municipio o estado (ej. Polanco, Zapopan, San Pedro, Puebla, Mérida...)'}
                 value={search}
                 onChange={handleSearchChange}
-                aria-label="Buscar zona o ciudad"
+                aria-label="Buscar zona o tienda"
               />
               {search && (
                 <button
@@ -196,11 +244,12 @@ export default function Zonas({ onNavigate }) {
           <div className="zonas-results-header">
             <span className="results-count">
               {loading ? (
-                'Cargando santuarios...'
+                'Cargando resultados...'
               ) : (
                 <>
                   Mostrando <strong>{landings.length}</strong> de{' '}
-                  <strong>{totalCount.toLocaleString('es-MX')}</strong> zonas{' '}
+                  <strong>{totalCount.toLocaleString('es-MX')}</strong>{' '}
+                  {hubType === 'tiendas' ? 'tiendas oficiales' : 'zonas'}{' '}
                   {selectedState !== 'Todos' && `en ${selectedState}`}
                   {search && ` para "${search}"`}
                 </>
@@ -228,49 +277,57 @@ export default function Zonas({ onNavigate }) {
             </div>
           ) : landings.length > 0 ? (
             <div className="zonas-grid">
-              {landings.map((landing) => (
-                <Link
-                  key={landing.slug || landing.id}
-                  to={`/ciudades/${landing.slug}`}
-                  className="zona-card"
-                  onClick={(e) => {
-                    if (onNavigate) {
-                      e.preventDefault();
-                      onNavigate('dynamicLanding', { slug: landing.slug });
-                      navigate(`/ciudades/${landing.slug}`);
-                    }
-                  }}
-                >
-                  <div className="zona-card__top">
-                    <span className="zona-card__location-badge">
-                      <span className="pin-icon">📍</span>
-                      {landing.ciudad ? `${landing.ciudad}, ` : ''}{landing.estado || 'México'}
-                    </span>
-                    {landing.fraseBusqueda && (
-                      <span className="zona-card__tag">✧ {landing.fraseBusqueda}</span>
-                    )}
-                  </div>
+              {landings.map((landing, idx) => {
+                const isTiendaItem = landing.isTienda || hubType === 'tiendas';
+                const targetPrefix = landing.routePrefix || (isTiendaItem ? 'tiendas' : 'ciudades');
+                const targetPath = `/${targetPrefix}/${landing.slug}`;
 
-                  <h3 className="zona-card__title">
-                    {landing.tituloPagina || landing.titulo || `Velas de arena en ${landing.ciudad}`}
-                  </h3>
+                return (
+                  <Link
+                    key={`${landing.slug || landing.id}-${idx}`}
+                    to={targetPath}
+                    className="zona-card"
+                    onClick={(e) => {
+                      if (onNavigate) {
+                        e.preventDefault();
+                        onNavigate(isTiendaItem ? 'dynamicTienda' : 'dynamicLanding', { slug: landing.slug });
+                        navigate(targetPath);
+                      }
+                    }}
+                  >
+                    <div className="zona-card__top">
+                      <span className="zona-card__location-badge">
+                        <span className="pin-icon">📍</span>
+                        {landing.ciudad ? `${landing.ciudad}, ` : ''}{landing.estado || 'México'}
+                      </span>
+                      <span className="zona-card__tag">
+                        {isTiendaItem ? '✧ TIENDA OFICIAL' : (landing.fraseBusqueda ? `✧ ${landing.fraseBusqueda}` : '✧ SANTUARIO')}
+                      </span>
+                    </div>
 
-                  <p className="zona-card__excerpt">
-                    {landing.excerpt}
-                  </p>
+                    <h3 className="zona-card__title">
+                      {landing.tituloPagina || landing.titulo || (isTiendaItem ? `Tienda oficial en ${landing.ciudad}` : `Velas de arena en ${landing.ciudad}`)}
+                    </h3>
 
-                  <div className="zona-card__footer">
-                    <span className="zona-card__link">
-                      Visitar Santuario <span className="arrow">→</span>
-                    </span>
-                  </div>
-                </Link>
-              ))}
+                    <p className="zona-card__excerpt">
+                      {landing.excerpt}
+                    </p>
+
+                    <div className="zona-card__footer">
+                      <span className="zona-card__link">
+                        {isTiendaItem ? 'Ver Tienda Oficial' : 'Visitar Santuario'} <span className="arrow">→</span>
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           ) : (
             <div className="zonas-empty">
               <span className="zonas-empty__icon">🕯️</span>
-              <h3 className="zonas-empty__title">No se encontraron zonas coincidentes</h3>
+              <h3 className="zonas-empty__title">
+                {hubType === 'tiendas' ? 'No se encontraron tiendas coincidentes' : 'No se encontraron zonas coincidentes'}
+              </h3>
               <p className="zonas-empty__desc">
                 Intenta con otra ciudad, código postal o selecciona "Todos" en los filtros de estado.
               </p>
@@ -281,10 +338,10 @@ export default function Zonas({ onNavigate }) {
                   setSearch('');
                   setSelectedState('Todos');
                   setCurrentPage(0);
-                  fetchLandings(0, '', 'Todos');
+                  fetchLandings(0, '', 'Todos', hubType);
                 }}
               >
-                Ver todas las zonas
+                {hubType === 'tiendas' ? 'Ver todas las tiendas' : 'Ver todas las zonas'}
               </button>
             </div>
           )}

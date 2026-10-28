@@ -6,7 +6,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PUBLIC_DIR = path.resolve(__dirname, '../public');
-const CSV_PATH = path.resolve(__dirname, '../SUTRA SEO LANDING_rows.csv');
+const CSV_LANDINGS_PATH = path.resolve(__dirname, '../SUTRA SEO LANDING_rows.csv');
+const CSV_TIENDAS_PATH = path.resolve(__dirname, '../SUTRA SEO TIENDA_rows.csv');
+const CSV_PATH = CSV_LANDINGS_PATH; // legacy alias
 
 const BASE_URL = 'https://www.sutramexico.com';
 const TODAY = new Date().toISOString().split('T')[0];
@@ -278,6 +280,84 @@ async function loadDynamicLandingSlugs() {
   return [];
 }
 
+// 5.1 CARGA DINÁMICA DE SLUGS DE TIENDAS (Desde Supabase o CSV SUTRA SEO TIENDA)
+async function loadDynamicTiendaSlugs() {
+  const slugs = new Set();
+
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+  if (supabaseUrl && supabaseKey && !supabaseUrl.includes('TU_SUPABASE_URL')) {
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      const tableName = 'SUTRA SEO TIENDA';
+
+      let page = 0;
+      const pageSize = 1000;
+      let hasMore = true;
+
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from(tableName)
+          .select('Slug, slug')
+          .range(page * pageSize, (page + 1) * pageSize - 1);
+
+        if (error || !data || data.length === 0) {
+          hasMore = false;
+        } else {
+          data.forEach((row) => {
+            const s = row.Slug || row.slug;
+            if (s) slugs.add(String(s).trim().toLowerCase());
+          });
+          page++;
+          if (data.length < pageSize) hasMore = false;
+        }
+      }
+
+      if (slugs.size > 0) {
+        console.log(`✓ Obtenidos ${slugs.size} slugs de tiendas directamente desde Supabase`);
+        return Array.from(slugs);
+      }
+    } catch (err) {
+      console.warn('Advertencia consultando Supabase para tiendas:', err.message);
+    }
+  }
+
+  // Intento 2: Lectura en streaming ultrarrápida del archivo CSV
+  if (fs.existsSync(CSV_TIENDAS_PATH)) {
+    console.log('Leyendo catálogo completo de tiendas desde CSV...');
+    const rl = readline.createInterface({
+      input: fs.createReadStream(CSV_TIENDAS_PATH),
+      crlfDelay: Infinity,
+    });
+
+    let isHeader = true;
+    let slugIndex = 2; // Por defecto columna 3: Slug
+
+    for await (const line of rl) {
+      if (isHeader) {
+        const headers = line.split(',');
+        const idx = headers.findIndex((h) => h.trim().toLowerCase() === 'slug');
+        if (idx !== -1) slugIndex = idx;
+        isHeader = false;
+        continue;
+      }
+
+      const parts = line.split(',');
+      const candidateSlug = parts[slugIndex]?.trim().replace(/^"|"$/g, '');
+      if (candidateSlug && candidateSlug.length > 2) {
+        slugs.add(candidateSlug.toLowerCase());
+      }
+    }
+
+    console.log(`✓ Procesados ${slugs.size} slugs únicos de tiendas desde CSV`);
+    return Array.from(slugs);
+  }
+
+  return [];
+}
+
 // GENERADOR SITEMAP MAIN (Institucional)
 function generateMainSitemap() {
   const urls = MAIN_PAGES.map((page) => `  <url>
@@ -365,6 +445,21 @@ ${urls}
 </urlset>`;
 }
 
+// GENERADOR SITEMAP TIENDAS DINÁMICAS SEO (Programmatic SEO Tienda #1 por Ciudades /tiendas/:slug)
+function generateTiendasSeoSitemap(tiendaSlugs) {
+  const urls = tiendaSlugs.map((slug) => `  <url>
+    <loc>${BASE_URL}/tiendas/${escapeXml(slug)}</loc>
+    <lastmod>${TODAY}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.70</priority>
+  </url>`).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`;
+}
+
 // GENERADOR SITEMAP INDEX (Maestro general agrupado)
 function generateIndexSitemap() {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -384,12 +479,17 @@ function generateIndexSitemap() {
     <loc>${BASE_URL}/sitemap-seo-landings.xml</loc>
     <lastmod>${TODAY}</lastmod>
   </sitemap>
-  <!-- Subgrupo 4: Páginas Dinámicas de Productos (con Imágenes) -->
+  <!-- Subgrupo 4: Landings Dinámicas SEO Tiendas Oficiales (/tiendas/:slug) -->
+  <sitemap>
+    <loc>${BASE_URL}/sitemap-seo-tiendas.xml</loc>
+    <lastmod>${TODAY}</lastmod>
+  </sitemap>
+  <!-- Subgrupo 5: Páginas Dinámicas de Productos (con Imágenes) -->
   <sitemap>
     <loc>${BASE_URL}/sitemap-productos.xml</loc>
     <lastmod>${TODAY}</lastmod>
   </sitemap>
-  <!-- Subgrupo 5: Páginas Dinámicas de Comunidad y Blog -->
+  <!-- Subgrupo 6: Páginas Dinámicas de Comunidad y Blog -->
   <sitemap>
     <loc>${BASE_URL}/sitemap-blog.xml</loc>
     <lastmod>${TODAY}</lastmod>
@@ -411,6 +511,7 @@ Sitemap: ${BASE_URL}/sitemap.xml
 Sitemap: ${BASE_URL}/sitemap-main.xml
 Sitemap: ${BASE_URL}/sitemap-landings.xml
 Sitemap: ${BASE_URL}/sitemap-seo-landings.xml
+Sitemap: ${BASE_URL}/sitemap-seo-tiendas.xml
 Sitemap: ${BASE_URL}/sitemap-productos.xml
 Sitemap: ${BASE_URL}/sitemap-blog.xml
 `;
@@ -424,11 +525,12 @@ async function run() {
 
   console.log('Generando estructura de sitemaps divididos por subgrupos...');
 
-  // Carga dinámica de slugs para landings SEO
+  // Carga dinámica de slugs para landings SEO (Ciudades y Tiendas)
   const landingSlugs = await loadDynamicLandingSlugs();
+  const tiendaSlugs = await loadDynamicTiendaSlugs();
 
   fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), generateIndexSitemap(), 'utf-8');
-  console.log('✓ Creado: public/sitemap.xml (Sitemap Index maestro con 5 subgrupos)');
+  console.log('✓ Creado: public/sitemap.xml (Sitemap Index maestro con 6 subgrupos)');
 
   fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-main.xml'), generateMainSitemap(), 'utf-8');
   console.log('✓ Creado: public/sitemap-main.xml (Páginas principales)');
@@ -437,7 +539,10 @@ async function run() {
   console.log('✓ Creado: public/sitemap-landings.xml (Categorías y colecciones)');
 
   fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-seo-landings.xml'), generateSeoLandingsSitemap(landingSlugs), 'utf-8');
-  console.log(`✓ Creado: public/sitemap-seo-landings.xml (${landingSlugs.length} landings dinámicas SEO)`);
+  console.log(`✓ Creado: public/sitemap-seo-landings.xml (${landingSlugs.length} landings dinámicas SEO de ciudades)`);
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-seo-tiendas.xml'), generateTiendasSeoSitemap(tiendaSlugs), 'utf-8');
+  console.log(`✓ Creado: public/sitemap-seo-tiendas.xml (${tiendaSlugs.length} landings dinámicas SEO de tiendas)`);
 
   fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-productos.xml'), generateProductsSitemap(), 'utf-8');
   console.log('✓ Creado: public/sitemap-productos.xml (Páginas de producto con metadatos de imágenes)');

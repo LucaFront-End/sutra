@@ -146,6 +146,73 @@
   padding-top: 3rem;
 }
 
+/* Hub Type Selector Tabs */
+.zonas-hub-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.hub-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.6rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 999px;
+  background: #FFFFFF;
+  color: #5A524A;
+  border: 1px solid rgba(42, 37, 33, 0.12);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-decoration: none;
+}
+
+.hub-tab:hover {
+  background: #FAF8F5;
+  color: #201D1A;
+  border-color: rgba(197, 168, 128, 0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(197, 168, 128, 0.15);
+}
+
+.hub-tab--active {
+  background: #201D1A !important;
+  color: #FAF8F5 !important;
+  border-color: #201D1A !important;
+  box-shadow: 0 6px 20px rgba(32, 29, 26, 0.18) !important;
+}
+
+.hub-tab-icon {
+  font-size: 1.15rem;
+}
+
+.hub-tab-label {
+  letter-spacing: 0.02em;
+}
+
+.hub-tab-tag {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.72rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(197, 168, 128, 0.18);
+  color: #9E7D4F;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+
+.hub-tab--active .hub-tab-tag {
+  background: rgba(197, 168, 128, 0.25);
+  color: #E2CFB4;
+}
+
 /* Controls */
 .zonas-controls {
   margin-bottom: 2.5rem;

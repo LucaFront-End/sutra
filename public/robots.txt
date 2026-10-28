@@ -10,5 +10,6 @@ Sitemap: https://www.sutramexico.com/sitemap.xml
 Sitemap: https://www.sutramexico.com/sitemap-main.xml
 Sitemap: https://www.sutramexico.com/sitemap-landings.xml
 Sitemap: https://www.sutramexico.com/sitemap-seo-landings.xml
+Sitemap: https://www.sutramexico.com/sitemap-seo-tiendas.xml
 Sitemap: https://www.sutramexico.com/sitemap-productos.xml
 Sitemap: https://www.sutramexico.com/sitemap-blog.xml
