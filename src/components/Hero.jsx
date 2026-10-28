@@ -96,7 +96,7 @@ function AtmosphericParticles({ mood }) {
   );
 }
 
-export default function Hero({ onNavigate }) {
+export default function Hero({ onNavigate, landing = null }) {
   const navigate = useNavigate();
   const [activeMood, setActiveMood] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -160,10 +160,26 @@ export default function Hero({ onNavigate }) {
         onMouseLeave={() => setActiveMood(null)}
       >
         
-        {/* Main Question */}
-        <h1 className={`hero__question ${activeMood ? 'hero__question--shifted' : ''}`}>
-          ¿Qué necesitas hoy?
+        {/* Dynamic Landing Eyebrow Pill */}
+        {landing && (
+          <div className="hero__landing-badge">
+            <span className="hero__landing-pill">
+              ✧ SANTUARIO EN {landing.ciudad ? `${landing.ciudad.toUpperCase()} · ${landing.estado?.toUpperCase() || 'MÉXICO'}` : 'MÉXICO'}
+            </span>
+          </div>
+        )}
+
+        {/* Main Question or Dynamic Title */}
+        <h1 className={`hero__question ${landing ? 'hero__question--landing' : ''} ${activeMood ? 'hero__question--shifted' : ''}`}>
+          {landing?.tituloPagina || '¿Qué necesitas hoy?'}
         </h1>
+
+        {/* Dynamic Excerpt on Landing (visible when no mood hovered) */}
+        {landing?.excerpt && !activeMood && (
+          <p className="hero__landing-excerpt">
+            {landing.excerpt}
+          </p>
+        )}
 
         {/* Magnetic Mood Pills */}
         <div className="hero__pills">

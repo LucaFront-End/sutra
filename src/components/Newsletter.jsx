@@ -4,7 +4,7 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 import { submitToContactoGeneral } from '../lib/formsService';
 import './Newsletter.css';
 
-export default function Newsletter() {
+export default function Newsletter({ landing = null }) {
   const ref = useScrollReveal();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -41,7 +41,11 @@ export default function Newsletter() {
         <div className="newsletter__content reveal">
           <span className="newsletter-tag">{newsletterContent.tag}</span>
           <h2 className="newsletter__title reveal reveal-delay-1">{newsletterContent.title}</h2>
-          <p className="newsletter__subtitle reveal reveal-delay-2">{newsletterContent.subtitle}</p>
+          <p className="newsletter__subtitle reveal reveal-delay-2">
+            {landing?.ciudad
+              ? `Recibe rituales de calma, novedades y beneficios exclusivos en ${landing.ciudad} y todo México.`
+              : newsletterContent.subtitle}
+          </p>
           
           <form className="newsletter__form reveal reveal-delay-3" onSubmit={handleSubmit} id="newsletter-form">
             <div className="newsletter__input-group">

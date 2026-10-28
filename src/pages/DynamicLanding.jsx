@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getLandingBySlug } from '../lib/landingService';
 import SEO from '../components/SEO';
 
-// Home components to repeat and enrich the experience
+// Home components rendered in identical structure
+import Hero from '../components/Hero';
 import Concept from '../components/Concept';
 import Marquee from '../components/Marquee';
 import Categories from '../components/Categories';
@@ -18,7 +19,6 @@ import './DynamicLanding.css';
 
 export default function DynamicLanding({ onNavigate, onAddToCart }) {
   const { slug } = useParams();
-  const navigate = useNavigate();
 
   const [landing, setLanding] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -113,16 +113,8 @@ export default function DynamicLanding({ onNavigate, onAddToCart }) {
     },
   };
 
-  const handleCta = (category = 'velas') => {
-    if (onNavigate) {
-      onNavigate('shop', null, category);
-    } else {
-      navigate(`/tienda/${category}`);
-    }
-  };
-
   return (
-    <div className="dynamic-landing-page fade-in">
+    <>
       {/* 1. Dynamic Head Meta & Canonical from Supabase row */}
       <SEO
         title={landing.tituloSeo}
@@ -132,129 +124,17 @@ export default function DynamicLanding({ onNavigate, onAddToCart }) {
         schema={schema}
       />
 
-      {/* 2. Custom Dynamic Hero tailored to this Landing's row */}
-      <section className="landing-hero">
-        <div className="landing-hero__bg" />
-        <div className="landing-hero__overlay" />
-
-        <div className="landing-hero__container container">
-          {/* Eyebrow badge */}
-          <div className="landing-hero__pill">
-            <span className="pill-spark">✧</span>
-            <span>
-              {landing.ciudad
-                ? `Colección ${landing.ciudad}, ${landing.estado}`
-                : 'Colección Oficial México'}
-            </span>
-          </div>
-
-          {/* Primary H1: Título de página */}
-          <h1 className="landing-hero__title">
-            {landing.tituloPagina}
-          </h1>
-
-          {/* Lead: Excerpt */}
-          <p className="landing-hero__excerpt">
-            {landing.excerpt}
-          </p>
-
-          {/* Action CTAs */}
-          <div className="landing-hero__actions">
-            <button
-              type="button"
-              className="btn-landing-primary"
-              onClick={() => handleCta('velas')}
-            >
-              Comprar Velas en Polvo
-            </button>
-            <button
-              type="button"
-              className="btn-landing-secondary"
-              onClick={() => handleCta('all')}
-            >
-              Ver Catálogo Completo
-            </button>
-          </div>
-
-          {/* Micro value props bar */}
-          <div className="landing-hero__props">
-            <div className="landing-prop-item">
-              <span className="prop-icon">🚚</span>
-              <span>
-                {landing.ciudad
-                  ? `Envíos asegurados a ${landing.ciudad}`
-                  : 'Envíos asegurados a todo México'}
-              </span>
-            </div>
-            <div className="landing-prop-divider" />
-            <div className="landing-prop-item">
-              <span className="prop-icon">🌿</span>
-              <span>Cera vegetal perlada 100% pura</span>
-            </div>
-            <div className="landing-prop-divider" />
-            <div className="landing-prop-item">
-              <span className="prop-icon">✨</span>
-              <span>Reutilizable en cualquier vasija</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Featured Editorial SEO Section: Párrafo SEO amplio & Metainformación */}
-      <section className="landing-seo-section">
-        <div className="container landing-seo-container">
-          <div className="landing-seo-card">
-            <div className="landing-seo-card__header">
-              <span className="landing-seo-card__tag">
-                {landing.fraseBusqueda ? `✦ ${landing.fraseBusqueda.toUpperCase()}` : '✦ RITUALES SUTRA'}
-              </span>
-              <h2 className="landing-seo-card__title">
-                {landing.titulo || landing.tituloPagina}
-              </h2>
-            </div>
-
-            {landing.parrafoSeo && (
-              <div className="landing-seo-card__body">
-                <p className="landing-seo-card__paragraph">
-                  {landing.parrafoSeo}
-                </p>
-              </div>
-            )}
-
-            <div className="landing-seo-card__footer">
-              {landing.ciudad && (
-                <div className="landing-meta-chip">
-                  <span className="chip-label">Zona:</span>
-                  <span className="chip-val">{landing.ciudad}</span>
-                </div>
-              )}
-              {landing.estado && (
-                <div className="landing-meta-chip">
-                  <span className="chip-label">Estado:</span>
-                  <span className="chip-val">{landing.estado}</span>
-                </div>
-              )}
-              {landing.fraseBusqueda && (
-                <div className="landing-meta-chip">
-                  <span className="chip-label">Búsqueda:</span>
-                  <span className="chip-val">{landing.fraseBusqueda}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Complete Home experience repeated with dynamic interactive modules */}
-      <Concept />
-      <Marquee />
+      {/* 2. Identical Home component tree with dynamic landing texts adapted */}
+      <Hero onNavigate={onNavigate} landing={landing} />
+      <Concept landing={landing} />
+      <Marquee landing={landing} />
       <Categories onNavigate={onNavigate} />
       <Rituals onNavigate={onNavigate} />
       <BestSellers onNavigate={onNavigate} onAddToCart={onAddToCart} />
       <AromaExperience onNavigate={onNavigate} />
-      <SocialProof />
+      <SocialProof landing={landing} />
       <Gifts onAddToCart={onAddToCart} />
-      <Newsletter />
-    </div>
+      <Newsletter landing={landing} />
+    </>
   );
 }

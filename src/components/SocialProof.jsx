@@ -21,12 +21,12 @@ const row2 = [
   { id: 'r2-4', img: imgSpray, user: '@lu.lifestyle', text: '"Lo llevo en la cartera siempre"', type: 'video' },
 ];
 
-export default function SocialProof() {
+export default function SocialProof({ landing = null }) {
   return (
     <section className="social-proof" id="community">
       <div className="social-proof__header">
         <span className="section-tag">La Comunidad</span>
-        <h2>Sutra en tu hogar</h2>
+        <h2>{landing?.ciudad ? `Sutra en ${landing.ciudad} y tu hogar` : 'Sutra en tu hogar'}</h2>
       </div>
 
       <div className="film-strip-container">

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { conceptContent } from '../data/content';
 import './Concept.css';
 
-export default function Concept() {
+export default function Concept({ landing = null }) {
   const [isSilent, setIsSilent] = useState(false);
   const wrapperRef = useRef(null);
 
@@ -62,10 +62,18 @@ export default function Concept() {
         {/* ——— SILENCE / CURE LAYER ——— */}
         <div className="concept__silence">
           <div className="silence-content">
-            <h2 className="concept__title">{conceptContent.title}</h2>
-            <p className="concept__text">{conceptContent.text}</p>
+            <h2 className="concept__title">
+              {landing?.titulo || landing?.tituloPagina || conceptContent.title}
+            </h2>
+            <p className="concept__text">
+              {landing?.parrafoSeo || conceptContent.text}
+            </p>
             <div className="concept__divider" />
-            <p className="concept__quote">{conceptContent.quote}</p>
+            <p className="concept__quote">
+              {landing?.ciudad
+                ? `Llevando el ritual de la cera en arena a ${landing.ciudad}, ${landing.estado || 'México'}.`
+                : conceptContent.quote}
+            </p>
           </div>
         </div>
 

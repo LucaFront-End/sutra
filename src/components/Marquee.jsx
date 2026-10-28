@@ -1,8 +1,16 @@
 import { marqueePhrases } from '../data/content';
 import './Marquee.css';
 
-export default function Marquee() {
-  const items = [...marqueePhrases, ...marqueePhrases];
+export default function Marquee({ landing = null }) {
+  const dynamicPhrases = landing?.ciudad
+    ? [
+        `Velas de arena en ${landing.ciudad}`,
+        landing.fraseBusqueda || `Rituales de calma en ${landing.ciudad}`,
+        ...marqueePhrases
+      ]
+    : marqueePhrases;
+
+  const items = [...dynamicPhrases, ...dynamicPhrases];
 
   return (
     <div className="marquee-wrap" aria-hidden="true">
