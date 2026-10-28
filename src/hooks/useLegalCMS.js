@@ -65,31 +65,60 @@ export function useLegalCMS(policyKey = 'terms') {
       try {
         // 1. Try querying Wix CMS collection if available
         if (wixClient?.items?.query) {
-          try {
-            const res = await wixClient.items.query(config.collection).limit(1).find();
-            if (!isCancelled && res.items && res.items.length > 0) {
-              const raw = res.items[0];
-              const rawData = raw.data || raw;
-              const htmlContent = extractHtmlContent(raw);
+          const candidateCollections = [
+            config.collection,
+            config.key === 'terms' ? 'Terminosycondiciones' : null,
+            config.key === 'terms' ? 'TerminosYCondiciones' : null,
+            config.key === 'refund' ? 'PoliticaDeReembolsos' : null,
+            config.key === 'privacy' ? 'AvisoDePrivacidad' : null,
+            config.key === 'shipping' ? 'PoliticaDeEnvios' : null,
+          ].filter(Boolean);
 
-              if (htmlContent && htmlContent.trim().length > 40) {
-                const liveEntry = {
-                  id: rawData._id || raw.id,
-                  title: rawData.title || rawData.titulo || config.label,
-                  content: htmlContent,
-                  lastUpdated: rawData._updatedDate || rawData._createdDate || config.lastUpdated,
-                  isLive: true,
-                };
-                legalCache.set(config.key, liveEntry);
-                setData(liveEntry);
-                setIsCMSLive(true);
-                setLoading(false);
-                return;
+          let foundItem = null;
+
+          for (const coll of candidateCollections) {
+            try {
+              const res = await wixClient.items.query(coll).limit(1).find();
+              if (res.items && res.items.length > 0) {
+                foundItem = res.items[0];
+                break;
               }
+            } catch (_) {
+              // Try next candidate
             }
-          } catch (wixErr) {
-            // Collection might not exist yet in Wix dashboard, proceed to fallback smoothly
-            console.info(`[LegalCMS] Wix CMS collection ${config.collection} not found, using built-in legal CMS.`);
+          }
+
+          // Also check consolidated 'Politicas' or 'Legal' collection if single collection approach was used
+          if (!foundItem) {
+            for (const singleColl of ['Politicas', 'LegalPolicies', 'Legal']) {
+              try {
+                const res = await wixClient.items.query(singleColl).eq('slug', config.key).limit(1).find();
+                if (res.items && res.items.length > 0) {
+                  foundItem = res.items[0];
+                  break;
+                }
+              } catch (_) {}
+            }
+          }
+
+          if (!isCancelled && foundItem) {
+            const rawData = foundItem.data || foundItem;
+            const htmlContent = extractHtmlContent(foundItem);
+
+            if (htmlContent && htmlContent.trim().length > 40) {
+              const liveEntry = {
+                id: rawData._id || foundItem.id,
+                title: rawData.title || rawData.titulo || config.label,
+                content: htmlContent,
+                lastUpdated: rawData._updatedDate || rawData._createdDate || config.lastUpdated,
+                isLive: true,
+              };
+              legalCache.set(config.key, liveEntry);
+              setData(liveEntry);
+              setIsCMSLive(true);
+              setLoading(false);
+              return;
+            }
           }
         }
 
