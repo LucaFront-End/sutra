@@ -38,6 +38,7 @@ import Account from './pages/Account';
 import DynamicLanding from './pages/DynamicLanding';
 import DynamicTienda from './pages/DynamicTienda';
 import Zonas from './pages/Zonas';
+import LegalPage from './pages/LegalPage';
 
 export default function App() {
   const navigate = useNavigate();
@@ -96,6 +97,14 @@ export default function App() {
       navigate('/tienda');
     } else if (page === 'zonas' || page === 'ciudades') {
       navigate('/zonas');
+    } else if (page === 'terminos' || page === 'terminos-y-condiciones') {
+      navigate('/terminos-y-condiciones');
+    } else if (page === 'privacidad' || page === 'politica-de-privacidad' || page === 'aviso-de-privacidad') {
+      navigate('/politica-de-privacidad');
+    } else if (page === 'reembolsos' || page === 'politica-de-reembolso' || page === 'politica-de-reembolsos' || page === 'devoluciones') {
+      navigate('/politica-de-reembolso');
+    } else if (page === 'envios' || page === 'politica-de-envios') {
+      navigate('/politica-de-envios');
     } else {
       navigate(page);
     }
@@ -264,6 +273,60 @@ export default function App() {
           <Route 
             path="/landing/:slug" 
             element={<LegacyLandingRedirect />} 
+          />
+
+          {/* Políticas Legales & Transparencia (CMS Driven) */}
+          <Route 
+            path="/terminos-y-condiciones" 
+            element={<LegalPage policyKey="terms" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/terminos" 
+            element={<LegalPage policyKey="terms" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/politica-de-reembolso" 
+            element={<LegalPage policyKey="refund" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/politica-de-reembolsos" 
+            element={<LegalPage policyKey="refund" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/reembolsos" 
+            element={<LegalPage policyKey="refund" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/devoluciones" 
+            element={<LegalPage policyKey="refund" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/politica-de-privacidad" 
+            element={<LegalPage policyKey="privacy" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/aviso-de-privacidad" 
+            element={<LegalPage policyKey="privacy" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/privacidad" 
+            element={<LegalPage policyKey="privacy" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/politica-de-envios" 
+            element={<LegalPage policyKey="shipping" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/envios" 
+            element={<LegalPage policyKey="shipping" onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/legal/:slug" 
+            element={<LegalPage onNavigate={handleNavigate} />} 
+          />
+          <Route 
+            path="/politicas/:slug" 
+            element={<LegalPage onNavigate={handleNavigate} />} 
           />
 
           {/* Catch-all */}

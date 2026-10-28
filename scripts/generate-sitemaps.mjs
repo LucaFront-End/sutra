@@ -23,7 +23,7 @@ function escapeXml(unsafe) {
     .replace(/'/g, '&apos;');
 }
 
-// 1. SITEMAP PRINCIPAL (Páginas institucionales e inicio)
+// 1. SITEMAP PRINCIPAL (Páginas institucionales, legales e inicio)
 const MAIN_PAGES = [
   { url: '/', changefreq: 'daily', priority: '1.0' },
   { url: '/tienda', changefreq: 'daily', priority: '0.9' },
@@ -33,6 +33,10 @@ const MAIN_PAGES = [
   { url: '/mysterybox', changefreq: 'weekly', priority: '0.9' },
   { url: '/zonas', changefreq: 'daily', priority: '0.9' },
   { url: '/contacto', changefreq: 'monthly', priority: '0.7' },
+  { url: '/terminos-y-condiciones', changefreq: 'monthly', priority: '0.6' },
+  { url: '/politica-de-privacidad', changefreq: 'monthly', priority: '0.6' },
+  { url: '/politica-de-reembolso', changefreq: 'monthly', priority: '0.6' },
+  { url: '/politica-de-envios', changefreq: 'monthly', priority: '0.7' },
 ];
 
 // 2. SITEMAP DE LANDINGS DINÁMICAS (Categorías y colecciones del catálogo)

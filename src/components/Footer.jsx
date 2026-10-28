@@ -40,6 +40,16 @@ export default function Footer({ onNavigate }) {
       const path = catMap[link.label] || '/tienda';
       if (onNavigate) onNavigate('shop');
       navigate(path);
+    } else if (link.label === 'Términos y Condiciones') {
+      navigate('/terminos-y-condiciones');
+    } else if (link.label === 'Política de Privacidad') {
+      navigate('/politica-de-privacidad');
+    } else if (link.label === 'Política de Reembolsos' || link.label === 'Reembolsos') {
+      navigate('/politica-de-reembolso');
+    } else if (link.label === 'Política de Envíos' || link.label === 'Envíos' || link.label === 'Envíos a Todo México') {
+      navigate('/politica-de-envios');
+    } else if (link.href && link.href.startsWith('/')) {
+      navigate(link.href);
     } else {
       if (onNavigate) onNavigate('home');
       navigate('/');
