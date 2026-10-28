@@ -1,0 +1,353 @@
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { getLandingsHub, POPULAR_STATES } from '../lib/landingService';
+import SEO from '../components/SEO';
+import './Zonas.css';
+
+export default function Zonas({ onNavigate }) {
+  const navigate = useNavigate();
+
+  const [landings, setLandings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [search, setSearch] = useState('');
+  const [selectedState, setSelectedState] = useState('Todos');
+
+  const pageSize = 24;
+  const searchTimeoutRef = useRef(null);
+
+  // Fetch landings from Supabase dynamically
+  const fetchLandings = async (page = 0, searchTerm = search, state = selectedState) => {
+    setLoading(true);
+    try {
+      const res = await getLandingsHub({
+        page,
+        pageSize,
+        search: searchTerm,
+        estado: state,
+      });
+
+      if (res) {
+        setLandings(res.landings || []);
+        setTotalCount(res.totalCount || 0);
+        setTotalPages(res.totalPages || 1);
+        setCurrentPage(res.currentPage || 0);
+      }
+    } catch (err) {
+      console.error('[Zonas] Error al cargar landings:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    fetchLandings(0, search, selectedState);
+  }, [selectedState]);
+
+  // Debounced search handler
+  const handleSearchChange = (e) => {
+    const val = e.target.value;
+    setSearch(val);
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      setCurrentPage(0);
+      fetchLandings(0, val, selectedState);
+    }, 350);
+  };
+
+  const handleClearSearch = () => {
+    setSearch('');
+    setCurrentPage(0);
+    fetchLandings(0, '', selectedState);
+  };
+
+  const handleStateClick = (state) => {
+    setSelectedState(state);
+    setCurrentPage(0);
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 0 || newPage >= totalPages) return;
+    setCurrentPage(newPage);
+    fetchLandings(newPage, search, selectedState);
+    window.scrollTo({ top: 400, behavior: 'smooth' });
+  };
+
+  const handleCardClick = (slug) => {
+    if (onNavigate) onNavigate('dynamicLanding', { slug });
+    navigate(`/${slug}`);
+  };
+
+  // Generate pagination numbers
+  const getPaginationPages = () => {
+    const pages = [];
+    const maxVisible = 5;
+    let start = Math.max(0, currentPage - 2);
+    let end = Math.min(totalPages - 1, start + maxVisible - 1);
+
+    if (end - start < maxVisible - 1) {
+      start = Math.max(0, end - maxVisible + 1);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
+  return (
+    <div className="zonas-page fade-in">
+      <SEO
+        title="Zonas y Cobertura de Velas de Arena en México | Sutra"
+        description="Explora todos los santuarios, ciudades y zonas de cobertura de Sutra en México. Velas de arena artesanales, esencias botánicas y cajas de ritual con envío a todo el país."
+        canonical="https://sutramexico.com/zonas"
+      />
+
+      {/* Hero Header */}
+      <header className="zonas-hero">
+        <div className="container">
+          <nav className="zonas-breadcrumbs" aria-label="Miga de pan">
+            <Link to="/" className="breadcrumb-link">Inicio</Link>
+            <span className="breadcrumb-separator">/</span>
+            <span className="breadcrumb-current">Zonas & Cobertura</span>
+          </nav>
+
+          <span className="zonas-hero__tag">✧ COBERTURA NACIONAL SUTRA</span>
+          <h1 className="zonas-hero__title">Zonas & Santuarios Sutra</h1>
+          <p className="zonas-hero__subtitle">
+            Cada rincón de México donde nuestras velas de arena vegetal, aromas botánicos y rituales
+            conscientes transforman cualquier espacio en un refugio de presencia y quietud.
+          </p>
+
+          {/* Quick Metrics */}
+          <div className="zonas-metrics">
+            <div className="zonas-metric-card">
+              <span className="metric-num">
+                {totalCount > 0 ? totalCount.toLocaleString('es-MX') : '13,000+'}
+              </span>
+              <span className="metric-label">Zonas y Ciudades</span>
+            </div>
+            <div className="zonas-metric-divider" />
+            <div className="zonas-metric-card">
+              <span className="metric-num">32</span>
+              <span className="metric-label">Estados de la República</span>
+            </div>
+            <div className="zonas-metric-divider" />
+            <div className="zonas-metric-card">
+              <span className="metric-num">100%</span>
+              <span className="metric-label">Cera Vegetal & Envío Seguro</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content & Controls */}
+      <section className="zonas-content">
+        <div className="container">
+          {/* Search & State Filter Controls */}
+          <div className="zonas-controls">
+            <div className="zonas-search-box">
+              <span className="search-icon" aria-hidden="true">🔍</span>
+              <input
+                type="text"
+                className="zonas-search-input"
+                placeholder="Buscar por ciudad, municipio o estado (ej. Polanco, Zapopan, San Pedro, Puebla, Mérida...)"
+                value={search}
+                onChange={handleSearchChange}
+                aria-label="Buscar zona o ciudad"
+              />
+              {search && (
+                <button
+                  type="button"
+                  className="zonas-search-clear"
+                  onClick={handleClearSearch}
+                  aria-label="Limpiar búsqueda"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* State filter pills */}
+            <div className="zonas-states-pills" role="tablist" aria-label="Filtrar por estado">
+              {POPULAR_STATES.map((state) => (
+                <button
+                  key={state}
+                  type="button"
+                  role="tab"
+                  aria-selected={selectedState === state}
+                  className={`state-pill ${selectedState === state ? 'state-pill--active' : ''}`}
+                  onClick={() => handleStateClick(state)}
+                >
+                  {state}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Results Summary */}
+          <div className="zonas-results-header">
+            <span className="results-count">
+              {loading ? (
+                'Cargando santuarios...'
+              ) : (
+                <>
+                  Mostrando <strong>{landings.length}</strong> de{' '}
+                  <strong>{totalCount.toLocaleString('es-MX')}</strong> zonas{' '}
+                  {selectedState !== 'Todos' && `en ${selectedState}`}
+                  {search && ` para "${search}"`}
+                </>
+              )}
+            </span>
+
+            {totalPages > 1 && (
+              <span className="results-page-indicator">
+                Página {currentPage + 1} de {totalPages}
+              </span>
+            )}
+          </div>
+
+          {/* Cards Grid */}
+          {loading ? (
+            <div className="zonas-grid zonas-grid--loading">
+              {Array.from({ length: 12 }).map((_, idx) => (
+                <div key={idx} className="zona-card-skeleton">
+                  <div className="skeleton-badge shimmer" />
+                  <div className="skeleton-title shimmer" />
+                  <div className="skeleton-desc shimmer" />
+                  <div className="skeleton-btn shimmer" />
+                </div>
+              ))}
+            </div>
+          ) : landings.length > 0 ? (
+            <div className="zonas-grid">
+              {landings.map((landing) => (
+                <article
+                  key={landing.slug || landing.id}
+                  className="zona-card"
+                  onClick={() => handleCardClick(landing.slug)}
+                >
+                  <div className="zona-card__top">
+                    <span className="zona-card__location-badge">
+                      <span className="pin-icon">📍</span>
+                      {landing.ciudad ? `${landing.ciudad}, ` : ''}{landing.estado || 'México'}
+                    </span>
+                    {landing.fraseBusqueda && (
+                      <span className="zona-card__tag">✧ {landing.fraseBusqueda}</span>
+                    )}
+                  </div>
+
+                  <h3 className="zona-card__title">
+                    {landing.tituloPagina || landing.titulo || `Velas de arena en ${landing.ciudad}`}
+                  </h3>
+
+                  <p className="zona-card__excerpt">
+                    {landing.excerpt}
+                  </p>
+
+                  <div className="zona-card__footer">
+                    <span className="zona-card__link">
+                      Visitar Santuario <span className="arrow">→</span>
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="zonas-empty">
+              <span className="zonas-empty__icon">🕯️</span>
+              <h3 className="zonas-empty__title">No se encontraron zonas coincidentes</h3>
+              <p className="zonas-empty__desc">
+                Intenta con otra ciudad, código postal o selecciona "Todos" en los filtros de estado.
+              </p>
+              <button
+                type="button"
+                className="zonas-empty__btn"
+                onClick={() => {
+                  setSearch('');
+                  setSelectedState('Todos');
+                  setCurrentPage(0);
+                  fetchLandings(0, '', 'Todos');
+                }}
+              >
+                Ver todas las zonas
+              </button>
+            </div>
+          )}
+
+          {/* Pagination Controls */}
+          {!loading && totalPages > 1 && (
+            <nav className="zonas-pagination" aria-label="Paginación de zonas">
+              <button
+                type="button"
+                className="pagination-btn pagination-prev"
+                disabled={currentPage === 0}
+                onClick={() => handlePageChange(currentPage - 1)}
+                aria-label="Página anterior"
+              >
+                ← Anterior
+              </button>
+
+              <div className="pagination-numbers">
+                {currentPage > 2 && (
+                  <>
+                    <button
+                      type="button"
+                      className="pagination-num"
+                      onClick={() => handlePageChange(0)}
+                    >
+                      1
+                    </button>
+                    {currentPage > 3 && <span className="pagination-dots">...</span>}
+                  </>
+                )}
+
+                {getPaginationPages().map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    className={`pagination-num ${currentPage === pageNum ? 'pagination-num--active' : ''}`}
+                    onClick={() => handlePageChange(pageNum)}
+                    aria-current={currentPage === pageNum ? 'page' : undefined}
+                  >
+                    {pageNum + 1}
+                  </button>
+                ))}
+
+                {currentPage < totalPages - 3 && (
+                  <>
+                    {currentPage < totalPages - 4 && <span className="pagination-dots">...</span>}
+                    <button
+                      type="button"
+                      className="pagination-num"
+                      onClick={() => handlePageChange(totalPages - 1)}
+                    >
+                      {totalPages}
+                    </button>
+                  </>
+                )}
+              </div>
+
+              <button
+                type="button"
+                className="pagination-btn pagination-next"
+                disabled={currentPage >= totalPages - 1}
+                onClick={() => handlePageChange(currentPage + 1)}
+                aria-label="Página siguiente"
+              >
+                Siguiente →
+              </button>
+            </nav>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}

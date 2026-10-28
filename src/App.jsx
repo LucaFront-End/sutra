@@ -31,6 +31,7 @@ import Contact from './pages/Contact';
 import MysteryBox from './pages/MysteryBox';
 import Account from './pages/Account';
 import DynamicLanding from './pages/DynamicLanding';
+import Zonas from './pages/Zonas';
 
 export default function App() {
   const navigate = useNavigate();
@@ -214,6 +215,12 @@ export default function App() {
           <Route 
             path="/login" 
             element={<Account onNavigate={handleNavigate} onAddToCart={handleAddToCart} />} 
+          />
+
+          {/* Hub de Zonas & Cobertura Dinámica (Disponible solo desde Footer) */}
+          <Route 
+            path="/zonas" 
+            element={<Zonas onNavigate={handleNavigate} />} 
           />
 
           {/* Landings Dinámicas SEO (Programmatic SEO desde Supabase / CSV) */}

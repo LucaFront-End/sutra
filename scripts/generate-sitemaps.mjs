@@ -29,6 +29,7 @@ const MAIN_PAGES = [
   { url: '/nosotros', changefreq: 'monthly', priority: '0.8' },
   { url: '/comunidad', changefreq: 'weekly', priority: '0.8' },
   { url: '/mysterybox', changefreq: 'weekly', priority: '0.9' },
+  { url: '/zonas', changefreq: 'daily', priority: '0.9' },
   { url: '/contacto', changefreq: 'monthly', priority: '0.7' },
 ];
 

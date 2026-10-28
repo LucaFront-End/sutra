@@ -55,20 +55,9 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
     navigate(`/producto/${slug}`);
   };
 
-  // Dynamic catalog from Wix Stores, preserving subscriptions and accessory items not yet in Wix
+  // Dynamic catalog from Wix Stores: use authentic live products exclusively when connected
   const catalog = (wixProducts && wixProducts.length > 0)
-    ? [
-        ...wixProducts,
-        ...allProducts.filter(
-          (p) =>
-            !wixProducts.some(
-              (wp) =>
-                wp.slug === p.slug ||
-                wp._wixId === p.id ||
-                wp.name.toLowerCase() === p.name.toLowerCase()
-            ) && (p.category === 'suscripciones' || p.category === 'accesorios')
-        ),
-      ]
+    ? wixProducts
     : allProducts;
 
   // Filter products logic
@@ -151,16 +140,18 @@ export default function Shop({ onNavigate, initialCategory = 'all', initialSubca
                         Todos los Objetos de Ritual
                       </button>
                     </li>
-                    {cat.subcategories.map((sub) => (
-                      <li key={sub.id}>
-                        <button
-                          className={`subfilter-btn ${subFilter === sub.id ? 'active' : ''}`}
-                          onClick={() => handleSubcategoryChange(sub.id)}
-                        >
-                          {sub.label}
-                        </button>
-                      </li>
-                    ))}
+                    {cat.subcategories
+                      .filter((sub) => catalog.some((p) => p.category === 'accesorios' && p.subcategory === sub.id))
+                      .map((sub) => (
+                        <li key={sub.id}>
+                          <button
+                            className={`subfilter-btn ${subFilter === sub.id ? 'active' : ''}`}
+                            onClick={() => handleSubcategoryChange(sub.id)}
+                          >
+                            {sub.label}
+                          </button>
+                        </li>
+                      ))}
                   </ul>
                 )}
               </li>

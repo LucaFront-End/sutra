@@ -65,6 +65,14 @@ export const SEO_DATA = {
     type: 'website',
   },
 
+  // 8. ZONAS Y COBERTURA (HUB DINÁMICO DE SANTUARIOS)
+  zonas: {
+    title: 'Zonas y Cobertura de Velas de Arena en México | Sutra',
+    description: 'Explora todos los santuarios, ciudades y zonas de cobertura de Sutra en México. Velas de arena artesanales, esencias botánicas y cajas de ritual con envío a todo el país.',
+    canonical: `${SITE_URL}/zonas`,
+    type: 'website',
+  },
+
   // 8. CATEGORÍAS DE PRODUCTOS / CATÁLOGO
   catalogo: {
     title: 'Velas de Arena, Aromas y Accesorios | Sutra México',

@@ -35,9 +35,7 @@ export const storeCategories = [
     id: 'accesorios', 
     label: 'Objetos Rituales',
     subcategories: [
-      { id: 'jardin-zen', label: 'Jardín Zen' },
-      { id: 'cartas-rituales', label: 'Cartas de rituales' },
-      { id: 'vasijas', label: 'Vasijas' }
+      { id: 'jardin-zen', label: 'Jardín Zen' }
     ]
   },
   { id: 'suscripciones', label: 'Mystery Box' }
@@ -397,13 +395,13 @@ export const allProducts = [
 
   // ==================== 2. ACCESORIOS ====================
   {
-    id: 'p-zen-1',
+    id: 'kit-sensorial-jardin-zen',
     category: 'accesorios',
     subcategory: 'jardin-zen',
-    name: 'Jardín Zen Artesanal 12"',
-    emotionalName: 'Calma Interior',
+    name: 'Kit Sensorial Jardín Zen',
+    emotionalName: 'Meditación & Enfoque',
     tag: 'Pieza Maestra',
-    price: '1,690 MXN',
+    price: '$1.690 MXN',
     priceNum: 1690,
     rating: 4.9,
     reviewCount: 39,
@@ -426,134 +424,18 @@ export const allProducts = [
           { label: '12" Mediano (30 cm)', value: '12', priceDelta: 0, isDefault: true },
           { label: '16" Ceremonial (40 cm)', value: '16', priceDelta: 600 },
         ]
-      },
-      {
-        id: 'wood',
-        label: 'Tono de Madera',
-        type: 'pills',
-        choices: [
-          { label: 'Nogal Oscuro Envejecido', value: 'nogal', priceDelta: 0, isDefault: true },
-          { label: 'Roble Claro Natural', value: 'roble', priceDelta: 0 },
-        ]
-      },
-      {
-        id: 'stones',
-        label: 'Selección de Piedras',
-        type: 'pills',
-        choices: [
-          { label: 'Piedras de Río Zen Negras', value: 'rio', priceDelta: 0, isDefault: true },
-          { label: 'Cuarzos Minerales en Bruto', value: 'cuarzo', priceDelta: 180 },
-        ]
       }
     ],
     specs: [
-      { label: 'Material', value: 'Madera maciza de nogal con barniz al agua no tóxico' },
+      { label: 'Material', value: 'Madera maciza con barniz al agua no tóxico' },
       { label: 'Arena', value: '1.2 kg arena de cuarzo mineral micronizada lavada' },
-      { label: 'Herramientas', value: 'Rastrillo de 5 dientes de bambú + nivelador de arena' },
+      { label: 'Herramientas', value: 'Rastrillo de bambú + nivelador de arena' },
       { label: 'Dimensiones', value: '30 cm de diámetro x 3 cm de profundidad' },
     ],
     ritualSteps: [
       { step: '01', title: 'Nivela la arena', desc: 'Usa el reverso del rastrillo para crear un lienzo blanco completamente liso.' },
-      { step: '02', title: 'Ancla las piedras', desc: 'Ubica 3 piedras representando tu mente, tu cuerpo y tu intención de hoy.' },
+      { step: '02', title: 'Ancla las piedras', desc: 'Ubica las piedras representando tu mente, tu cuerpo y tu intención de hoy.' },
       { step: '03', title: 'Traza las ondas', desc: 'Dibuja curvas circulares continuas sincronizando cada pase con tu inhalación.' },
-    ]
-  },
-
-  {
-    id: 'p-cartas-1',
-    category: 'accesorios',
-    subcategory: 'cartas-rituales',
-    name: 'Baraja de Rituales Diarios "Pausa"',
-    emotionalName: 'Intención y Claridad',
-    tag: 'Nuevo',
-    price: '780 MXN',
-    priceNum: 780,
-    rating: 5.0,
-    reviewCount: 52,
-    shortDesc: '30 cartas de intención con guía de meditación.',
-    description: 'Mazo de 30 cartas de intención de alta gramatura impresas en papel de algodón. Cada carta contiene una micro-práctica de presencia, un mantra y una reflexión consciente.',
-    benefit: 'Funciona como tu brújula matutina: extrae una carta cada amanecer para orientar tu estado de ánimo.',
-    img: imgCartas,
-    images: [
-      { id: 'cartas-box', src: imgCartas, label: 'Baraja de 30 Cartas de Intención Sutra' },
-      { id: 'cartas-mesa', src: imgCartasMesa, label: 'Cartas en Atril de Madera' },
-      { id: 'lifestyle', src: imgLifestyle, label: 'Ritual Matutino' },
-      { id: 'calma', src: imgCalma, label: 'Claridad Emocional' },
-    ],
-    options: [
-      {
-        id: 'edition',
-        label: 'Edición',
-        type: 'cards',
-        choices: [
-          { label: 'Edición Estándar', value: 'estandar', sub: 'Mazo de 30 cartas en caja rígida', priceDelta: 0, isDefault: true, img: imgCartas },
-          { label: 'Set con Atril de Madera', value: 'atril', sub: 'Incluye atril de nogal para exhibir tu carta diaria en tu escritorio', priceDelta: 280, img: imgCartasMesa },
-        ]
-      }
-    ],
-    specs: [
-      { label: 'Cartas', value: '30 cartas de 350g con tacto sedoso' },
-      { label: 'Guía', value: 'Libreto impreso de 60 páginas con ejercicios de mindfulness' },
-      { label: 'Empaque', value: 'Caja magnética rígida con cierre suave' },
-    ],
-    ritualSteps: [
-      { step: '01', title: 'Baraja en silencio', desc: 'Sostén las cartas entre ambas manos y cierra los ojos durante 3 respiraciones.' },
-      { step: '02', title: 'Corta y elige', desc: 'Separa el mazo y descubre la carta superior sin juzgar.' },
-      { step: '03', title: 'Habita el mensaje', desc: 'Léela en voz alta y permite que guíe tus decisiones a lo largo del día.' },
-    ]
-  },
-
-  {
-    id: 'p-vasijas-1',
-    category: 'accesorios',
-    subcategory: 'vasijas',
-    name: 'Vasija Wabi-Sabi en Cerámica Gres',
-    emotionalName: 'Tierra y Espacio',
-    tag: 'Artesanal',
-    price: '890 MXN',
-    priceNum: 890,
-    rating: 4.9,
-    reviewCount: 27,
-    shortDesc: 'Barro volcánico modelado a mano a alta temperatura.',
-    description: 'Pieza escultórica modelada y esmaltada a mano por alfareros mexicanos. Horneada a 1,280°C para una resistencia eterna al fuego, al agua y a la cera caliente.',
-    benefit: 'Aporta la belleza de la imperfección orgánica (wabi-sabi) a tu mesa, tocador o altar de meditación.',
-    img: imgVasijas,
-    images: [
-      { id: 'vasijas', src: imgVasijas, label: 'Colección de Vasijas' },
-      { id: 'lit', src: imgCandleLit, label: 'Con Cera Encendida' },
-      { id: 'white', src: imgWhiteWax, label: 'Textura Mineral' },
-      { id: 'banquet', src: imgBanquetes, label: 'En Mesa y Evento' },
-    ],
-    options: [
-      {
-        id: 'finish',
-        label: 'Acabado & Esmalte Mineral',
-        type: 'pills',
-        choices: [
-          { label: 'Gres Blanco Crudo Texturizado', value: 'blanco-gres', priceDelta: 0, isDefault: true, img: imgWhiteWax },
-          { label: 'Barro Volcánico Negro Ahumado', value: 'negro-barro', priceDelta: 0, img: imgVasijas },
-          { label: 'Terracota Cálida Mate', value: 'terracota', priceDelta: 0 },
-        ]
-      },
-      {
-        id: 'size',
-        label: 'Dimensiones',
-        type: 'pills',
-        choices: [
-          { label: 'Cuenco Mediano (14 cm)', value: '14cm', priceDelta: 0, isDefault: true },
-          { label: 'Vasija Profunda Grande (20 cm)', value: '20cm', priceDelta: 390 },
-        ]
-      }
-    ],
-    specs: [
-      { label: 'Material', value: 'Cerámica gres refractaria de alta temperatura' },
-      { label: 'Capacidad', value: 'Hasta 600g de cera granulada en formato mediano' },
-      { label: 'Limpieza', value: 'Apta para lavavajillas y fácil retiro de cera con agua tibia' },
-    ],
-    ritualSteps: [
-      { step: '01', title: 'Elige su rincón', desc: 'Colócala donde la luz natural bañe su textura mineral.' },
-      { step: '02', title: 'Vierte tu intención', desc: 'Úsala para cera granulada Sutra, incienso de resina o agua de flores.' },
-      { step: '03', title: 'Reutilización infinita', desc: 'No acumula cera estropeada; se renueva limpiamente con cada uso.' },
     ]
   },
 

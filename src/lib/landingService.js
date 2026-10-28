@@ -136,3 +136,90 @@ export async function getLandingBySlug(slug) {
 
   return null;
 }
+
+export const POPULAR_STATES = [
+  'Todos',
+  'Aguascalientes',
+  'Baja California',
+  'Ciudad de México',
+  'Guanajuato',
+  'Jalisco',
+  'Estado de México',
+  'Nuevo León',
+  'Puebla',
+  'Querétaro',
+  'Quintana Roo',
+  'Yucatán',
+];
+
+/**
+ * Consulta un conjunto paginado y filtrado de landings dinámicas desde Supabase
+ * en tiempo real para el hub repetidor de Zonas.
+ */
+export async function getLandingsHub({
+  page = 0,
+  pageSize = 24,
+  search = '',
+  estado = '',
+} = {}) {
+  const from = page * pageSize;
+  const to = from + pageSize - 1;
+
+  if (isSupabaseConfigured && supabase) {
+    try {
+      let query = supabase
+        .from(DEFAULT_LANDINGS_TABLE)
+        .select('*', { count: 'exact' });
+
+      if (estado && estado !== 'Todos' && estado !== 'all') {
+        query = query.ilike('Estado', `%${estado}%`);
+      }
+
+      if (search && search.trim()) {
+        const s = search.trim();
+        query = query.or(`"Ciudad o Zona".ilike.%${s}%,"Estado".ilike.%${s}%,"Título de página".ilike.%${s}%,"Slug".ilike.%${s}%`);
+      }
+
+      query = query.order('Estado', { ascending: true }).range(from, to);
+
+      const { data, count, error } = await query;
+
+      if (!error && data && data.length > 0) {
+        return {
+          landings: data.map(normalizeLandingData),
+          totalCount: count ?? data.length,
+          totalPages: Math.ceil((count ?? data.length) / pageSize),
+          currentPage: page,
+          pageSize,
+        };
+      }
+    } catch (err) {
+      console.warn('[LandingService] getLandingsHub error:', err.message);
+    }
+  }
+
+  // Fallback local dataset
+  let list = fallbackLandings.map(normalizeLandingData);
+  if (estado && estado !== 'Todos' && estado !== 'all') {
+    list = list.filter((item) => item.estado.toLowerCase().includes(estado.toLowerCase()));
+  }
+  if (search && search.trim()) {
+    const s = search.trim().toLowerCase();
+    list = list.filter(
+      (item) =>
+        item.ciudad.toLowerCase().includes(s) ||
+        item.estado.toLowerCase().includes(s) ||
+        item.tituloPagina.toLowerCase().includes(s) ||
+        item.slug.toLowerCase().includes(s)
+    );
+  }
+
+  const paged = list.slice(from, from + pageSize);
+  return {
+    landings: paged,
+    totalCount: list.length,
+    totalPages: Math.ceil(list.length / pageSize),
+    currentPage: page,
+    pageSize,
+  };
+}

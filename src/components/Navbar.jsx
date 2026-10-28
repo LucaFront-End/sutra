@@ -43,8 +43,9 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
   const isContact = currentPath.startsWith('/contacto') || currentPath.startsWith('/contact');
   const isMystery = currentPath.startsWith('/mysterybox') || currentPath.startsWith('/misterybox') || currentPath.startsWith('/suscripcion');
 
-  // When not on home, treat navbar as light-theme (dark text)
-  const isLightTheme = !isHome;
+  // When not on home or pages with dark heroes (like /zonas or dynamic landings), treat navbar as light-theme (dark text)
+  const isDarkHero = isHome || currentPath.startsWith('/zonas') || (!isShop && !isAbout && !isEvents && !isCommunity && !isContact && !isMystery);
+  const isLightTheme = !isDarkHero;
   const showDarkLogo = isLightTheme || scrolled || menuOpen;
 
   useEffect(() => {

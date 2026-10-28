@@ -245,11 +245,12 @@ export const footerContent = {
     {
       title: 'Info',
       links: [
-        { label: 'Nosotros', href: '#' },
-        { label: 'Journal', href: '#' },
+        { label: 'Nosotros', href: '/nosotros' },
+        { label: 'Journal', href: '/comunidad' },
+        { label: 'Zonas', href: '/zonas' },
         { label: 'FAQ', href: '#' },
         { label: 'Envíos', href: '#' },
-        { label: 'Contacto', href: '#' },
+        { label: 'Contacto', href: '/contacto' },
       ],
     },
     {

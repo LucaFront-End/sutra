@@ -24,6 +24,9 @@ export default function Footer({ onNavigate }) {
     } else if (link.label === 'Mystery Box' || link.label === 'Suscripción') {
       if (onNavigate) onNavigate('mysterybox');
       navigate('/mysterybox');
+    } else if (link.label === 'Zonas' || link.label === 'Zonas de Cobertura') {
+      if (onNavigate) onNavigate('zonas');
+      navigate('/zonas');
     } else if (['Ritual Zen', 'Objetos de Ritual', 'Velas de Arena', 'Velas', 'Aromas', 'Tés', 'Bundles'].includes(link.label)) {
       const catMap = {
         'Ritual Zen': '/tienda/accesorios/jardin-zen',
