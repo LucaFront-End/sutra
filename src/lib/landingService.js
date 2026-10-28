@@ -94,22 +94,28 @@ export async function getLandingBySlug(slug) {
       ];
 
       for (const table of candidateTables) {
-        // Intenta por 'Slug' (como en el CSV) y luego por 'slug' (si Supabase normalizó columnas)
-        const { data, error } = await supabase
+        // Intenta primero por 'Slug' (casing exacto del CSV en Supabase)
+        let { data, error } = await supabase
           .from(table)
           .select('*')
-          .or(`Slug.eq.${normalizedSlug},slug.eq.${normalizedSlug}`)
+          .eq('Slug', normalizedSlug)
           .maybeSingle();
+
+        // Si la columna 'Slug' no existe (código 42703), reintenta por 'slug' en minúsculas
+        if (error && error.code === '42703') {
+          const retry = await supabase
+            .from(table)
+            .select('*')
+            .eq('slug', normalizedSlug)
+            .maybeSingle();
+          data = retry.data;
+          error = retry.error;
+        }
 
         if (!error && data) {
           const normalized = normalizeLandingData(data);
           landingCache.set(normalizedSlug, normalized);
           return normalized;
-        }
-
-        // Si el error indica que la tabla no existe, intentamos con la siguiente
-        if (error && error.code !== 'PGRST116') {
-          // Continuar al siguiente nombre de tabla
         }
       }
     } catch (err) {

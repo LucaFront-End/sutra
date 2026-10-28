@@ -19,4 +19,5 @@ export const supabase = isSupabaseConfigured
     })
   : null;
 
-export const DEFAULT_LANDINGS_TABLE = import.meta.env.VITE_SUPABASE_LANDINGS_TABLE || 'sutra_seo_landings';
+const rawTable = import.meta.env.VITE_SUPABASE_LANDINGS_TABLE || 'SUTRA SEO LANDING';
+export const DEFAULT_LANDINGS_TABLE = rawTable.replace(/^"|"$/g, '').trim();
