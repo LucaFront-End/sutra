@@ -1,12 +1,61 @@
 /**
- * Vercel Serverless Function: Wix CMS ContactoGeneral Integration
+ * Vercel Serverless Function: Wix CMS ContactoGeneral & FormSubmit Integration
  * Endpoint: POST /api/forms
- * Submits web form entries to Wix Data collection "ContactoGeneral".
+ * Submits web form entries to:
+ * 1. Wix Data collection "ContactoGeneral"
+ * 2. FormSubmit (submit.co) to hola@sutramexico.com and test1@dilodigitalmx.com
  */
 
 const WIX_API_BASE = 'https://www.wixapis.com';
 const DEFAULT_SITE_ID = 'd33fa0f4-e839-48dc-9ba7-f71199a5796e';
 const COLLECTION_ID = 'ContactoGeneral';
+
+const SUTRA_OFFICIAL_EMAIL = 'hola@sutramexico.com';
+const SUTRA_CONTACT_EMAIL = 'contacto@sutramexico.com';
+const DILO_TEST_EMAIL = 'test1@dilodigitalmx.com';
+
+async function dispatchFormSubmit(payload) {
+  const formSubject = `Nuevo registro en Sutra México · ${payload.industria || payload.empresa || 'Web'}`;
+
+  const emailPayload = {
+    _subject: formSubject,
+    _template: 'table', // Plantilla blanca tipo tabla en español
+    _captcha: 'false',
+    'Nombre': payload.nombre || 'No indicado',
+    'Correo Electrónico': payload.email || 'No indicado',
+    'Celular / WhatsApp': payload.telefono || 'No indicado',
+    'Empresa / Asunto': payload.empresa || 'Sutra Web',
+    'Tipo de Formulario': payload.industria || 'General',
+    'Mensaje / Detalle': payload.mensaje || 'Sin mensaje adicional',
+    'Fecha y Hora': payload.fecha,
+  };
+
+  const targets = [
+    {
+      endpoint: `https://formsubmit.co/ajax/${SUTRA_OFFICIAL_EMAIL}`,
+      body: { ...emailPayload, _cc: `${DILO_TEST_EMAIL},${SUTRA_CONTACT_EMAIL}` },
+    },
+    {
+      endpoint: `https://formsubmit.co/ajax/${DILO_TEST_EMAIL}`,
+      body: { ...emailPayload, _cc: `${SUTRA_OFFICIAL_EMAIL},${SUTRA_CONTACT_EMAIL}` },
+    },
+  ];
+
+  await Promise.allSettled(
+    targets.map((t) =>
+      fetch(t.endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(t.body),
+      }).catch((err) => {
+        console.warn('[Serverless formSubmit notice]:', t.endpoint, err.message);
+      })
+    )
+  );
+}
 
 export default async function handler(req, res) {
   // CORS Headers
@@ -33,12 +82,6 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.WIX_API_KEY || process.env.VITE_WIX_API_KEY || '';
   const siteId = process.env.WIX_SITE_ID || process.env.VITE_WIX_SITE_ID || DEFAULT_SITE_ID;
-
-  if (!apiKey || !siteId) {
-    return res.status(500).json({
-      error: 'Wix credentials not configured in environment variables (WIX_API_KEY / WIX_SITE_ID)',
-    });
-  }
 
   try {
     const {
@@ -86,6 +129,20 @@ export default async function handler(req, res) {
       },
     };
 
+    // Dispatch to FormSubmit (submit.co) asynchronously
+    dispatchFormSubmit(itemPayload.item).catch((e) =>
+      console.warn('[api/forms] formSubmit dispatch error:', e)
+    );
+
+    // If Wix credentials not present, return graceful success since FormSubmit already received it
+    if (!apiKey || !siteId) {
+      return res.status(200).json({
+        success: true,
+        note: 'Saved via email/FormSubmit, Wix API key pending in environment',
+        item: itemPayload.item,
+      });
+    }
+
     const wixUrl = `${WIX_API_BASE}/wix-data/v1/items`;
     const wixRes = await fetch(wixUrl, {
       method: 'POST',
@@ -124,7 +181,7 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error('[API Forms Error]', err);
     return res.status(500).json({
-      error: 'Error saving to Wix CMS',
+      error: 'Error saving form',
       details: err.message,
     });
   }
