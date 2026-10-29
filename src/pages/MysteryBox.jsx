@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWixProducts } from '../hooks/useWixProducts';
@@ -13,15 +13,125 @@ const WIX_DEFAULT_MEDIA = [
   'https://static.wixstatic.com/media/45119e_6f31282f3a9b421dad79be68ffeb1a4b~mv2.png',
 ];
 
+// ─── Helpers for 100% Dynamic Wix Stores Data Extraction ───────────────────────
+
+/**
+ * Extracts a concise tier name from full Wix product title.
+ * e.g. "MisteryBox Ritual Completo | Velas Flotantes..." -> "Ritual Completo"
+ */
+function getTierName(product, fallback = 'Ritual') {
+  if (!product?.name) return fallback;
+  const mainPart = product.name.split('|')[0].trim();
+  const cleaned = mainPart.replace(/^(misterybox|mystery\s*box)\s*/i, '').trim();
+  return cleaned || mainPart || fallback;
+}
+
+/**
+ * Dynamically resolves savings from Wix discount prices or parsed description.
+ * Automatically adapts if client changes prices or description in Wix dashboard.
+ */
+function getSavingsBadge(product, defaultSavings = 'Ahorro Especial') {
+  if (!product) return defaultSavings;
+  if (product.originalPriceNum && product.priceNum && product.originalPriceNum > product.priceNum) {
+    const diff = Math.round(product.originalPriceNum - product.priceNum);
+    return `Ahorro $${diff.toLocaleString()} MXN`;
+  }
+  const fullText = `${product.description || ''} ${product.descriptionHtml || ''}`;
+  const match = fullText.match(/ahorr[ao]\s*(\$[\d,]+(?:\s*mxn)?)/i);
+  if (match) {
+    return `Ahorro ${match[1].toUpperCase()}`;
+  }
+  return defaultSavings;
+}
+
+/**
+ * Dynamically derives intro description from Wix product data.
+ */
+function getProductIntro(product, fallback = '') {
+  if (!product) return fallback;
+  if (product.shortDesc && product.shortDesc.length > 25) {
+    return product.shortDesc;
+  }
+  const clean = product.description || '';
+  const paragraphs = clean.split(/\n\s*\n|\r\n\s*\r\n/).map(p => p.trim()).filter(Boolean);
+  for (const para of paragraphs) {
+    if (para.length > 30 && !para.toLowerCase().startsWith('precio') && !para.toLowerCase().includes('ahorra') && !para.toLowerCase().startsWith('valor')) {
+      const sentence = para.split(/[.!?]/)[0].trim();
+      return sentence ? `${sentence}.` : para;
+    }
+  }
+  return fallback;
+}
+
+/**
+ * Dynamically extracts bullet items ("¿Qué incluye?") directly from Wix description HTML or text.
+ * When client edits bullet items in Wix Stores, they reflect immediately here.
+ */
+function extractIncludedItems(product, fallback = []) {
+  if (!product) return fallback;
+  const html = product.descriptionHtml || product.description || '';
+
+  // 1. Try to extract from <li> tags
+  const liMatches = [...html.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)];
+  if (liMatches.length > 0) {
+    const extracted = liMatches.map(m => {
+      return m[1]
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&#39;/gi, "'")
+        .replace(/&quot;/gi, '"')
+        .replace(/\s+/g, ' ')
+        .replace(/^[✓•\-\*\+]\s*/, '')
+        .trim();
+    }).filter(t => t.length > 3 && !t.toLowerCase().startsWith('http'));
+
+    if (extracted.length > 0) {
+      return extracted;
+    }
+  }
+
+  // 2. Try to extract from lines starting with bullets or symbols
+  const text = product.description || '';
+  const lines = text.split(/[\n\r]+/g)
+    .map(line => line.replace(/^[✓•\-\*\+]\s*/, '').trim())
+    .filter(line => line.length > 8 && !line.toLowerCase().startsWith('http') && !line.toLowerCase().startsWith('precio') && !line.toLowerCase().startsWith('valor'));
+
+  if (lines.length >= 2) {
+    return lines;
+  }
+
+  return fallback;
+}
+
+/**
+ * Resolves color dot background for dynamic color choices.
+ */
+function getColorHex(value, defaultHex = '#D4A76A') {
+  if (!value) return defaultHex;
+  const lower = String(value).toLowerCase();
+  if (lower.includes('blanco') || lower.includes('white') || lower.includes('nieve') || lower.includes('claro')) return '#FAF7F2';
+  if (lower.includes('negro') || lower.includes('black') || lower.includes('carbon') || lower.includes('carbón') || lower.includes('oscuro')) return '#1C1917';
+  if (lower.includes('dorado') || lower.includes('gold') || lower.includes('oro')) return '#D4A76A';
+  if (lower.includes('arena') || lower.includes('sand') || lower.includes('beige')) return '#E8DFC8';
+  if (lower.includes('terracota') || lower.includes('clay') || lower.includes('barro')) return '#C27856';
+  if (lower.includes('rosa') || lower.includes('rose')) return '#E8B4B8';
+  if (lower.includes('verde') || lower.includes('green') || lower.includes('oliva')) return '#7B8A6E';
+  if (lower.includes('gris') || lower.includes('grey') || lower.includes('gray')) return '#9E9E9E';
+  return defaultHex;
+}
+
 export default function MysteryBox({ onNavigate }) {
   const navigate = useNavigate();
   const { addToCart, setIsCartOpen } = useCart();
-  const { products: wixProducts } = useWixProducts();
+  const { products: wixProducts, loading: wixLoading } = useWixProducts();
 
   const [activeCompletoImg, setActiveCompletoImg] = useState(0);
   const [activeEsencialImg, setActiveEsencialImg] = useState(0);
-  const [completoColor, setCompletoColor] = useState('Blanco');
-  const [esencialColor, setEsencialColor] = useState('Blanco');
+  const [selectedOptions, setSelectedOptions] = useState({
+    completo: { 'Color:': 'Blanco' },
+    esencial: { 'Color:': 'Blanco' },
+  });
   const [addedPlanId, setAddedPlanId] = useState(null);
   const [openFaq, setOpenFaq] = useState(0);
 
@@ -30,17 +140,52 @@ export default function MysteryBox({ onNavigate }) {
   }, []);
 
   // Dynamically resolve real products from Wix Stores
-  const wixCompleto = (wixProducts || []).find(
-    (p) => p._wixId === 'a9a00ce4-e102-4b47-8f45-da29e2579106' ||
-           p.slug === 'misterybox-ritual-completo-velas-flotantes-y-velas-de-arena' ||
-           p.slug?.includes('misterybox-ritual-completo')
-  );
+  const wixCompleto = useMemo(() => {
+    return (wixProducts || []).find(
+      (p) => p._wixId === 'a9a00ce4-e102-4b47-8f45-da29e2579106' ||
+             p.slug === 'misterybox-ritual-completo-velas-flotantes-y-velas-de-arena' ||
+             (p.category === 'suscripciones' && (p.slug?.includes('completo') || p.name?.toLowerCase().includes('completo')))
+    );
+  }, [wixProducts]);
 
-  const wixEsencial = (wixProducts || []).find(
-    (p) => p._wixId === '6f22920a-ad94-43ca-baf5-4853d9d6dfd5' ||
-           p.slug === 'misterybox-esencial' ||
-           p.slug?.includes('misterybox-esencial')
-  );
+  const wixEsencial = useMemo(() => {
+    return (wixProducts || []).find(
+      (p) => p._wixId === '6f22920a-ad94-43ca-baf5-4853d9d6dfd5' ||
+             p.slug === 'misterybox-esencial' ||
+             (p.category === 'suscripciones' && (p.slug?.includes('esencial') || p.name?.toLowerCase().includes('esencial')))
+    );
+  }, [wixProducts]);
+
+  // Synchronize dynamic default choices from Wix products when loaded
+  useEffect(() => {
+    if (wixCompleto?.options?.length) {
+      setSelectedOptions((prev) => {
+        const initial = { ...prev.completo };
+        wixCompleto.options.forEach((opt) => {
+          if (!initial[opt.label]) {
+            const defaultChoice = opt.choices?.find((c) => c.isDefault) || opt.choices?.[0];
+            if (defaultChoice) initial[opt.label] = defaultChoice.value || defaultChoice.label;
+          }
+        });
+        return { ...prev, completo: initial };
+      });
+    }
+  }, [wixCompleto]);
+
+  useEffect(() => {
+    if (wixEsencial?.options?.length) {
+      setSelectedOptions((prev) => {
+        const initial = { ...prev.esencial };
+        wixEsencial.options.forEach((opt) => {
+          if (!initial[opt.label]) {
+            const defaultChoice = opt.choices?.find((c) => c.isDefault) || opt.choices?.[0];
+            if (defaultChoice) initial[opt.label] = defaultChoice.value || defaultChoice.label;
+          }
+        });
+        return { ...prev, esencial: initial };
+      });
+    }
+  }, [wixEsencial]);
 
   const filterUnique = (arr) => Array.from(new Set(arr.filter(Boolean)));
 
@@ -51,11 +196,10 @@ export default function MysteryBox({ onNavigate }) {
     typeof img === 'string' ? img : img?.src || img?.url
   );
 
-  // Use real Wix product media
+  // Dynamic Wix galleries
   const completoGallery = filterUnique(
     wixCompletoImgs.length > 0 ? wixCompletoImgs : WIX_DEFAULT_MEDIA
   );
-
   const esencialGallery = filterUnique(
     wixEsencialImgs.length > 0 ? wixEsencialImgs : WIX_DEFAULT_MEDIA
   );
@@ -72,6 +216,7 @@ export default function MysteryBox({ onNavigate }) {
     },
   ];
 
+  // 100% Dynamic Plans built directly from live Wix Stores catalog
   const plans = {
     completo: {
       id: wixCompleto?._wixId || 'a9a00ce4-e102-4b47-8f45-da29e2579106',
@@ -80,25 +225,25 @@ export default function MysteryBox({ onNavigate }) {
       slug: wixCompleto?.slug || 'misterybox-ritual-completo-velas-flotantes-y-velas-de-arena',
       isWixProduct: true,
       name: wixCompleto?.name || 'MisteryBox Ritual Completo | Velas Flotantes y Velas de Arena',
-      tierName: 'Ritual Completo',
-      tag: 'EXPERIENCIA COMPLETA',
+      tierName: getTierName(wixCompleto, 'Ritual Completo'),
+      tag: wixCompleto?.ribbon || 'EXPERIENCIA COMPLETA',
       badge: 'BIMESTRAL',
       price: wixCompleto?.price || '$1,590 MXN',
       priceNum: wixCompleto?.priceNum || 1590,
       period: 'cada 2 meses',
-      savings: 'Ahorro $150 MXN',
-      desc: wixCompleto?.shortDesc || 'Vasija de cerámica artesanal y curación botánica estacional completa.',
-      img: completoGallery[0],
+      savings: getSavingsBadge(wixCompleto, 'Ahorro $600 MXN'),
+      desc: getProductIntro(wixCompleto, 'Vasija de cerámica artesanal y curación botánica estacional completa.'),
+      img: completoGallery[activeCompletoImg] || completoGallery[0],
       gallery: completoGallery,
       wixVariants: wixCompleto?.wixVariants || [],
       options: wixCompleto?.options?.length ? wixCompleto.options : defaultWixOptions,
-      items: [
+      items: extractIncludedItems(wixCompleto, [
         '500g cera en arena botánica pura',
         'Vasija artesanal de cerámica exclusiva',
         '2 Aromas botánicos sorpresa estacionales',
         'Botella de cerillos largos + 5 mechas',
         'Carta ritual y guía de meditación',
-      ],
+      ]),
     },
     esencial: {
       id: wixEsencial?._wixId || '6f22920a-ad94-43ca-baf5-4853d9d6dfd5',
@@ -107,25 +252,25 @@ export default function MysteryBox({ onNavigate }) {
       slug: wixEsencial?.slug || 'misterybox-esencial',
       isWixProduct: true,
       name: wixEsencial?.name || 'MisteryBox Esencial | Velas Flotantes y Velas de Arena',
-      tierName: 'Ritual Esencial',
-      tag: 'RECARGA',
+      tierName: getTierName(wixEsencial, 'Ritual Esencial'),
+      tag: wixEsencial?.ribbon || 'RECARGA',
       badge: 'BIMESTRAL',
       price: wixEsencial?.price || '$690 MXN',
       priceNum: wixEsencial?.priceNum || 690,
       period: 'cada 2 meses',
-      savings: 'Ahorro $100 MXN',
-      desc: wixEsencial?.shortDesc || 'Recarga periódica de cera y aromas para acompañar tus recipientes.',
-      img: esencialGallery[0],
+      savings: getSavingsBadge(wixEsencial, 'Ahorro $360 MXN'),
+      desc: getProductIntro(wixEsencial, 'Recarga periódica de cera y aromas para acompañar tus recipientes.'),
+      img: esencialGallery[activeEsencialImg] || esencialGallery[0],
       gallery: esencialGallery,
       wixVariants: wixEsencial?.wixVariants || [],
       options: wixEsencial?.options?.length ? wixEsencial.options : defaultWixOptions,
-      items: [
+      items: extractIncludedItems(wixEsencial, [
         '500g cera en arena botánica pura',
         '2 Aromas botánicos sorpresa estacionales',
         'Botella de cerillos largos + 5 mechas',
         'Carta ritual y guía de meditación',
         'Sin vasija · Recarga tus recipientes',
-      ],
+      ]),
     },
   };
 
@@ -137,18 +282,56 @@ export default function MysteryBox({ onNavigate }) {
     }
   };
 
+  const handleOptionChoice = (planKey, optLabel, choice) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [planKey]: {
+        ...prev[planKey],
+        [optLabel]: choice.value || choice.label,
+      },
+    }));
+
+    // If choice has an image, switch gallery active image
+    const plan = plans[planKey];
+    if (choice.img && plan?.gallery?.length) {
+      const imgIdx = plan.gallery.findIndex((g) => g === choice.img || (typeof g === 'string' && g.includes(choice.img.split('/').pop())));
+      if (imgIdx >= 0) {
+        if (planKey === 'completo') setActiveCompletoImg(imgIdx);
+        else setActiveEsencialImg(imgIdx);
+      }
+    } else if (plan?.wixVariants?.length) {
+      // Find variant media matching this choice
+      const matched = plan.wixVariants.find((v) => {
+        const c = v.choices || {};
+        return c[optLabel] === choice.value || Object.values(c).includes(choice.value);
+      });
+      const varImg = matched?.media?.mainMedia?.image?.url || matched?.image?.url;
+      if (varImg) {
+        const imgIdx = plan.gallery.findIndex((g) => g === varImg || (typeof g === 'string' && g.includes(varImg.split('/').pop())));
+        if (imgIdx >= 0) {
+          if (planKey === 'completo') setActiveCompletoImg(imgIdx);
+          else setActiveEsencialImg(imgIdx);
+        }
+      }
+    }
+  };
+
   const handleSubscribe = (planKey) => {
     const plan = plans[planKey];
     const wixRef = planKey === 'completo' ? wixCompleto : wixEsencial;
-    const chosenColor = planKey === 'completo' ? completoColor : esencialColor;
+    const currentOpts = selectedOptions[planKey] || {};
 
     // Match Wix variantId if available
     const matchedWixVariant = (plan.wixVariants || []).find((v) => {
       const choices = v.choices || {};
-      return Object.values(choices).some(
-        (val) => String(val).toLowerCase() === chosenColor.toLowerCase()
-      );
+      return Object.entries(currentOpts).every(([optName, optVal]) => {
+        return choices[optName] === optVal || Object.values(choices).some((val) => String(val).toLowerCase() === String(optVal).toLowerCase());
+      });
     });
+
+    const optSummary = Object.entries(currentOpts)
+      .map(([k, v]) => `${k} ${v}`)
+      .join(', ') || 'Plan bimestral';
 
     const itemToAdd = {
       ...(wixRef || {}),
@@ -163,14 +346,14 @@ export default function MysteryBox({ onNavigate }) {
       category: 'suscripciones',
       img: plan.img,
       variantId: matchedWixVariant?._id || matchedWixVariant?.id || undefined,
-      selectedOptions: { 'Color:': chosenColor },
-      selectedVariant: `Color: ${chosenColor} | Entrega bimestral`,
+      selectedOptions: currentOpts,
+      selectedVariant: `${optSummary} | Entrega bimestral`,
       wixVariants: plan.wixVariants,
       options: plan.options,
       subscription: {
         frequency: 'Cada 2 meses',
         tier: plan.name,
-        type: `Color: ${chosenColor}`,
+        type: optSummary,
         subscriptionOptionId: plan.subscriptionOptionId,
       },
     };
@@ -210,6 +393,7 @@ export default function MysteryBox({ onNavigate }) {
   return (
     <div className="mystery-page fade-in">
       <SEO pageKey="mysterybox" />
+
       {/* Breadcrumb Navigation */}
       <div className="mystery-nav container">
         <div className="mystery-breadcrumb">
@@ -270,7 +454,7 @@ export default function MysteryBox({ onNavigate }) {
                 <span className="badge-spark">✦</span>
                 <div>
                   <strong>{plans.completo.name}</strong>
-                  <small>Vela de Arena + Vasija + 2 Aromas + 5 Mechas</small>
+                  <small>{plans.completo.price} · {plans.completo.period}</small>
                 </div>
               </div>
             </div>
@@ -307,6 +491,7 @@ export default function MysteryBox({ onNavigate }) {
                     e.preventDefault();
                     handleGoToProduct(plans.completo);
                   }}
+                  title={`Ver detalles de ${plans.completo.name}`}
                 >
                   <img 
                     src={plans.completo.gallery[activeCompletoImg] || plans.completo.gallery[0]} 
@@ -316,19 +501,21 @@ export default function MysteryBox({ onNavigate }) {
                   <span className="split-card__tier-tag">✦ Con Vasija de Cerámica</span>
                 </Link>
                 {/* Thumbnails */}
-                <div className="split-card__thumbs">
-                  {plans.completo.gallery.map((img, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className={`split-card__thumb-btn ${activeCompletoImg === idx ? 'is-active' : ''}`}
-                      onClick={() => setActiveCompletoImg(idx)}
-                      aria-label={`Ver foto ${idx + 1} de ${plans.completo.name}`}
-                    >
-                      <img src={img} alt="" />
-                    </button>
-                  ))}
-                </div>
+                {plans.completo.gallery.length > 1 && (
+                  <div className="split-card__thumbs">
+                    {plans.completo.gallery.map((img, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        className={`split-card__thumb-btn ${activeCompletoImg === idx ? 'is-active' : ''}`}
+                        onClick={() => setActiveCompletoImg(idx)}
+                        aria-label={`Ver foto ${idx + 1} de ${plans.completo.name}`}
+                      >
+                        <img src={img} alt="" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Card Body */}
@@ -351,36 +538,46 @@ export default function MysteryBox({ onNavigate }) {
                   </div>
                   <div className="split-card__price-row">
                     <span className="split-card__price">{plans.completo.price}</span>
-                    <span className="split-card__period">/ cada 2 meses</span>
+                    <span className="split-card__period">/ {plans.completo.period}</span>
                   </div>
                   <p className="split-card__desc">{plans.completo.desc}</p>
                 </div>
 
-                {/* Wix Color Selector */}
-                <div className="split-card__color-selector">
-                  <span className="split-card__color-label">Color de Cera: <strong>{completoColor}</strong></span>
-                  <div className="split-card__color-pills">
-                    {['Blanco', 'Negro'].map((col) => (
-                      <button
-                        key={col}
-                        type="button"
-                        className={`split-card__color-btn ${completoColor === col ? 'is-active' : ''}`}
-                        onClick={() => {
-                          setCompletoColor(col);
-                          setActiveCompletoImg(col === 'Negro' && plans.completo.gallery.length > 1 ? 1 : 0);
-                        }}
-                      >
-                        <span
-                          className="split-card__color-dot"
-                          style={{ background: col === 'Blanco' ? '#FAF7F2' : '#1C1917' }}
-                        />
-                        {col}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                {/* Dynamic Wix Options (e.g. Color) */}
+                {plans.completo.options?.map((opt) => {
+                  const currentVal = selectedOptions.completo[opt.label] || opt.choices?.[0]?.value || opt.choices?.[0]?.label;
+                  return (
+                    <div key={opt.id || opt.label} className="split-card__color-selector">
+                      <span className="split-card__color-label">
+                        {opt.label} <strong>{currentVal}</strong>
+                      </span>
+                      <div className="split-card__color-pills">
+                        {opt.choices?.map((choice) => {
+                          const val = choice.value || choice.label;
+                          const isSelected = currentVal === val;
+                          const hex = choice.hex || getColorHex(val);
+                          return (
+                            <button
+                              key={val}
+                              type="button"
+                              className={`split-card__color-btn ${isSelected ? 'is-active' : ''}`}
+                              onClick={() => handleOptionChoice('completo', opt.label, choice)}
+                              title={choice.label || val}
+                            >
+                              <span
+                                className="split-card__color-dot"
+                                style={{ background: hex }}
+                              />
+                              {choice.label || val}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
 
-                {/* Minimalist 1-Line Items List */}
+                {/* Dynamic Wix Items List */}
                 <ul className="mystery-clean-list">
                   {plans.completo.items.map((item, idx) => (
                     <li key={idx} className="clean-list-item">
@@ -409,7 +606,7 @@ export default function MysteryBox({ onNavigate }) {
                           <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
                           <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
                         </svg>
-                        <span>Suscribirme al Ritual Completo</span>
+                        <span>Suscribirme al {plans.completo.tierName}</span>
                       </>
                     )}
                   </button>
@@ -448,6 +645,7 @@ export default function MysteryBox({ onNavigate }) {
                     e.preventDefault();
                     handleGoToProduct(plans.esencial);
                   }}
+                  title={`Ver detalles de ${plans.esencial.name}`}
                 >
                   <img 
                     src={plans.esencial.gallery[activeEsencialImg] || plans.esencial.gallery[0]} 
@@ -457,19 +655,21 @@ export default function MysteryBox({ onNavigate }) {
                   <span className="split-card__tier-tag">✦ Kit Recarga (Sin Vasija)</span>
                 </Link>
                 {/* Thumbnails */}
-                <div className="split-card__thumbs">
-                  {plans.esencial.gallery.map((img, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className={`split-card__thumb-btn ${activeEsencialImg === idx ? 'is-active' : ''}`}
-                      onClick={() => setActiveEsencialImg(idx)}
-                      aria-label={`Ver foto ${idx + 1} de ${plans.esencial.name}`}
-                    >
-                      <img src={img} alt="" />
-                    </button>
-                  ))}
-                </div>
+                {plans.esencial.gallery.length > 1 && (
+                  <div className="split-card__thumbs">
+                    {plans.esencial.gallery.map((img, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        className={`split-card__thumb-btn ${activeEsencialImg === idx ? 'is-active' : ''}`}
+                        onClick={() => setActiveEsencialImg(idx)}
+                        aria-label={`Ver foto ${idx + 1} de ${plans.esencial.name}`}
+                      >
+                        <img src={img} alt="" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Card Body */}
@@ -492,36 +692,46 @@ export default function MysteryBox({ onNavigate }) {
                   </div>
                   <div className="split-card__price-row">
                     <span className="split-card__price">{plans.esencial.price}</span>
-                    <span className="split-card__period">/ cada 2 meses</span>
+                    <span className="split-card__period">/ {plans.esencial.period}</span>
                   </div>
                   <p className="split-card__desc">{plans.esencial.desc}</p>
                 </div>
 
-                {/* Wix Color Selector */}
-                <div className="split-card__color-selector">
-                  <span className="split-card__color-label">Color de Cera: <strong>{esencialColor}</strong></span>
-                  <div className="split-card__color-pills">
-                    {['Blanco', 'Negro'].map((col) => (
-                      <button
-                        key={col}
-                        type="button"
-                        className={`split-card__color-btn ${esencialColor === col ? 'is-active' : ''}`}
-                        onClick={() => {
-                          setEsencialColor(col);
-                          setActiveEsencialImg(col === 'Negro' && plans.esencial.gallery.length > 1 ? 1 : 0);
-                        }}
-                      >
-                        <span
-                          className="split-card__color-dot"
-                          style={{ background: col === 'Blanco' ? '#FAF7F2' : '#1C1917' }}
-                        />
-                        {col}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                {/* Dynamic Wix Options (e.g. Color) */}
+                {plans.esencial.options?.map((opt) => {
+                  const currentVal = selectedOptions.esencial[opt.label] || opt.choices?.[0]?.value || opt.choices?.[0]?.label;
+                  return (
+                    <div key={opt.id || opt.label} className="split-card__color-selector">
+                      <span className="split-card__color-label">
+                        {opt.label} <strong>{currentVal}</strong>
+                      </span>
+                      <div className="split-card__color-pills">
+                        {opt.choices?.map((choice) => {
+                          const val = choice.value || choice.label;
+                          const isSelected = currentVal === val;
+                          const hex = choice.hex || getColorHex(val);
+                          return (
+                            <button
+                              key={val}
+                              type="button"
+                              className={`split-card__color-btn ${isSelected ? 'is-active' : ''}`}
+                              onClick={() => handleOptionChoice('esencial', opt.label, choice)}
+                              title={choice.label || val}
+                            >
+                              <span
+                                className="split-card__color-dot"
+                                style={{ background: hex }}
+                              />
+                              {choice.label || val}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
 
-                {/* Minimalist 1-Line Items List */}
+                {/* Dynamic Wix Items List */}
                 <ul className="mystery-clean-list">
                   {plans.esencial.items.map((item, idx) => (
                     <li key={idx} className={`clean-list-item ${idx === plans.esencial.items.length - 1 ? 'clean-list-item--muted' : ''}`}>
@@ -550,7 +760,7 @@ export default function MysteryBox({ onNavigate }) {
                           <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
                           <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
                         </svg>
-                        <span>Suscribirme al Ritual Esencial</span>
+                        <span>Suscribirme al {plans.esencial.tierName}</span>
                       </>
                     )}
                   </button>
@@ -592,7 +802,7 @@ export default function MysteryBox({ onNavigate }) {
             <span className="step-num">01</span>
             <h3 className="step-title">Elige tu Ritual</h3>
             <p className="step-desc">
-              Selecciona el <strong>Ritual Completo</strong> si quieres recibir una vasija artesanal nueva o el <strong>Ritual Esencial</strong> si prefieres recargar tus recipientes.
+              Selecciona el <strong>{plans.completo.tierName}</strong> si quieres recibir una vasija artesanal nueva o el <strong>{plans.esencial.tierName}</strong> si prefieres recargar tus recipientes.
             </p>
           </div>
 
@@ -660,8 +870,8 @@ export default function MysteryBox({ onNavigate }) {
             <thead>
               <tr>
                 <th>Contenido & Beneficios</th>
-                <th className="th-highlight">{plans.completo.name}</th>
-                <th>{plans.esencial.name}</th>
+                <th className="th-highlight">{plans.completo.tierName || plans.completo.name}</th>
+                <th>{plans.esencial.tierName || plans.esencial.name}</th>
               </tr>
             </thead>
             <tbody>
@@ -678,12 +888,12 @@ export default function MysteryBox({ onNavigate }) {
               <tr>
                 <td>Vasija artesanal de cerámica</td>
                 <td className="td-highlight"><strong>✓ Incluida en cada entrega</strong></td>
-                <td>— No incluye vasija</td>
+                <td>— No incluye vasija (Kit Recarga)</td>
               </tr>
               <tr>
                 <td>Aromas botánicos sorpresa</td>
-                <td className="td-highlight">2 Aromas (Brumas/Esencias)</td>
-                <td>2 Aromas (Brumas/Esencias)</td>
+                <td className="td-highlight">2 Aromas (Brumas / Esencias)</td>
+                <td>2 Aromas (Brumas / Esencias)</td>
               </tr>
               <tr>
                 <td>Mechas largas para velas</td>
@@ -691,9 +901,9 @@ export default function MysteryBox({ onNavigate }) {
                 <td>5 Mechas de 15 cm</td>
               </tr>
               <tr>
-                <td>Carta de Intención Bimestral</td>
-                <td className="td-highlight">✓ Incluida</td>
-                <td>✓ Incluida</td>
+                <td>Detalles y Coleccionables</td>
+                <td className="td-highlight">✓ Tarjeta de intención + Stickers + Cerillos</td>
+                <td>✓ Tarjeta de intención bimestral</td>
               </tr>
               <tr>
                 <td>Costo de envío</td>
@@ -765,14 +975,14 @@ export default function MysteryBox({ onNavigate }) {
               className="btn btn--gold"
               onClick={() => handleSubscribe('completo')}
             >
-              Suscribirme al Ritual Completo ({plans.completo.price})
+              Suscribirme al {plans.completo.tierName} ({plans.completo.price})
             </button>
             <button 
               type="button" 
               className="btn btn--outline"
               onClick={() => handleSubscribe('esencial')}
             >
-              Ritual Esencial ({plans.esencial.price})
+              {plans.esencial.tierName} ({plans.esencial.price})
             </button>
           </div>
         </div>
