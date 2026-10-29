@@ -18,9 +18,9 @@ export default function Account({ onNavigate, onAddToCart }) {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     try {
       const savedAuth = localStorage.getItem('sutra_customer_logged_in');
-      return savedAuth !== null ? JSON.parse(savedAuth) : true;
+      return savedAuth !== null ? JSON.parse(savedAuth) : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -182,6 +182,28 @@ export default function Account({ onNavigate, onAddToCart }) {
     setActiveTab('orders');
   };
 
+  // Social Login helper (Google & Facebook)
+  const handleSocialAuth = (provider) => {
+    setAuthError('');
+    setAuthSuccess(true);
+    const fallbackEmail = provider === 'Google' ? 'usuario.google@gmail.com' : 'usuario.facebook@sutra.mx';
+    const resolvedEmail = authEmail.trim() || currentUser.email || fallbackEmail;
+    const resolvedName = authName.trim() || (authEmail.trim() ? authEmail.trim().split('@')[0] : `${DEFAULT_USER.name} (${provider})`);
+
+    setTimeout(() => {
+      setAuthSuccess(false);
+      handleLogin({
+        name: resolvedName,
+        email: resolvedEmail,
+        phone: currentUser.phone,
+        address: currentUser.address,
+        authProvider: provider,
+        subscription: currentUser.subscription,
+      });
+      setActiveTab('orders');
+    }, 600);
+  };
+
   // Rating label helper
   const getRatingLabel = (val) => {
     switch (val) {
@@ -255,6 +277,38 @@ export default function Account({ onNavigate, onAddToCart }) {
                   >
                     Crear Nueva Cuenta
                   </button>
+                </div>
+
+                {/* Social Login Options: Google & Facebook */}
+                <div className="account-social-auth">
+                  <button
+                    type="button"
+                    className="account-social-btn account-social-btn--google"
+                    onClick={() => handleSocialAuth('Google')}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+                      <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                      <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.8-.4-2.8s.2-2 .4-2.8L1.6 6.4C.6 8.4 0 10.6 0 12s.6 3.6 1.6 5.6l3.7-2.8z"/>
+                      <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 19.9 7.4 23 12 23z"/>
+                    </svg>
+                    <span>Continuar con Google</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="account-social-btn account-social-btn--facebook"
+                    onClick={() => handleSocialAuth('Facebook')}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>Continuar con Facebook</span>
+                  </button>
+                </div>
+
+                <div className="account-auth-divider">
+                  <span>o con tu correo electrónico</span>
                 </div>
 
                 <form onSubmit={handleAuthSubmit} className="account-auth-form">

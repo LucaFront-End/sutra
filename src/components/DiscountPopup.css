@@ -30,7 +30,7 @@
 .sutra-discount-modal {
   position: relative;
   width: 100%;
-  max-width: 820px;
+  max-width: 840px;
   background: #FAF7F2;
   border-radius: 16px;
   overflow: hidden;
@@ -38,7 +38,7 @@
     0 25px 50px -12px rgba(24, 17, 11, 0.5),
     0 0 0 1px rgba(212, 167, 106, 0.3);
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
+  grid-template-columns: 1fr 1.2fr;
   transform: scale(0.94) translateY(10px);
   animation: discountScaleUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
 }
@@ -159,7 +159,7 @@
 
 /* Right Content Area */
 .sutra-discount-content {
-  padding: 3rem 2.5rem 2.5rem;
+  padding: 2.25rem 2.25rem 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -175,7 +175,7 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #8B8B5E;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .sutra-discount-tag::before {
@@ -186,11 +186,11 @@
 
 .sutra-discount-title {
   font-family: var(--font-serif, 'Cormorant Garamond', Georgia, serif);
-  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-size: clamp(1.7rem, 2.8vw, 2.15rem);
   font-weight: 400;
   line-height: 1.15;
   color: #3C2415;
-  margin: 0 0 0.85rem;
+  margin: 0 0 0.65rem;
   letter-spacing: -0.01em;
 }
 
@@ -201,17 +201,29 @@
 
 .sutra-discount-desc {
   font-family: var(--font-sans, 'Inter', sans-serif);
-  font-size: 0.9rem;
-  line-height: 1.55;
+  font-size: 0.88rem;
+  line-height: 1.5;
   color: #6B5E55;
-  margin: 0 0 1.75rem;
+  margin: 0 0 1rem;
+}
+
+.sutra-discount-notice {
+  background: rgba(212, 167, 106, 0.16);
+  border: 1px solid rgba(212, 167, 106, 0.45);
+  color: #3C2415;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 0.65rem;
 }
 
 /* Form */
 .sutra-discount-form {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.65rem;
 }
 
 .sutra-discount-input-wrap {
@@ -220,12 +232,12 @@
 
 .sutra-discount-input {
   width: 100%;
-  padding: 0.95rem 1.15rem;
+  padding: 0.8rem 1rem;
   border: 1.5px solid rgba(60, 36, 21, 0.15);
   border-radius: 8px;
   background: #FFFFFF;
   font-family: var(--font-sans, 'Inter', sans-serif);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: #3C2415;
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -239,20 +251,20 @@
 
 .sutra-discount-input::placeholder {
   color: #A89F91;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
 }
 
 .sutra-discount-submit {
   width: 100%;
-  padding: 1.05rem 1.5rem;
+  padding: 0.95rem 1.25rem;
   background: #3C2415;
   color: #FAF7F2;
   border: none;
   border-radius: 8px;
   font-family: var(--font-sans, 'Inter', sans-serif);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -260,7 +272,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 0.25rem;
+  margin-top: 0.2rem;
 }
 
 .sutra-discount-submit:hover:not(:disabled) {
@@ -279,12 +291,12 @@
   border: none;
   color: #A89F91;
   font-family: var(--font-sans, 'Inter', sans-serif);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
-  margin-top: 0.5rem;
-  padding: 0.25rem;
+  margin-top: 0.35rem;
+  padding: 0.2rem;
   transition: color 0.2s ease;
   text-align: center;
 }
@@ -293,10 +305,10 @@
   color: #3C2415;
 }
 
-/* Success State */
+/* Success State (Email Sent — No Public Code Shown) */
 .sutra-discount-success {
   text-align: center;
-  padding: 1rem 0;
+  padding: 0.75rem 0;
   animation: discountFadeIn 0.35s ease forwards;
 }
 
@@ -309,60 +321,59 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
-  margin: 0 auto 1.25rem;
+  font-size: 1.6rem;
+  margin: 0 auto 1rem;
   border: 1px solid rgba(139, 139, 94, 0.3);
 }
 
-.sutra-discount-coupon-box {
+.sutra-discount-email-sent-box {
   background: #FFFFFF;
   border: 1.5px dashed #D4A76A;
   border-radius: 10px;
-  padding: 1.25rem 1.5rem;
-  margin: 1.25rem 0;
+  padding: 1.15rem 1.25rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.sutra-discount-email-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 0.4rem;
 }
 
-.sutra-discount-coupon-code {
-  font-family: var(--font-sans, 'Inter', monospace, sans-serif);
-  font-size: 1.4rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  color: #3C2415;
-}
-
-.sutra-discount-copy-btn {
-  padding: 0.65rem 1.15rem;
-  background: #FAF7F2;
-  border: 1px solid rgba(60, 36, 21, 0.2);
-  border-radius: 6px;
-  color: #3C2415;
+.sutra-discount-email-badge {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(139, 139, 94, 0.14);
+  color: #63633E;
   font-family: var(--font-sans, 'Inter', sans-serif);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.sutra-discount-copy-btn:hover {
-  background: #3C2415;
-  color: #FAF7F2;
+.sutra-discount-email-value {
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #3C2415;
+  word-break: break-all;
 }
 
-.sutra-discount-copy-btn.copied {
-  background: #8B8B5E;
-  color: #FAF7F2;
-  border-color: #8B8B5E;
+.sutra-discount-phone-value {
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 0.82rem;
+  color: #6B5E55;
 }
 
 .sutra-discount-instruction {
   font-family: var(--font-sans, 'Inter', sans-serif);
-  font-size: 0.82rem;
-  color: #8B8B5E;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #6B5E55;
   margin-bottom: 1.25rem;
 }
 
@@ -391,12 +402,12 @@
   .sutra-discount-modal {
     grid-template-columns: 1fr;
     max-width: 440px;
-    max-height: 90vh;
+    max-height: 92vh;
     overflow-y: auto;
   }
 
   .sutra-discount-media {
-    height: 180px;
+    height: 160px;
   }
 
   .sutra-discount-media-badge {
@@ -404,10 +415,14 @@
   }
 
   .sutra-discount-content {
-    padding: 1.75rem 1.5rem 1.5rem;
+    padding: 1.5rem 1.35rem 1.35rem;
   }
 
   .sutra-discount-title {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+  }
+
+  .sutra-discount-social {
+    grid-template-columns: 1fr;
   }
 }

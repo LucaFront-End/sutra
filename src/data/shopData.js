@@ -210,6 +210,105 @@ export const allProducts = [
     isWixProduct: true,
   },
   {
+    id: '57f76a36-902d-47fe-b253-2b2e3988e94e',
+    _wixId: '57f76a36-902d-47fe-b253-2b2e3988e94e',
+    category: 'velas',
+    name: 'Vela en Polvo Aroma Patchouli - Ritual Raíz Profunda',
+    emotionalName: 'Bosque Interior · Conexión Terrenal',
+    slug: 'vela-en-polvo-aroma-patchouli-ritual-raíz-profunda',
+    tag: 'Ritual de Raíces',
+    price: '690 MXN',
+    priceNum: 690,
+    rating: 4.9,
+    reviewCount: 33,
+    shortDesc: 'Patchouli terroso, 500g cera vegetal en polvo y 5 pabilos.',
+    description: 'Conecta con tu centro y despierta la calma de la naturaleza con el Kit de Vela en Polvo Sutra. Su esencia Raíz Profunda con notas de patchouli y bosque crea una atmósfera de arraigo, claridad y presencia.',
+    benefit: 'Un abrazo de naturaleza que despierta claridad, estabilidad y conexión terrenal.',
+    img: 'https://static.wixstatic.com/media/45119e_54dda4ce067d4beab75a21e32c054bd3~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_54dda4ce067d4beab75a21e32c054bd3~mv2.png',
+      'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png'
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_54dda4ce067d4beab75a21e32c054bd3~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png' }
+        ]
+      }
+    ],
+    isWixProduct: true,
+  },
+  {
+    id: '4076b535-bc9f-408d-872c-ef00548caedb',
+    _wixId: '4076b535-bc9f-408d-872c-ef00548caedb',
+    category: 'velas',
+    name: 'Vela en Polvo Aroma Mandarina y Toronja - Ritual Amanecer Vivo',
+    emotionalName: 'Amanecer Dorado · Energía y Calidez',
+    slug: 'vela-en-polvo-aroma-mandarina-y-toronja-ritual-amanecer-vivo',
+    tag: 'Ritual Matutino',
+    price: '690 MXN',
+    priceNum: 690,
+    rating: 5.0,
+    reviewCount: 37,
+    shortDesc: 'Mandarina y toronja radiante, 500g cera vegetal en polvo y 5 pabilos.',
+    description: 'La luz de un nuevo día en tu hogar con el Kit de Vela en Polvo Sutra. Su esencia Amanecer Vivo combina notas cítricas luminosas para despertar energía suave, alegría y calidez.',
+    benefit: 'Revitaliza tus mañanas e ilumina cualquier rincón con energía limpia y optimista.',
+    img: 'https://static.wixstatic.com/media/45119e_d80d7c05f3154900b1609ce18a67d48a~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_d80d7c05f3154900b1609ce18a67d48a~mv2.png',
+      'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png'
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_d80d7c05f3154900b1609ce18a67d48a~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png' }
+        ]
+      }
+    ],
+    isWixProduct: true,
+  },
+  {
+    id: 'afcbd886-0b32-465b-84c3-0bb75eb4b95d',
+    _wixId: 'afcbd886-0b32-465b-84c3-0bb75eb4b95d',
+    category: 'velas',
+    name: 'Vela en Polvo Aroma Incienso - Ritual Templo Interior',
+    emotionalName: 'Templo de Humo · Meditación e Introspección',
+    slug: 'vela-en-polvo-aroma-incienso-ritual-templo-interior',
+    tag: 'Ritual de Meditación',
+    price: '690 MXN',
+    priceNum: 690,
+    rating: 5.0,
+    reviewCount: 41,
+    shortDesc: 'Incienso sagrado, 500g cera vegetal en polvo y 5 pabilos.',
+    description: 'Convierte tu espacio en un santuario sagrado con el Kit de Vela en Polvo Sutra. Su esencia Templo Interior de incienso invita a la meditación profunda, el silencio interior y la introspección.',
+    benefit: 'Aromas ancestrales que aquietan la mente y elevan tus rituales de meditación.',
+    img: 'https://static.wixstatic.com/media/45119e_46efea28a0324a63a86ae21d650aa6fa~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_46efea28a0324a63a86ae21d650aa6fa~mv2.png',
+      'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png'
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_46efea28a0324a63a86ae21d650aa6fa~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_fd23d10951fd4b13be65e5a6064edc09~mv2.png' }
+        ]
+      }
+    ],
+    isWixProduct: true,
+  },
+  {
     id: 'p-vela-1',
     category: 'velas',
     name: 'Vela Ritual Noche Serena',
@@ -570,6 +669,91 @@ export const allProducts = [
   },
 
   {
+    id: '91943fb7-a6a9-4623-b032-8a3172ba52e5',
+    _wixId: '91943fb7-a6a9-4623-b032-8a3172ba52e5',
+    slug: 'esencia-noche-serena-lavanda',
+    isWixProduct: true,
+    category: 'aromas',
+    name: 'Esencia "Noche Serena" Lavanda',
+    emotionalName: 'Calma · Descanso · Serenidad',
+    tag: 'Esencia para Cera',
+    price: '299 MXN',
+    priceNum: 299,
+    rating: 5.0,
+    reviewCount: 44,
+    shortDesc: 'Esencia para velas de cera perlada con lavanda francesa.',
+    description: 'Lavanda reinterpretada para crear calma profunda y descanso emocional en tus velas de cera en polvo Sutra.',
+    benefit: 'Prepara tu habitación para un sueño profundo y reparador con solo 5 a 8 gotas alrededor de la mecha.',
+    img: 'https://static.wixstatic.com/media/45119e_3b37ef9a5bc34be8b9f05071ec5c341d~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_3b37ef9a5bc34be8b9f05071ec5c341d~mv2.png'
+    ],
+  },
+  {
+    id: '1d49a17b-4607-45a4-86d2-f27b56d0520e',
+    _wixId: '1d49a17b-4607-45a4-86d2-f27b56d0520e',
+    slug: 'esencia-raíz-profunda-patchouli',
+    isWixProduct: true,
+    category: 'aromas',
+    name: 'Esencia "Raíz Profunda" Patchouli',
+    emotionalName: 'Claridad · Frescura · Raíces',
+    tag: 'Esencia para Cera',
+    price: '299 MXN',
+    priceNum: 299,
+    rating: 4.9,
+    reviewCount: 29,
+    shortDesc: 'Esencia para velas de cera perlada con patchouli y notas de bosque.',
+    description: 'Un abrazo de naturaleza que despierta claridad y conexión terrenal en tus rituales con velas de arena Sutra.',
+    benefit: 'Aporta equilibrio, presencia y conexión con la tierra en cada encendido.',
+    img: 'https://static.wixstatic.com/media/45119e_2e65d91dc079434ca08816908c544bf2~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_2e65d91dc079434ca08816908c544bf2~mv2.png'
+    ],
+  },
+  {
+    id: '1b8a9448-011a-47eb-8d59-ac27092064ab',
+    _wixId: '1b8a9448-011a-47eb-8d59-ac27092064ab',
+    slug: 'esencia-amanecer-vivo-mandarina-toronja',
+    isWixProduct: true,
+    category: 'aromas',
+    name: 'Esencia "Amanecer Vivo" Mandarina & Toronja',
+    emotionalName: 'Energía · Alegría · Calidez',
+    tag: 'Esencia para Cera',
+    price: '299 MXN',
+    priceNum: 299,
+    rating: 5.0,
+    reviewCount: 36,
+    shortDesc: 'Esencia para velas de cera perlada con mandarina y toronja fresca.',
+    description: 'La luz de un nuevo día: energía suave envuelta en notas cítricas vibrantes para tus velas en polvo Sutra.',
+    benefit: 'Ilumina tus mañanas y despierta la vitalidad de tu hogar.',
+    img: 'https://static.wixstatic.com/media/45119e_7a246ba73fa54f03a4b0030c34be4088~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_7a246ba73fa54f03a4b0030c34be4088~mv2.png'
+    ],
+  },
+  {
+    id: '4ab98939-d84a-4650-8617-6e7e615145fb',
+    _wixId: '4ab98939-d84a-4650-8617-6e7e615145fb',
+    slug: 'esencia-templo-interior-incienso',
+    isWixProduct: true,
+    category: 'aromas',
+    name: 'Esencia "Templo Interior" Incienso',
+    emotionalName: 'Meditación · Misterio · Profundidad',
+    tag: 'Esencia Sagrada',
+    price: '299 MXN',
+    priceNum: 299,
+    rating: 5.0,
+    reviewCount: 40,
+    shortDesc: 'Esencia para velas de cera perlada con incienso ceremonial.',
+    description: 'Aromas ancestrales que invitan a la meditación y la introspección profunda junto a tu vela Sutra.',
+    benefit: 'Crea una atmósfera de templo y silencio interior ideal para meditar.',
+    img: 'https://static.wixstatic.com/media/45119e_be7bf6e91c5c431bb232c191a4537eb6~mv2.png',
+    images: [
+      'https://static.wixstatic.com/media/45119e_be7bf6e91c5c431bb232c191a4537eb6~mv2.png'
+    ],
+  },
+
+  {
     id: 'p-aroma-2',
     category: 'aromas',
     name: 'Difusor Mikado Bosque Interior',
@@ -752,20 +936,31 @@ export const allProducts = [
     slug: 'misterybox-ritual-completo-velas-flotantes-y-velas-de-arena',
     isWixProduct: true,
     category: 'suscripciones',
-    name: 'Sutra Mystery Box · Ritual Completo',
-    emotionalName: 'Suscripción Bimestral',
+    name: 'MisteryBox Ritual Completo | Velas Flotantes y Velas de Arena',
+    emotionalName: 'Suscripción Bimestral · Con Vasija de Cerámica',
     tag: 'Más Popular',
-    price: '$1,440 MXN',
-    priceNum: 1440,
+    price: '$1,590 MXN',
+    priceNum: 1590,
     rating: 5.0,
     reviewCount: 84,
-    shortDesc: 'Vela de cera en arena, vasija artesanal, 2 aromas y 5 mechas de 15 cm.',
+    shortDesc: 'Vela de cera en arena (500g), vasija artesanal, 2 aromas botánicos y 5 mechas.',
     description: 'Suscripción bimestral con entrega cada 2 meses. Incluye 500g de cera en arena Sutra, vasija de cerámica modelada a mano, 2 aromas botánicos sorpresa y 5 mechas de 15 cm.',
     benefit: 'Sostiene tu ritual con una vasija y aromas renovados cada 60 días en la puerta de tu hogar.',
-    img: imgMysteryCompleto,
+    img: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png',
     images: [
-      { id: 'box', src: imgMysteryCompleto, label: 'Unboxing Completo' },
-      { id: 'detail', src: imgMysteryEsencial, label: 'Detalles de la Entrega' },
+      { id: 'wix-1', src: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png', label: 'MisteryBox Ritual Completo' },
+      { id: 'wix-2', src: 'https://static.wixstatic.com/media/45119e_6f31282f3a9b421dad79be68ffeb1a4b~mv2.png', label: 'Cera y Aromas Sutra' },
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_6f31282f3a9b421dad79be68ffeb1a4b~mv2.png' }
+        ]
+      }
     ],
   },
   {
@@ -775,20 +970,31 @@ export const allProducts = [
     slug: 'misterybox-esencial',
     isWixProduct: true,
     category: 'suscripciones',
-    name: 'Sutra Mystery Box · Ritual Esencial',
-    emotionalName: 'Recarga Bimestral',
+    name: 'MisteryBox Esencial | Velas Flotantes y Velas de Arena',
+    emotionalName: 'Recarga Bimestral · Sin Vasija',
     tag: 'Suscripción',
-    price: '$590 MXN',
-    priceNum: 590,
+    price: '$690 MXN',
+    priceNum: 690,
     rating: 4.9,
     reviewCount: 42,
-    shortDesc: 'Vela de cera en arena, 2 aromas y 5 mechas de 15 cm (sin vasija).',
+    shortDesc: 'Vela de cera en arena (500g), 2 aromas botánicos y 5 mechas de 15 cm (sin vasija).',
     description: 'Suscripción bimestral de recarga. Incluye 500g de cera en arena Sutra, 2 aromas botánicos y 5 mechas de 15 cm para usar en tus propias vasijas.',
     benefit: 'Recarga continua y económica de tus esencias y cera vegetal favorita sin acumular vasijas.',
-    img: imgMysteryEsencial,
+    img: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png',
     images: [
-      { id: 'box', src: imgMysteryEsencial, label: 'Set Esencial' },
-      { id: 'detail', src: imgMysteryCompleto, label: 'Contenido y Presentación' },
+      { id: 'wix-1', src: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png', label: 'MisteryBox Esencial' },
+      { id: 'wix-2', src: 'https://static.wixstatic.com/media/45119e_6f31282f3a9b421dad79be68ffeb1a4b~mv2.png', label: 'Recarga Cera y Aromas' },
+    ],
+    options: [
+      {
+        id: 'color:',
+        label: 'Color:',
+        type: 'color',
+        choices: [
+          { label: 'Blanco', value: 'Blanco', hex: '#FAF7F2', isDefault: true, img: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png' },
+          { label: 'Negro', value: 'Negro', hex: '#1C1917', isDefault: false, img: 'https://static.wixstatic.com/media/45119e_6f31282f3a9b421dad79be68ffeb1a4b~mv2.png' }
+        ]
+      }
     ],
   }
 ];

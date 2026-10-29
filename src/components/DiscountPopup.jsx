@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import popupImg from '../assets/images/cera-blanca.jpg';
 import { submitToContactoGeneral } from '../lib/formsService';
 import './DiscountPopup.css';
 
-const COUPON_CODE = 'SUTRA10';
 const STORAGE_KEY = 'sutra_discount_popup_seen';
 const SUBSCRIBERS_KEY = 'sutra_subscribers';
 const EXPIRY_DAYS = 7;
@@ -12,9 +11,13 @@ export default function DiscountPopup({ onNavigate }) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [formNotice, setFormNotice] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [copied, setCopied] = useState(false);
+
+  const emailInputRef = useRef(null);
+  const phoneInputRef = useRef(null);
 
   useEffect(() => {
     // Check if dismissed or used within last EXPIRY_DAYS
@@ -58,20 +61,34 @@ export default function DiscountPopup({ onNavigate }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) return;
-
-    setIsSubmitting(true);
     const cleanEmail = email.trim().toLowerCase();
+    const cleanPhone = phone.trim();
     const cleanName = name.trim();
+
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      setFormNotice('Por favor ingresa tu correo electrónico para enviarte tu código único.');
+      emailInputRef.current?.focus();
+      return;
+    }
+
+    if (!cleanPhone || cleanPhone.replace(/\D/g, '').length < 8) {
+      setFormNotice('Por favor ingresa tu número de celular (mínimo 8 dígitos).');
+      phoneInputRef.current?.focus();
+      return;
+    }
+
+    setFormNotice('');
+    setIsSubmitting(true);
 
     try {
       // 1. Submit lead directly to Wix CMS ContactoGeneral
       await submitToContactoGeneral({
         nombre: cleanName || 'Nuevo Miembro Sutra',
         email: cleanEmail,
-        empresa: `Cupón ${COUPON_CODE} (10% OFF)`,
+        telefono: cleanPhone,
+        empresa: 'Cupón Único 10% OFF (Enviar por correo)',
         industria: 'Lead Bienvenida / Popup',
-        mensaje: `Registro para 10% OFF en primera compra. Nombre: ${cleanName || 'No indicado'}. Cupón asignado: ${COUPON_CODE}`,
+        mensaje: `Solicitud de código único de 10% OFF en primera compra. Nombre: ${cleanName || 'No indicado'}. Correo: ${cleanEmail}. Celular: ${cleanPhone}. Enviar código único por correo electrónico.`,
       });
 
       // 2. Save lead locally
@@ -79,7 +96,8 @@ export default function DiscountPopup({ onNavigate }) {
       existing.push({
         name: cleanName,
         email: cleanEmail,
-        coupon: COUPON_CODE,
+        phone: cleanPhone,
+        couponType: 'unique_email_code',
         date: new Date().toISOString(),
         source: 'welcome_popup_10_off',
       });
@@ -90,25 +108,6 @@ export default function DiscountPopup({ onNavigate }) {
     } finally {
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }
-  };
-
-  const handleCopyCode = async () => {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(COUPON_CODE);
-      } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = COUPON_CODE;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-      }
-      setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
-    } catch (err) {
-      console.error('Failed to copy coupon', err);
     }
   };
 
@@ -152,7 +151,7 @@ export default function DiscountPopup({ onNavigate }) {
             <div className="sutra-discount-media-badge-icon">10%</div>
             <div className="sutra-discount-media-badge-text">
               <strong>Descuento de Bienvenida</strong>
-              Aroma, calma y diseño en tu hogar
+              Código único enviado a tu correo
             </div>
           </div>
         </div>
@@ -166,8 +165,14 @@ export default function DiscountPopup({ onNavigate }) {
                 10% OFF en tu <span>primer ritual</span>
               </h2>
               <p className="sutra-discount-desc">
-                Únete a nuestra comunidad. Recibe tu código de descuento instantáneo para tu primera compra y accede a lanzamientos privados.
+                Únete a nuestra comunidad. Regístrate y recibirás un <strong>código único de descuento</strong> directamente en tu correo electrónico para tu primera compra.
               </p>
+
+              {formNotice && (
+                <div className="sutra-discount-notice" role="status">
+                  {formNotice}
+                </div>
+              )}
 
               <form className="sutra-discount-form" onSubmit={handleSubmit}>
                 <div className="sutra-discount-input-wrap">
@@ -183,6 +188,7 @@ export default function DiscountPopup({ onNavigate }) {
 
                 <div className="sutra-discount-input-wrap">
                   <input
+                    ref={emailInputRef}
                     type="email"
                     required
                     className="sutra-discount-input"
@@ -193,12 +199,25 @@ export default function DiscountPopup({ onNavigate }) {
                   />
                 </div>
 
+                <div className="sutra-discount-input-wrap">
+                  <input
+                    ref={phoneInputRef}
+                    type="tel"
+                    required
+                    className="sutra-discount-input"
+                    placeholder="Tu número de celular / WhatsApp *"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    autoComplete="tel"
+                  />
+                </div>
+
                 <button 
                   type="submit" 
                   className="sutra-discount-submit"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Generando cupón...' : 'OBTENER MI 10% OFF'}
+                  {isSubmitting ? 'Enviando tu código único...' : 'RECIBIR MI CÓDIGO POR CORREO'}
                 </button>
 
                 <button 
@@ -212,28 +231,25 @@ export default function DiscountPopup({ onNavigate }) {
             </>
           ) : (
             <div className="sutra-discount-success">
-              <div className="sutra-discount-success-icon">✦</div>
+              <div className="sutra-discount-success-icon">✉️</div>
               <div className="sutra-discount-tag">¡Bienvenidx a Sutra!</div>
               <h2 className="sutra-discount-title">
-                Tu 10% OFF está <span>listo</span>
+                Tu código único va en <span>camino</span>
               </h2>
               <p className="sutra-discount-desc">
-                Aplica este cupón en el checkout para disfrutar de tu beneficio de bienvenida:
+                Hemos registrado tus datos. En breve recibirás tu <strong>código único y personal de 10% OFF</strong> en tu correo electrónico:
               </p>
 
-              <div className="sutra-discount-coupon-box">
-                <span className="sutra-discount-coupon-code">{COUPON_CODE}</span>
-                <button 
-                  type="button"
-                  className={`sutra-discount-copy-btn ${copied ? 'copied' : ''}`}
-                  onClick={handleCopyCode}
-                >
-                  {copied ? '¡Copiado! ✓' : 'COPIAR'}
-                </button>
+              <div className="sutra-discount-email-sent-box">
+                <div className="sutra-discount-email-row">
+                  <span className="sutra-discount-email-badge">✓ Envío programado</span>
+                  <strong className="sutra-discount-email-value">{email}</strong>
+                  {phone && <span className="sutra-discount-phone-value">📱 {phone}</span>}
+                </div>
               </div>
 
               <p className="sutra-discount-instruction">
-                Válido en cualquier compra en la tienda oficial Sutra México.
+                Revisa tu bandeja de entrada (o tu carpeta de promociones / spam) para copiar tu código único y aplicarlo en el checkout.
               </p>
 
               <button 

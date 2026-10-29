@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { aromas } from '../data/content';
 import './AromaExperience.css';
 
 export default function AromaExperience({ onNavigate }) {
+  const navigate = useNavigate();
   const [activeAroma, setActiveAroma] = useState(aromas[0]);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -152,6 +154,19 @@ export default function AromaExperience({ onNavigate }) {
     mouseRef.current = { x: -1000, y: -1000 };
   };
 
+  const productUrl = `/producto/${activeAroma.slug || 'vela-en-polvo-aroma-lavanda-ritual-noche-serena'}`;
+  const esenciaUrl = `/producto/${activeAroma.esenciaSlug || activeAroma.slug || 'esencia-noche-serena-lavanda'}`;
+
+  const handleGoToProduct = (targetSlug, targetWixId) => {
+    const slugToUse = targetSlug || activeAroma.slug;
+    const idToUse = targetWixId || activeAroma.wixId;
+    if (onNavigate) {
+      onNavigate('product', { slug: slugToUse, _wixId: idToUse, id: idToUse });
+    } else {
+      navigate(`/producto/${slugToUse}`);
+    }
+  };
+
   return (
     <section 
       className="aroma-experience" 
@@ -190,7 +205,18 @@ export default function AromaExperience({ onNavigate }) {
           {/* Right: Immersive Details */}
           <div className="aroma__details">
             {/* Keys force re-render for CSS animation trigger on change */}
-            <h3 key={`title-${activeAroma.id}`}>{activeAroma.name}</h3>
+            <h3 key={`title-${activeAroma.id}`}>
+              <Link 
+                to={productUrl}
+                className="aroma__title-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleGoToProduct(activeAroma.slug, activeAroma.wixId);
+                }}
+              >
+                {activeAroma.name}
+              </Link>
+            </h3>
             
             <div className="aroma-meta" key={`meta-${activeAroma.id}`}>
               <div className="meta-box">
@@ -212,19 +238,39 @@ export default function AromaExperience({ onNavigate }) {
               <div className="aroma-formats">
                 <span>Disponible en:</span>
                 <div className="formats-list">
-                  <span className="format-tag">Vela</span>
-                  <span className="format-tag">Home Spray</span>
-                  <span className="format-tag">Difusor</span>
+                  <Link
+                    to={productUrl}
+                    className="format-tag format-tag--link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleGoToProduct(activeAroma.slug, activeAroma.wixId);
+                    }}
+                  >
+                    Vela en Polvo
+                  </Link>
+                  <Link
+                    to={esenciaUrl}
+                    className="format-tag format-tag--link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleGoToProduct(activeAroma.esenciaSlug, activeAroma.esenciaWixId);
+                    }}
+                  >
+                    Esencia Aromática
+                  </Link>
                 </div>
               </div>
-              <button 
-                type="button"
+              <Link 
+                to={productUrl}
                 className="btn-aroma-shop" 
-                style={{ backgroundColor: activeAroma.color }}
-                onClick={() => onNavigate && onNavigate('shop', null, 'aromas')}
+                style={{ backgroundColor: activeAroma.color, textDecoration: 'none' }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleGoToProduct(activeAroma.slug, activeAroma.wixId);
+                }}
               >
-                Comprar Colección <span className="arrow">→</span>
-              </button>
+                Ver Producto <span className="arrow">→</span>
+              </Link>
             </div>
           </div>
           

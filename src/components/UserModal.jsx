@@ -4,7 +4,6 @@ import './UserModal.css';
 
 export default function UserModal({ isOpen, onClose }) {
   // Main view tab: 'orders' | 'reviews' | 'profile' | 'auth'
-  // Main view tab: Directamente en la ventana donde se guardan las reseñas
   const [activeTab, setActiveTab] = useState('reviews');
 
   const DEFAULT_USER = {
@@ -15,8 +14,15 @@ export default function UserModal({ isOpen, onClose }) {
     subscription: 'Suscripción Activa: Ritual Completo (Bimestral)',
   };
 
-  // Customer session state (activa por defecto para acceder al panel de compras y reseñas)
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  // Customer session state
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sutra_customer_logged_in');
+      return saved === null ? false : saved === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const saved = localStorage.getItem('sutra_customer_profile_v1');
@@ -111,11 +117,36 @@ export default function UserModal({ isOpen, onClose }) {
     setTimeout(() => {
       setAuthSuccess(false);
       setIsLoggedIn(true);
+      try {
+        localStorage.setItem('sutra_customer_logged_in', 'true');
+      } catch {}
       if (authName.trim()) {
         setCurrentUser((prev) => ({ ...prev, name: authName.trim(), email: authEmail.trim() }));
       }
       setActiveTab('orders');
     }, 1200);
+  };
+
+  const handleSocialAuth = (provider) => {
+    setAuthSuccess(true);
+    const derivedName = authName.trim() || `Usuario ${provider}`;
+    const derivedEmail = authEmail.trim() || `usuario.${provider.toLowerCase()}@sutra.mx`;
+    const updatedUser = {
+      ...currentUser,
+      name: derivedName,
+      email: derivedEmail,
+      authProvider: provider,
+    };
+    setCurrentUser(updatedUser);
+    try {
+      localStorage.setItem('sutra_customer_profile_v1', JSON.stringify(updatedUser));
+      localStorage.setItem('sutra_customer_logged_in', 'true');
+    } catch {}
+    setTimeout(() => {
+      setAuthSuccess(false);
+      setIsLoggedIn(true);
+      setActiveTab('orders');
+    }, 900);
   };
 
   // Rating label helper
@@ -468,7 +499,12 @@ export default function UserModal({ isOpen, onClose }) {
               <button 
                 type="button" 
                 className="btn-logout-client"
-                onClick={() => setIsLoggedIn(false)}
+                onClick={() => {
+                  setIsLoggedIn(false);
+                  try {
+                    localStorage.setItem('sutra_customer_logged_in', 'false');
+                  } catch {}
+                }}
               >
                 Cerrar Sesión / Cambiar de Usuario
               </button>
@@ -530,6 +566,37 @@ export default function UserModal({ isOpen, onClose }) {
                 <button type="submit" className="user-modal-btn">
                   {authMode === 'login' ? 'Ingresar a mi Cuenta' : 'Crear mi Cuenta'}
                 </button>
+
+                <div className="user-modal-social-divider">
+                  <span>o continúa con</span>
+                </div>
+
+                <div className="user-modal-social-buttons">
+                  <button
+                    type="button"
+                    className="user-modal-social-btn"
+                    onClick={() => handleSocialAuth('Google')}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+                      <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                      <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.8-.4-2.8s.2-2 .4-2.8L1.6 6.4C.6 8.3 0 10.6 0 12s.6 3.7 1.6 5.6l3.7-2.8z"/>
+                      <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 19.9 7.4 23 12 23z"/>
+                    </svg>
+                    <span>Continuar con Google</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="user-modal-social-btn"
+                    onClick={() => handleSocialAuth('Facebook')}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="#1877F2" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+                    </svg>
+                    <span>Continuar con Facebook</span>
+                  </button>
+                </div>
               </form>
             )}
           </>

@@ -6,6 +6,22 @@ import fallbackTiendas from '../data/tiendasFallback.json';
 const landingCache = new Map();
 
 /**
+ * Extrae el slug limpio en caso de que el usuario pegue una URL completa
+ * (ej. https://www.sutramexico.com/ciudades/vela-en-polvo-para-velas-zapopan)
+ */
+function sanitizeSlugInput(input) {
+  if (!input) return '';
+  let s = String(input).trim();
+  try {
+    s = decodeURIComponent(s);
+  } catch {}
+  s = s.replace(/^https?:\/\/[^/]+\//i, '');
+  s = s.replace(/^(ciudades|tiendas|zonas)\//i, '');
+  s = s.replace(/^\/+|\/+$/g, '');
+  return s.trim();
+}
+
+/**
  * Normaliza los campos de una fila independientemente de si provienen
  * de columnas con acentos/espacios o en formato snake_case en Supabase.
  */
@@ -79,7 +95,8 @@ export function normalizeLandingData(raw) {
  */
 export async function getLandingBySlug(slug, type = 'any') {
   if (!slug) return null;
-  const normalizedSlug = String(slug).trim().toLowerCase();
+  const normalizedSlug = sanitizeSlugInput(slug).toLowerCase();
+  if (!normalizedSlug) return null;
   const cacheKey = `${type}:${normalizedSlug}`;
 
   // 1. Revisar caché en memoria
@@ -90,11 +107,11 @@ export async function getLandingBySlug(slug, type = 'any') {
   // Define candidate tables based on type
   let candidateTables = [];
   if (type === 'tienda') {
-    candidateTables = [DEFAULT_TIENDAS_TABLE, 'SUTRA SEO TIENDA', 'sutra_seo_tienda', 'sutra_seo_tiendas', 'tiendas'];
+    candidateTables = Array.from(new Set([DEFAULT_TIENDAS_TABLE, 'SUTRA SEO TIENDA', 'sutra_seo_tienda', 'sutra_seo_tiendas', 'tiendas']));
   } else if (type === 'ciudad') {
-    candidateTables = [DEFAULT_LANDINGS_TABLE, 'SUTRA SEO LANDING', 'sutra_seo_landings', 'landings'];
+    candidateTables = Array.from(new Set([DEFAULT_LANDINGS_TABLE, 'SUTRA SEO LANDING', 'sutra_seo_landings', 'landings']));
   } else {
-    candidateTables = [
+    candidateTables = Array.from(new Set([
       DEFAULT_LANDINGS_TABLE,
       DEFAULT_TIENDAS_TABLE,
       'SUTRA SEO LANDING',
@@ -103,7 +120,7 @@ export async function getLandingBySlug(slug, type = 'any') {
       'sutra_seo_tienda',
       'landings',
       'tiendas',
-    ];
+    ]));
   }
 
   // 2. Consulta en tiempo real a Supabase (100% dinámico)
@@ -115,6 +132,17 @@ export async function getLandingBySlug(slug, type = 'any') {
           .select('*')
           .eq('Slug', normalizedSlug)
           .maybeSingle();
+
+        if (!data && !error) {
+          const ilikeRes = await supabase
+            .from(table)
+            .select('*')
+            .ilike('Slug', normalizedSlug)
+            .limit(1)
+            .maybeSingle();
+          data = ilikeRes.data;
+          error = ilikeRes.error;
+        }
 
         if (error && error.code === '42703') {
           const retry = await supabase
@@ -201,6 +229,8 @@ export async function getLandingsHub({
   const fallbackSource = isTienda ? fallbackTiendas : fallbackLandings;
   const routePrefix = isTienda ? 'tiendas' : 'ciudades';
 
+  const cleanedSearch = sanitizeSlugInput(search);
+
   if (isSupabaseConfigured && supabase) {
     try {
       let query = supabase
@@ -211,16 +241,21 @@ export async function getLandingsHub({
         query = query.ilike('Estado', `%${estado}%`);
       }
 
-      if (search && search.trim()) {
-        const s = search.trim();
-        query = query.or(`"Ciudad o Zona".ilike.%${s}%,"Estado".ilike.%${s}%,"Título de página".ilike.%${s}%,"Slug".ilike.%${s}%`);
+      if (cleanedSearch) {
+        const words = cleanedSearch.split(/[\s\-_/]+/).filter(Boolean);
+        const wildcardPattern = words.length > 1 ? words.join('%') : cleanedSearch;
+        const slugPattern = words.length > 1 ? words.join('-') : cleanedSearch;
+
+        query = query.or(
+          `"Ciudad o Zona".ilike.%${cleanedSearch}%,"Estado".ilike.%${cleanedSearch}%,"Título de página".ilike.%${wildcardPattern}%,"Titulo".ilike.%${wildcardPattern}%,"Slug".ilike.%${slugPattern}%,"Slug".ilike.%${wildcardPattern}%`
+        );
       }
 
       query = query.order('Estado', { ascending: true }).range(from, to);
 
       const { data, count, error } = await query;
 
-      if (!error && data && data.length > 0) {
+      if (!error && Array.isArray(data)) {
         return {
           landings: data.map((item) => ({ ...normalizeLandingData(item), isTienda, routePrefix })),
           totalCount: count ?? data.length,
@@ -240,15 +275,13 @@ export async function getLandingsHub({
   if (estado && estado !== 'Todos' && estado !== 'all') {
     list = list.filter((item) => item.estado.toLowerCase().includes(estado.toLowerCase()));
   }
-  if (search && search.trim()) {
-    const s = search.trim().toLowerCase();
-    list = list.filter(
-      (item) =>
-        item.ciudad.toLowerCase().includes(s) ||
-        item.estado.toLowerCase().includes(s) ||
-        item.tituloPagina.toLowerCase().includes(s) ||
-        item.slug.toLowerCase().includes(s)
-    );
+  if (cleanedSearch) {
+    const s = cleanedSearch.toLowerCase();
+    const words = s.split(/[\s\-_/]+/).filter(Boolean);
+    list = list.filter((item) => {
+      const haystack = `${item.ciudad} ${item.estado} ${item.tituloPagina} ${item.titulo} ${item.slug}`.toLowerCase();
+      return haystack.includes(s) || (words.length > 1 && words.every((w) => haystack.includes(w)));
+    });
   }
 
   const paged = list.slice(from, from + pageSize);
