@@ -62,6 +62,11 @@ export default function SEO({
     '@type': 'WebSite',
     name: SITE_NAME,
     url: SITE_URL,
+    sameAs: [
+      'https://www.instagram.com/sutramexico?exln=aTE1NmpxejNoNHNn&utm_source=qr',
+      'https://www.tiktok.com/@sutra.mx',
+      'https://www.facebook.com/share/1JocX6bo7H/?mibextid=wwXIfr',
+    ],
     potentialAction: {
       '@type': 'SearchAction',
       target: `${SITE_URL}/tienda?q={search_term_string}`,

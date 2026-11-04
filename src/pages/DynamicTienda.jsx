@@ -204,13 +204,6 @@ export default function DynamicTienda({ onNavigate, onAddToCart }) {
         </span>
         <h1 className="shop-title">{landing.tituloPagina || landing.titulo}</h1>
         <p className="shop-subtitle">{landing.excerpt}</p>
-
-        {/* Narrative SEO Context Box */}
-        {landing.parrafoSeo && (
-          <div className="dynamic-tienda-seo-box">
-            <p>{landing.parrafoSeo}</p>
-          </div>
-        )}
       </header>
 
       {/* Main Shop Layout identical to /tienda */}
@@ -349,6 +342,18 @@ export default function DynamicTienda({ onNavigate, onAddToCart }) {
           )}
         </main>
       </div>
+
+      {/* Bottom SEO Section: Repeated Title & Narrative Context */}
+      {landing.parrafoSeo && (
+        <section className="dynamic-tienda-bottom-seo">
+          <h2 className="shop-title dynamic-tienda-bottom-title">
+            {landing.tituloPagina || landing.titulo}
+          </h2>
+          <div className="dynamic-tienda-seo-box">
+            <p>{landing.parrafoSeo}</p>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

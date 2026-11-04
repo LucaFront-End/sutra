@@ -283,9 +283,9 @@ export const footerContent = {
     },
   ],
   social: [
-    { label: 'Instagram', href: 'https://instagram.com/sutra.mx', icon: 'ig' },
-    { label: 'TikTok', href: 'https://tiktok.com/@sutra.mx', icon: 'tt' },
-    { label: 'WhatsApp', href: 'https://wa.me/521', icon: 'wa' },
+    { label: 'Instagram', href: 'https://www.instagram.com/sutramexico?exln=aTE1NmpxejNoNHNn&utm_source=qr', icon: 'ig' },
+    { label: 'TikTok', href: 'https://www.tiktok.com/@sutra.mx', icon: 'tt' },
+    { label: 'Facebook', href: 'https://www.facebook.com/share/1JocX6bo7H/?mibextid=wwXIfr', icon: 'fb' },
   ],
   copyright: `© ${new Date().getFullYear()} Sutra México. Todos los derechos reservados.`,
 };

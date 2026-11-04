@@ -191,5 +191,5 @@ function updateLocalSubmissionStatus(payload, status, id) {
       if (id) existing[0]._cmsId = id;
       localStorage.setItem(STORAGE_SUBMISSIONS_KEY, JSON.stringify(existing));
     }
-  } catch {}
+  } catch { }
 }
