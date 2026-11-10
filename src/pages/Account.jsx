@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { getUserOrders, addCustomerReview, getAllStoredReviews, voteHelpful } from '../lib/reviewsService';
+import { useWixClient, setMemberFlag } from '../context/WixContext';
 import './Account.css';
 
 export default function Account({ onNavigate, onAddToCart }) {
+  const { wixClient, isReady } = useWixClient();
   // Main view tab: 'orders' | 'reviews' | 'profile'
   const [activeTab, setActiveTab] = useState('orders');
 
@@ -57,6 +59,7 @@ export default function Account({ onNavigate, onAddToCart }) {
   const [authPassword, setAuthPassword] = useState('');
   const [authName, setAuthName] = useState('');
   const [authSuccess, setAuthSuccess] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState('');
 
   // Load orders & reviews on mount
@@ -90,9 +93,130 @@ export default function Account({ onNavigate, onAddToCart }) {
     }
   };
 
-  const handleLogout = () => {
+  // Handle callback return from Wix Login (Google / Facebook / Email on Wix)
+  useEffect(() => {
+    if (!isReady || !wixClient) return;
+
+    let active = true;
+    const syncWixAuthReturn = async () => {
+      try {
+        const searchParams = new URLSearchParams(window.location.search);
+        const wixLoggedInParam = searchParams.get('wixMemberLoggedIn') === 'true';
+        const providerParam = searchParams.get('provider') || '';
+
+        // 1. Check OAuth PKCE callback in URL fragment if present
+        if (window.location.hash && window.location.hash.includes('code=')) {
+          const rawOAuth = sessionStorage.getItem('sutra_wix_oauth_data');
+          if (rawOAuth) {
+            try {
+              const oauthData = JSON.parse(rawOAuth);
+              const parsed = wixClient.auth.parseFromUrl();
+              if (parsed?.code && parsed?.state) {
+                const memberTokens = await wixClient.auth.getMemberTokens(
+                  parsed.code,
+                  parsed.state,
+                  oauthData
+                );
+                wixClient.auth.setTokens(memberTokens);
+                setMemberFlag(true);
+                sessionStorage.removeItem('sutra_wix_oauth_data');
+                window.history.replaceState({}, document.title, window.location.pathname);
+              }
+            } catch (oauthErr) {
+              console.warn('[WixAuth] OAuth callback token exchange note:', oauthErr);
+            }
+          }
+        }
+
+        // 2. Check if member is logged in via Wix SDK or returned from Wix Redirect Session
+        const isWixMember = wixClient.auth.loggedIn() || wixLoggedInParam;
+        if (!isWixMember) return;
+
+        let memberProfile = null;
+        try {
+          if (wixClient.members) {
+            const res = await wixClient.members.getCurrentMember({ fieldsets: ['FULL'] });
+            memberProfile = res?.member || null;
+          }
+        } catch {
+          // Visitor token might still be active if third-party cookies were restricted
+        }
+
+        if (!active) return;
+
+        let pendingInfo = null;
+        try {
+          const rawPending = sessionStorage.getItem('sutra_pending_wix_auth');
+          if (rawPending) {
+            pendingInfo = JSON.parse(rawPending);
+            sessionStorage.removeItem('sutra_pending_wix_auth');
+          }
+        } catch {}
+
+        const resolvedProvider = providerParam || pendingInfo?.provider || 'Wix';
+        const wixEmail =
+          memberProfile?.loginEmail ||
+          memberProfile?.contactDetails?.emails?.[0] ||
+          pendingInfo?.email ||
+          currentUser.email;
+        const wixFullName = [
+          memberProfile?.contactDetails?.firstName,
+          memberProfile?.contactDetails?.lastName,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .trim();
+        const wixName =
+          memberProfile?.profile?.nickname ||
+          wixFullName ||
+          pendingInfo?.name ||
+          currentUser.name ||
+          `Miembro Sutra (${resolvedProvider})`;
+        const wixPhone =
+          memberProfile?.contactDetails?.phones?.[0] || currentUser.phone;
+
+        setMemberFlag(true);
+        handleLogin({
+          name: wixName,
+          email: wixEmail,
+          phone: wixPhone,
+          address: currentUser.address,
+          authProvider: resolvedProvider,
+          subscription: currentUser.subscription,
+        });
+
+        if (wixLoggedInParam) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } catch (err) {
+        console.warn('[WixAuth] Sync return notice:', err);
+      }
+    };
+
+    syncWixAuthReturn();
+    return () => {
+      active = false;
+    };
+  }, [isReady, wixClient]);
+
+  const handleLogout = async () => {
     setIsLoggedIn(false);
+    setMemberFlag(false);
     localStorage.setItem('sutra_customer_logged_in', JSON.stringify(false));
+    if (wixClient) {
+      try {
+        if (wixClient.auth.loggedIn()) {
+          const { logoutUrl } = await wixClient.auth.logout(window.location.href);
+          if (logoutUrl) {
+            window.location.href = logoutUrl;
+            return;
+          }
+        }
+        await wixClient.auth.generateVisitorTokens();
+      } catch (err) {
+        console.warn('[WixAuth] Logout notice:', err);
+      }
+    }
   };
 
   // Handle open review form for an order
@@ -152,16 +276,115 @@ export default function Account({ onNavigate, onAddToCart }) {
     setTimeout(() => setProfileSavedToast(false), 3000);
   };
 
-  // Handle auth submit
-  const handleAuthSubmit = (e) => {
+  // Redirect to Wix Hosted Login (supports Google, Facebook, and Email natively on Wix)
+  const redirectToWixLogin = async (provider = 'Wix') => {
+    if (!wixClient) return false;
+    try {
+      sessionStorage.setItem(
+        'sutra_pending_wix_auth',
+        JSON.stringify({
+          provider,
+          email: authEmail.trim(),
+          name: authName.trim(),
+          ts: Date.now(),
+        })
+      );
+      const postFlowUrl = `${window.location.origin}/cuenta?wixMemberLoggedIn=true&provider=${encodeURIComponent(provider)}`;
+      const { redirectSession } = await wixClient.redirects.createRedirectSession({
+        login: {},
+        callbacks: {
+          postFlowUrl,
+        },
+        preferences: {
+          additionalQueryParameters: { lang: 'es' },
+        },
+      });
+      if (redirectSession?.fullUrl) {
+        window.location.href = redirectSession.fullUrl;
+        return true;
+      }
+    } catch (err) {
+      console.warn('[WixAuth] Redirect session error:', err);
+    }
+    return false;
+  };
+
+  // Handle auth submit (Wix Direct Login/Register with automatic Wix Hosted Login fallback)
+  const handleAuthSubmit = async (e) => {
     e.preventDefault();
     if (!authEmail.trim() || !authPassword.trim()) {
       setAuthError('Por favor completa todos los campos.');
       return;
     }
     setAuthError('');
-    setAuthSuccess(true);
+    setAuthLoading(true);
 
+    if (wixClient && isReady) {
+      try {
+        const response =
+          authMode === 'login'
+            ? await wixClient.auth.login({
+                email: authEmail.trim(),
+                password: authPassword,
+              })
+            : await wixClient.auth.register({
+                email: authEmail.trim(),
+                password: authPassword,
+                profile: {
+                  nickname: authName.trim() || authEmail.trim().split('@')[0],
+                },
+              });
+
+        if (response?.loginState === 'SUCCESS' && response?.data?.sessionToken) {
+          const memberTokens = await wixClient.auth.getMemberTokensForDirectLogin(
+            response.data.sessionToken
+          );
+          wixClient.auth.setTokens(memberTokens);
+          setMemberFlag(true);
+          setAuthSuccess(true);
+          setAuthLoading(false);
+
+          const loggedUser = {
+            name: authName.trim() || authEmail.trim().split('@')[0] || 'Miembro Sutra',
+            email: authEmail.trim(),
+            phone: currentUser.phone,
+            address: currentUser.address,
+            subscription: currentUser.subscription,
+          };
+          handleLogin(loggedUser);
+          setActiveTab('orders');
+          return;
+        }
+
+        if (response?.loginState === 'FAILURE') {
+          if (response.errorCode === 'invalidPassword') {
+            setAuthLoading(false);
+            setAuthError('Contraseña incorrecta. Intenta de nuevo o restablécela.');
+            return;
+          }
+          if (response.errorCode === 'emailAlreadyExists') {
+            setAuthLoading(false);
+            setAuthError('Este correo ya está registrado. Cambia a "Iniciar Sesión".');
+            return;
+          }
+          if (response.errorCode === 'resetPassword') {
+            setAuthLoading(false);
+            setAuthError('Debes restablecer tu contraseña para continuar.');
+            return;
+          }
+          // If Wix requires interactive verification / captcha or OAuth login dialog, redirect to Wix Login
+          const redirected = await redirectToWixLogin('Email');
+          if (redirected) return;
+        }
+      } catch (err) {
+        console.warn('[WixAuth] Direct auth notice, trying Wix hosted login:', err);
+        const redirected = await redirectToWixLogin('Email');
+        if (redirected) return;
+      }
+    }
+
+    setAuthLoading(false);
+    setAuthSuccess(true);
     setTimeout(() => {
       setAuthSuccess(false);
       const loggedUser = {
@@ -173,7 +396,7 @@ export default function Account({ onNavigate, onAddToCart }) {
       };
       handleLogin(loggedUser);
       setActiveTab('orders');
-    }, 1000);
+    }, 800);
   };
 
   // Demo Login helper
@@ -182,10 +405,17 @@ export default function Account({ onNavigate, onAddToCart }) {
     setActiveTab('orders');
   };
 
-  // Social Login helper (Google & Facebook)
-  const handleSocialAuth = (provider) => {
+  // Social Login helper (Google & Facebook connected to Wix Login Session)
+  const handleSocialAuth = async (provider) => {
     setAuthError('');
+    setAuthLoading(true);
     setAuthSuccess(true);
+
+    const redirected = await redirectToWixLogin(provider);
+    if (redirected) return;
+
+    // Fallback if offline
+    setAuthLoading(false);
     const fallbackEmail = provider === 'Google' ? 'usuario.google@gmail.com' : 'usuario.facebook@sutra.mx';
     const resolvedEmail = authEmail.trim() || currentUser.email || fallbackEmail;
     const resolvedName = authName.trim() || (authEmail.trim() ? authEmail.trim().split('@')[0] : `${DEFAULT_USER.name} (${provider})`);
@@ -285,6 +515,7 @@ export default function Account({ onNavigate, onAddToCart }) {
                     type="button"
                     className="account-social-btn account-social-btn--google"
                     onClick={() => handleSocialAuth('Google')}
+                    disabled={authLoading}
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
                       <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
@@ -292,18 +523,19 @@ export default function Account({ onNavigate, onAddToCart }) {
                       <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.8-.4-2.8s.2-2 .4-2.8L1.6 6.4C.6 8.4 0 10.6 0 12s.6 3.6 1.6 5.6l3.7-2.8z"/>
                       <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 19.9 7.4 23 12 23z"/>
                     </svg>
-                    <span>Continuar con Google</span>
+                    <span>{authLoading ? 'Conectando con Wix...' : 'Continuar con Google'}</span>
                   </button>
 
                   <button
                     type="button"
                     className="account-social-btn account-social-btn--facebook"
                     onClick={() => handleSocialAuth('Facebook')}
+                    disabled={authLoading}
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
                       <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                     </svg>
-                    <span>Continuar con Facebook</span>
+                    <span>{authLoading ? 'Conectando con Wix...' : 'Continuar con Facebook'}</span>
                   </button>
                 </div>
 

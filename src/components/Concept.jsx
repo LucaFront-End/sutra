@@ -60,7 +60,7 @@ export default function Concept({ landing = null }) {
         </div>
 
         {/* ——— SILENCE / CURE LAYER ——— */}
-        <div className="concept__silence">
+        <div className={`concept__silence ${landing ? 'concept__silence--landing' : ''}`}>
           <div className="silence-content">
             <h2 className="concept__title">
               {landing?.titulo || landing?.tituloPagina || conceptContent.title}

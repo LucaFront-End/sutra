@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { getUserOrders, addCustomerReview } from '../lib/reviewsService';
+import { useWixClient } from '../context/WixContext';
 import './UserModal.css';
 
 export default function UserModal({ isOpen, onClose }) {
+  const { wixClient } = useWixClient();
   // Main view tab: 'orders' | 'reviews' | 'profile' | 'auth'
   const [activeTab, setActiveTab] = useState('reviews');
 
@@ -127,8 +129,28 @@ export default function UserModal({ isOpen, onClose }) {
     }, 1200);
   };
 
-  const handleSocialAuth = (provider) => {
+  const handleSocialAuth = async (provider) => {
     setAuthSuccess(true);
+    if (wixClient) {
+      try {
+        sessionStorage.setItem(
+          'sutra_pending_wix_auth',
+          JSON.stringify({ provider, email: authEmail.trim(), name: authName.trim(), ts: Date.now() })
+        );
+        const postFlowUrl = `${window.location.origin}/cuenta?wixMemberLoggedIn=true&provider=${encodeURIComponent(provider)}`;
+        const { redirectSession } = await wixClient.redirects.createRedirectSession({
+          login: {},
+          callbacks: { postFlowUrl },
+          preferences: { additionalQueryParameters: { lang: 'es' } },
+        });
+        if (redirectSession?.fullUrl) {
+          window.location.href = redirectSession.fullUrl;
+          return;
+        }
+      } catch (err) {
+        console.warn('[UserModal] Wix social auth redirect notice:', err);
+      }
+    }
     const derivedName = authName.trim() || `Usuario ${provider}`;
     const derivedEmail = authEmail.trim() || `usuario.${provider.toLowerCase()}@sutra.mx`;
     const updatedUser = {

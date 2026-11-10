@@ -315,6 +315,35 @@
   letter-spacing: 0.05em;
 }
 
+/* Dynamic Landing SEO scaling (prevents overflow into top navbar on desktop/laptop screens) */
+.concept__silence--landing {
+  max-width: 860px;
+  padding: 5.25rem 2rem 2rem;
+}
+
+.concept__silence--landing .concept__title {
+  font-size: clamp(1.95rem, min(3.8vw, 5vh), 3.1rem);
+  line-height: 1.15;
+  margin-bottom: clamp(0.85rem, 2vh, 1.5rem);
+}
+
+.concept__silence--landing .concept__text {
+  font-size: clamp(0.9rem, min(1.1vw, 2vh), 1.04rem);
+  line-height: 1.65;
+  margin-bottom: clamp(0.95rem, 2vh, 1.5rem);
+  max-width: 780px;
+}
+
+.concept__silence--landing .concept__divider {
+  height: clamp(26px, 4.5vh, 46px);
+  margin: 0 auto clamp(0.8rem, 1.8vh, 1.35rem);
+}
+
+.concept__silence--landing .concept__quote {
+  font-size: clamp(1.15rem, min(2vw, 2.8vh), 1.55rem);
+  line-height: 1.35;
+}
+
 /* ================================================================
    RESPONSIVE
    ================================================================ */
