@@ -462,8 +462,21 @@
 @media (max-width: 480px) {
   .sutra-chat-window {
     width: calc(100vw - 24px);
-    right: -10px;
-    height: 80vh;
-    bottom: 68px;
+    right: 0;
+    height: min(520px, calc(100vh - 120px));
+    bottom: 52px;
+    border-radius: 18px;
+  }
+
+  .sutra-chat-header {
+    padding: 14px 16px;
+  }
+
+  .sutra-chat-body {
+    padding: 16px;
+  }
+
+  .sutra-chat-setup-header {
+    margin-bottom: 16px;
   }
 }

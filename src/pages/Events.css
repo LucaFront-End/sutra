@@ -2173,4 +2173,59 @@
   .sector-accordion-body {
     padding: 0 1.15rem 1.35rem;
   }
+
+  .b2b-calc-section,
+  .b2b-packs-section,
+  .b2b-faq-section,
+  .b2b-industries-section {
+    padding: 3.5rem 0;
+  }
+
+  .calc-wrapper {
+    padding: 1.5rem 1.15rem;
+    gap: 1.75rem;
+    border-radius: 18px;
+  }
+
+  .calc-left h2 {
+    font-size: 1.6rem;
+  }
+
+  .calc-label-row {
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+
+  .calc-label-row strong {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .calc-summary-card {
+    padding: 1.4rem 1.15rem;
+    border-radius: 16px;
+  }
+
+  .metric-val {
+    font-size: 2.35rem;
+  }
+
+  .calc-detail-row {
+    gap: 0.85rem;
+    align-items: baseline;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .calc-detail-row span:first-child {
+    flex: 1;
+  }
+
+  .calc-detail-row strong,
+  .calc-detail-row .text-strike,
+  .calc-detail-row .text-gold {
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-align: right;
+  }
 }

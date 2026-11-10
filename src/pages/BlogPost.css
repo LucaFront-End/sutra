@@ -955,3 +955,140 @@
   border-color: #2C1E14;
   transform: translateY(-2px);
 }
+
+@media (max-width: 768px) {
+  .blog-post-page {
+    padding-top: 5.25rem;
+    padding-bottom: 3.5rem;
+    overflow-x: hidden;
+  }
+
+  .blog-post-nav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem 1.15rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.76rem;
+  }
+
+  .blog-post-header {
+    padding: 0 1.15rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .blog-post-title {
+    font-size: 1.95rem;
+    line-height: 1.2;
+  }
+
+  .blog-post-lead {
+    font-size: 1rem;
+    margin-bottom: 1.35rem;
+  }
+
+  .blog-post-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.85rem 0;
+  }
+
+  .blog-share-tools {
+    width: 100%;
+  }
+
+  .blog-share-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .blog-post-cover {
+    padding: 0 1.15rem;
+    margin-bottom: 2rem;
+  }
+
+  .blog-cover-frame {
+    border-radius: 16px;
+  }
+
+  .blog-cover-badge {
+    bottom: 0.75rem;
+    right: 0.75rem;
+    font-size: 0.68rem;
+    padding: 0.35rem 0.75rem;
+  }
+
+  .blog-post-layout {
+    padding: 0 1.15rem;
+    gap: 2.25rem;
+  }
+
+  .blog-article-content {
+    font-size: 0.98rem;
+    line-height: 1.75;
+  }
+
+  .blog-article-content .lead-paragraph {
+    font-size: 1.08rem;
+  }
+
+  .blog-quote-box {
+    padding: 1.5rem 1.25rem;
+    margin: 1.75rem 0;
+  }
+
+  .quote-text {
+    font-size: 1.15rem;
+  }
+
+  .blog-ritual-guide-box {
+    padding: 1.5rem 1.25rem;
+    margin: 1.75rem 0;
+  }
+
+  .guide-title {
+    font-size: 1.2rem;
+  }
+
+  .blog-author-bio-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.35rem;
+    margin-top: 2.25rem;
+  }
+
+  .sidebar-sticky-inner {
+    padding: 1.35rem 1.15rem;
+    border-radius: 16px;
+  }
+
+  .blog-bottom-products-section,
+  .blog-bottom-articles-section {
+    padding: 3.5rem 0;
+    margin-top: 3rem;
+  }
+
+  .bottom-section-head {
+    padding: 0 1.15rem;
+    margin-bottom: 2rem;
+  }
+
+  .bottom-section-head h2 {
+    font-size: 1.75rem;
+  }
+
+  .bottom-products-grid,
+  .bottom-articles-grid {
+    padding: 0 1.15rem;
+  }
+
+  .bottom-all-articles-wrap {
+    margin-top: 2.25rem;
+    padding: 0 1.15rem;
+  }
+
+  .bottom-all-articles-btn {
+    width: 100%;
+  }
+}

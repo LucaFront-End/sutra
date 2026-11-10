@@ -683,11 +683,63 @@
 }
 
 @media (max-width: 600px) {
-  .modal-form-row {
-    grid-template-columns: 1fr;
+  .product-reviews-section {
+    margin: 3rem auto;
+    padding: 0 1.15rem;
+  }
+  .reviews-section-header {
+    margin-bottom: 2rem;
+  }
+  .reviews-filter-bar {
+    gap: 0.65rem;
+    margin-bottom: 1.35rem;
+  }
+  .filter-pills {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .filter-pill {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 0.45rem 0.75rem;
+  }
+  .review-card {
+    padding: 1.35rem 1.15rem;
+  }
+  .review-modal-overlay {
+    padding: 0.85rem;
   }
   .review-modal-card {
-    padding: 1.5rem;
+    padding: 1.35rem 1.2rem;
+    max-height: 92vh;
+  }
+  .modal-title {
+    font-size: 1.65rem;
+  }
+  .modal-product-name {
+    margin-bottom: 0.9rem;
+    font-size: 0.82rem;
+  }
+  .review-modal-form {
+    gap: 0.8rem;
+  }
+  .rating-field {
+    padding: 0.85rem;
+  }
+  .stars-interactive {
+    margin: 0.25rem 0;
+  }
+  .star-pick {
+    font-size: 1.85rem;
+  }
+  .modal-form-row {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  .modal-field input,
+  .modal-field textarea {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.86rem;
   }
   .reviews-list-grid {
     grid-template-columns: 1fr;

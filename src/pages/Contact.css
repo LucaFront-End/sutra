@@ -602,6 +602,11 @@
     padding: 1.75rem 1.25rem;
   }
 
+  .form-select {
+    padding-right: 2.25rem;
+    text-overflow: ellipsis;
+  }
+
   .form-submit-btn {
     width: 100%;
   }

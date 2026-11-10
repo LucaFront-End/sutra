@@ -1424,4 +1424,65 @@
   .gallery-pair img {
     height: 200px;
   }
+
+  .comparison-table {
+    min-width: 0 !important;
+    width: 100% !important;
+    table-layout: fixed;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.75rem 0.45rem;
+    font-size: 0.74rem;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .comparison-table th {
+    font-size: 0.84rem;
+    line-height: 1.25;
+  }
+
+  .tbl-price {
+    font-size: 0.92rem;
+  }
+
+  .tbl-save {
+    font-size: 0.64rem;
+    line-height: 1.2;
+  }
+
+  .bottom-banner-card {
+    padding: 2rem 1.35rem;
+    border-radius: 20px;
+    gap: 1.5rem;
+  }
+
+  .banner-copy h3 {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+
+  .banner-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .banner-actions .btn--gold,
+  .banner-actions .btn--outline {
+    width: 100%;
+    justify-content: center;
+    padding: 0.9rem 1.15rem;
+    font-size: 0.84rem;
+    text-align: center;
+  }
+
+  .banner-actions .btn--gold {
+    background: #D4A76A !important;
+    color: #1C1917 !important;
+    border-color: #D4A76A !important;
+    font-weight: 700;
+  }
 }

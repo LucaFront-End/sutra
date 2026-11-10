@@ -422,8 +422,12 @@
     gap: 1.25rem;
   }
 
+  .craft-gallery {
+    gap: 0.85rem;
+  }
+
   .craft-img-wrap img {
-    height: 220px;
+    height: 195px;
   }
 
   .about-cta {

@@ -406,17 +406,52 @@
 /* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
   .legal-page {
-    padding-top: 5.5rem;
+    padding-top: 5.25rem;
+    overflow-x: hidden;
+  }
+
+  .legal-breadcrumbs {
+    flex-wrap: wrap;
+    font-size: 0.72rem;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .legal-title {
+    font-size: 1.95rem;
+  }
+
+  .legal-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .legal-tabs-wrapper {
+    top: 64px;
+  }
+
+  .legal-tabs-inner {
+    padding: 0.65rem 1.15rem;
+  }
+
+  .legal-tab-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.78rem;
+  }
+
+  .legal-content-container {
+    margin-top: 1.5rem;
+    padding: 0 1.15rem;
   }
 
   .legal-article-card {
-    padding: 2rem 1.25rem;
+    padding: 1.75rem 1.25rem;
   }
 
   .legal-support-box {
     flex-direction: column;
     align-items: flex-start;
-    padding: 1.5rem;
+    padding: 1.5rem 1.25rem;
+    margin-top: 2.25rem;
   }
 
   .legal-support-actions {

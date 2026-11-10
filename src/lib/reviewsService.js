@@ -4,8 +4,13 @@
  * and user reviews across products and account sections.
  */
 
+import ceraBlancaImg from '../assets/images/cera-blanca.jpg';
+import jardinZenImg from '../assets/images/jardin-zen-detalle.jpg';
+import aceiteImg from '../assets/images/cat-aceites.png';
+import teaImg from '../assets/images/cat-te-ceremonial.jpg';
+
 const STORAGE_REVIEWS_KEY = 'sutra_customer_reviews_v1';
-const STORAGE_ORDERS_KEY = 'sutra_customer_orders_v1';
+const STORAGE_ORDERS_KEY = 'sutra_customer_orders_v3';
 const STORAGE_USER_KEY = 'sutra_customer_profile_v1';
 
 // Default initial customer orders with real Sutra items
@@ -18,7 +23,7 @@ const INITIAL_ORDERS = [
     slug: 'vela-cera-en-arena-sutra',
     productName: 'Vela de Cera en Arena Sutra',
     productVariant: '500g Cera Perlada + Vasija Cerámica Wabi',
-    productImg: 'https://static.wixstatic.com/media/45119e_207796dcf5ba4d4d8fcbc6300445a498~mv2.jpg',
+    productImg: ceraBlancaImg,
     price: '$790 MXN',
     hasReview: true,
     reviewRating: 5,
@@ -33,7 +38,7 @@ const INITIAL_ORDERS = [
     slug: 'esencia-madera-rosé-rosewood',
     productName: 'Esencia "Madera Rosé" Rosewood',
     productVariant: 'Frasco Gotero 15 ml',
-    productImg: 'https://static.wixstatic.com/media/45119e_a0916ab2abfe4b5e879a34baaf7833a1~mv2.png',
+    productImg: aceiteImg,
     price: '$299 MXN',
     hasReview: false,
     reviewRating: null,
@@ -48,7 +53,7 @@ const INITIAL_ORDERS = [
     slug: 'kit-sensorial-jardin-zen',
     productName: 'Kit Sensorial Jardín Zen Sutra',
     productVariant: 'Nogal Macizo + Cartas de Ritual',
-    productImg: 'https://static.wixstatic.com/media/45119e_84226d9c7dd54e8cb49f57ebbf794d03~mv2.png',
+    productImg: jardinZenImg,
     price: '$1,690 MXN',
     hasReview: false,
     reviewRating: null,
@@ -63,7 +68,7 @@ const INITIAL_ORDERS = [
     slug: 'te-ceremonial-silencio',
     productName: 'Té Ceremonial "Silencio"',
     productVariant: 'Lata Hermética 80g (Manzanilla & Lavanda)',
-    productImg: 'https://static.wixstatic.com/media/45119e_423cfa03eafe4ba389be9d4949a2a9bb~mv2.png',
+    productImg: teaImg,
     price: '$390 MXN',
     hasReview: true,
     reviewRating: 5,

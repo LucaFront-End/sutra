@@ -413,7 +413,38 @@
     padding: 2.5rem 1.35rem;
   }
 
+  .community-box-content h3 {
+    color: #FAF7F2 !important;
+    font-size: 1.65rem;
+    line-height: 1.25;
+  }
+
   .community-form {
     flex-direction: column;
+  }
+
+  .article-reader-overlay {
+    padding: 0.85rem;
+  }
+
+  .article-reader-card {
+    padding: 1.5rem 1.25rem;
+    max-height: 90dvh;
+    border-radius: 16px;
+  }
+
+  .article-reader-close {
+    top: 0.85rem;
+    right: 0.85rem;
+  }
+
+  .article-reader-title {
+    font-size: 1.45rem;
+    padding-right: 1.5rem;
+  }
+
+  .article-reader-image-wrap {
+    height: 200px;
+    margin-bottom: 1.25rem;
   }
 }

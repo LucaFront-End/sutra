@@ -337,6 +337,17 @@ textarea.handwriting-input {
   .gift-card {
     min-height: 520px;
   }
+  .gift-card__face {
+    transition: opacity 0.4s ease;
+  }
+  .gift-card.is-flipped .gift-card__front {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .gift-card:not(.is-flipped) .gift-card__back {
+    opacity: 0;
+    pointer-events: none;
+  }
   .card-content {
     padding: 2rem 1.35rem;
   }
@@ -360,8 +371,49 @@ textarea.handwriting-input {
     justify-content: center;
     padding: 1rem 1.25rem;
   }
+  .back-header {
+    margin-bottom: 1.35rem;
+  }
+  .back-header h3 {
+    font-size: 1.55rem;
+  }
+  .back-header p {
+    margin-top: 0.35rem;
+    font-size: 0.78rem;
+  }
+  .handwriting-text {
+    font-size: 1.55rem;
+  }
+  .bundles-list {
+    gap: 0.85rem;
+  }
   .bundle-item {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 0.85rem;
+    padding: 0.85rem;
+  }
+  .bundle-img {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+  }
+  .bundle-info h4 {
+    font-size: 0.98rem;
+    line-height: 1.25;
+    margin-bottom: 0.2rem;
+  }
+  .bundle-price {
+    font-size: 0.82rem;
+  }
+  .btn-add-bundle {
+    padding: 0.55rem 0.95rem;
+    font-size: 0.68rem;
+    flex-shrink: 0;
+  }
+  .btn-back {
+    margin-top: 1.25rem;
+    padding: 0.5rem;
   }
 }

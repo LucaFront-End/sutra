@@ -49,15 +49,36 @@ function getSavingsBadge(product, defaultSavings = 'Ahorro Especial') {
  */
 function getProductIntro(product, fallback = '') {
   if (!product) return fallback;
-  if (product.shortDesc && product.shortDesc.length > 25) {
-    return product.shortDesc;
-  }
-  const clean = product.description || '';
-  const paragraphs = clean.split(/\n\s*\n|\r\n\s*\r\n/).map(p => p.trim()).filter(Boolean);
+  const rawSource = product.descriptionHtml || product.description || '';
+  const clean = rawSource
+    .replace(/<\/(p|div|h[1-6]|li)>/gi, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/gi, ' ');
+
+  const paragraphs = clean
+    .split(/[\n\r]+/)
+    .map(p => p.replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+
   for (const para of paragraphs) {
-    if (para.length > 30 && !para.toLowerCase().startsWith('precio') && !para.toLowerCase().includes('ahorra') && !para.toLowerCase().startsWith('valor')) {
-      const sentence = para.split(/[.!?]/)[0].trim();
-      return sentence ? `${sentence}.` : para;
+    const stripped = para
+      .replace(/^(?:mistery\s*box|mystery\s*box)[^|.]*\|\s*sutra\s*/i, '')
+      .replace(/^(?:mistery\s*box|mystery\s*box)\s*(?:ritual\s*)?(?:completo|esencial)?\s*/i, '')
+      .trim();
+    const lower = stripped.toLowerCase();
+    if (
+      stripped.length > 25 &&
+      !lower.startsWith('precio') &&
+      !lower.includes('ahorra') &&
+      !lower.startsWith('valor') &&
+      !lower.startsWith('¿qué incluye') &&
+      !lower.startsWith('que incluye')
+    ) {
+      const sentence = stripped.split(/[.!?]/)[0].trim();
+      if (sentence.length > 18) {
+        return `${sentence}.`;
+      }
     }
   }
   return fallback;
