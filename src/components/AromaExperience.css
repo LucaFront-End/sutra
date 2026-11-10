@@ -284,36 +284,100 @@
    RESPONSIVE
    ================================================================ */
 @media (max-width: 900px) {
+  .aroma-experience {
+    min-height: auto;
+  }
+
+  .aroma__content {
+    padding: 4.5rem 1.25rem;
+  }
+
+  .aroma__header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .aroma__header h2 {
+    font-size: 2.35rem;
+  }
+
   .aroma__layout {
     grid-template-columns: 1fr;
-    gap: 4rem;
+    gap: 1.5rem;
   }
   
   .aroma__selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
     border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: none;
     padding-left: 0;
-    padding-top: 2rem;
+    padding-top: 0;
   }
   
-  .aroma-btn {
-    font-size: 1.5rem;
+  .aroma-btn,
+  .aroma-btn:hover,
+  .aroma-btn.active {
+    font-size: 1rem;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    transform: none !important;
+    gap: 0.5rem;
+    line-height: 1.2;
   }
   
   .aroma-btn.active {
-    font-size: 2rem;
+    font-size: 1rem;
+    border-color: rgba(212, 167, 106, 0.75);
+    background: rgba(255, 255, 255, 0.12);
+    opacity: 1;
+  }
+
+  .aroma-btn-circle {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
   }
   
   .aroma__details {
-    padding: 2rem;
+    padding: 1.75rem 1.35rem;
+    border-radius: 16px;
   }
   
   .aroma__details h3 {
-    font-size: 2.5rem;
+    font-size: 2rem;
+    margin-bottom: 1.25rem;
   }
   
   .aroma-meta {
-    flex-direction: column;
-    gap: 1.5rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.25rem 2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .aroma__details p {
+    font-size: 0.98rem;
+  }
+
+  .aroma__shop {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    gap: 1.35rem;
+  }
+
+  .formats-list {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .format-tag {
+    white-space: nowrap;
+    font-size: 0.78rem;
+    padding: 6px 12px;
   }
 }

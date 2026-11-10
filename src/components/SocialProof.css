@@ -258,13 +258,33 @@
    ================================================================ */
 @media (max-width: 768px) {
   .social-proof {
-    padding: 6rem 0;
+    padding: 4.5rem 0;
+  }
+  .social-proof__header {
+    margin-bottom: 2.5rem;
+    padding: 0 1.25rem;
+  }
+  .social-proof__header h2 {
+    font-size: 2.2rem;
+  }
+  .film-strip {
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+  .film-strip::before,
+  .film-strip::after {
+    width: 28px;
+  }
+  .film-track {
+    gap: 1rem;
   }
   .ugc-card {
-    width: 260px;
-    height: 420px;
+    width: 220px;
+    height: 330px;
+    border-radius: 12px;
   }
   .ugc-text {
-    font-size: 1.8rem;
+    font-size: 1.45rem;
+    margin-bottom: 1.5rem;
   }
 }

@@ -128,9 +128,14 @@
 
 /* ——— Responsive ——— */
 @media (max-width: 768px) {
+  .footer {
+    padding: 3.5rem 0 4.5rem;
+  }
+
   .footer__top {
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-lg);
+    gap: 2rem 1.25rem;
+    margin-bottom: 2.5rem;
   }
 
   .footer__brand-col {
@@ -140,6 +145,7 @@
 
 @media (max-width: 480px) {
   .footer__top {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem 1rem;
   }
 }

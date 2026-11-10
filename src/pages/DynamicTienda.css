@@ -134,11 +134,27 @@
 @media (max-width: 768px) {
   .dynamic-tienda-breadcrumbs {
     padding: 0 1rem;
-    font-size: 0.74rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.72rem;
+    flex-wrap: wrap;
+  }
+
+  .dynamic-tienda-header {
+    margin-bottom: 1.25rem !important;
+  }
+
+  .dynamic-tienda-header .shop-title,
+  .dynamic-tienda-bottom-title {
+    font-size: 1.95rem !important;
+  }
+
+  .dynamic-tienda-bottom-seo {
+    margin: 2.75rem auto 0.5rem;
+    padding: 2rem 1rem 0;
   }
 
   .dynamic-tienda-seo-box {
-    padding: 1rem 1.2rem;
-    margin-top: 1.25rem;
+    padding: 1rem 1.15rem;
+    margin-top: 1rem;
   }
 }

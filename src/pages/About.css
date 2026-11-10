@@ -391,8 +391,47 @@
 }
 
 @media (max-width: 640px) {
+  .about-page {
+    padding-top: 5.25rem;
+    overflow-x: hidden;
+  }
+
+  .about-hero {
+    padding: 2rem 1.25rem 2.75rem;
+  }
+
+  .about-hero__title {
+    font-size: 2.2rem;
+  }
+
+  .about-narrative {
+    padding: 1.5rem 0 3.5rem;
+  }
+
+  .narrative-img-main {
+    height: 300px;
+  }
+
+  .about-pillars,
+  .about-craft {
+    padding: 3.5rem 0;
+  }
+
   .pillars-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .craft-img-wrap img {
+    height: 220px;
+  }
+
+  .about-cta {
+    padding: 3rem 1.15rem 4.5rem;
+  }
+
+  .about-cta__box {
+    padding: 2.5rem 1.5rem;
   }
 
   .about-cta__actions {

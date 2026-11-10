@@ -457,20 +457,44 @@
    ================================================================ */
 
 @media (max-width: 768px) {
+  .hero-moods {
+    min-height: 88dvh;
+    height: auto;
+    padding: 6rem 0 3rem;
+  }
+
+  .hero__content {
+    padding: 1.5rem 1.25rem;
+  }
+
   .hero__question {
-    font-size: 2.5rem;
-    margin-bottom: var(--space-lg);
+    font-size: 2.35rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.15;
+  }
+
+  .hero__question--landing {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero__landing-excerpt {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
   }
 
   .hero__pills {
-    gap: var(--space-xs);
+    gap: 0.6rem;
+    margin-bottom: 1.75rem;
     perspective: none; /* Disable 3D on mobile */
   }
 
   .mood-pill {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.7rem;
-    width: calc(50% - var(--space-xs));
+    padding: 0.78rem 1rem;
+    font-size: 0.74rem;
+    width: calc(50% - 0.35rem);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.22);
     /* Disable magnetic transform inline styles via CSS override on mobile */
     transform: none !important;
   }
@@ -480,10 +504,28 @@
   }
 
   .hero__dynamic-area {
-    height: 220px;
+    height: 195px;
   }
 
   .hero__dynamic-text h2 {
-    font-size: 1.8rem;
+    font-size: 1.65rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .hero__dynamic-text p {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .hero__hint {
+    font-size: 0.68rem;
+    max-width: 260px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .hero__scroll-hint {
+    display: none !important;
   }
 }

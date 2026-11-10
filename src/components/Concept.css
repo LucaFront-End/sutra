@@ -320,19 +320,101 @@
    ================================================================ */
 
 @media (max-width: 768px) {
-  .noise-track {
-    font-size: 20vw; /* Make words claustrophobic on mobile */
+  .concept-wrapper {
+    height: auto !important;
+    background: #0A0807 !important;
   }
-  
+
+  .concept-sticky {
+    position: relative !important;
+    height: auto !important;
+    flex-direction: column !important;
+    background: #0A0807 !important;
+    overflow: hidden;
+  }
+
+  .concept__noise {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 300px !important;
+    background: #F4F4F6 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    pointer-events: auto !important;
+    overflow: hidden;
+  }
+
+  .noise-track {
+    font-size: 18vw;
+    opacity: 0.08;
+  }
+
   .noise-badge {
-    top: 5%;
-    right: 5%;
-    width: 90px;
-    height: 90px;
-    font-size: 2rem;
+    top: 14px;
+    right: 14px;
+    width: 68px;
+    height: 68px;
+    font-size: 1.5rem;
+  }
+
+  .concept__noise-context,
+  .concept-sticky.is-silent .concept__noise-context {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) !important;
+    padding: 1.6rem 1.35rem;
+    width: 88%;
+    border-radius: 14px;
+  }
+
+  .context-label {
+    font-size: 0.68rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .concept__noise-context h3 {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+
+  .concept__escape-hint {
+    display: none !important;
+  }
+
+  .concept__silence,
+  .concept-sticky.is-silent .concept__silence {
+    position: relative !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    width: 100%;
+    padding: 4rem 1.5rem;
+    background: #0A0807;
+  }
+
+  .concept__title {
+    color: #FFFDF8 !important;
+    font-size: 2.35rem;
+    line-height: 1.18;
+    margin-bottom: 1.35rem;
+  }
+
+  .concept__text {
+    color: rgba(255, 253, 248, 0.82) !important;
+    font-size: 0.98rem;
+    line-height: 1.75;
+    margin-bottom: 2rem;
   }
 
   .concept__divider {
-    height: 50px;
+    height: 44px;
+    margin-bottom: 1.75rem;
+  }
+
+  .concept__quote {
+    color: #D4A76A !important;
+    font-size: 1.35rem;
+    line-height: 1.4;
   }
 }

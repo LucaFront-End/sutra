@@ -82,7 +82,7 @@ function extractIncludedItems(product, fallback = []) {
         .replace(/&#39;/gi, "'")
         .replace(/&quot;/gi, '"')
         .replace(/\s+/g, ' ')
-        .replace(/^[✓•\-\*\+]\s*/, '')
+        .replace(/^[✓✔✦•\-\*\+\s]+/, '')
         .trim();
     }).filter(t => t.length > 3 && !t.toLowerCase().startsWith('http'));
 
@@ -94,14 +94,14 @@ function extractIncludedItems(product, fallback = []) {
   // 2. Try to extract from lines starting with bullets or symbols
   const text = product.description || '';
   const lines = text.split(/[\n\r]+/g)
-    .map(line => line.replace(/^[✓•\-\*\+]\s*/, '').trim())
+    .map(line => line.replace(/^[✓✔✦•\-\*\+\s]+/, '').trim())
     .filter(line => line.length > 8 && !line.toLowerCase().startsWith('http') && !line.toLowerCase().startsWith('precio') && !line.toLowerCase().startsWith('valor'));
 
   if (lines.length >= 2) {
     return lines;
   }
 
-  return fallback;
+  return fallback.map(item => String(item).replace(/^[✓✔✦•\-\*\+\s]+/, '').trim());
 }
 
 /**

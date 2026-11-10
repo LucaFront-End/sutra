@@ -882,15 +882,33 @@
 
 /* ——— Responsive Breakpoints ——— */
 @media (max-width: 992px) {
+  .navbar.navbar--open {
+    background: #FAF7F2 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .navbar__mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 1000;
+    padding: 5.5rem 1.5rem 2.5rem;
+  }
+
   .navbar__brand {
-    width: 145px;
-    min-width: 145px;
-    height: 38px;
+    width: 135px;
+    min-width: 135px;
+    height: 36px;
   }
 
   .navbar__logo-img {
-    height: 38px;
-    transform: scale(2.8);
+    height: 36px;
+    transform: scale(2.5);
   }
 
   .navbar__links {

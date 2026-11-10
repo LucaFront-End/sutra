@@ -1083,6 +1083,24 @@
 }
 
 @media (max-width: 640px) {
+  .account-page {
+    padding-top: 5.5rem;
+    padding-bottom: 4rem;
+    overflow-x: hidden;
+  }
+
+  .account-container {
+    padding: 0 1.15rem;
+  }
+
+  .account-auth-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .account-benefits-card {
+    padding: 1.75rem 1.25rem;
+  }
+
   .form-grid-2 {
     grid-template-columns: 1fr;
     gap: 1.25rem;

@@ -1003,12 +1003,109 @@
 /* Responsive */
 @media (max-width: 1024px) {
   .product-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2.5rem;
   }
 
   .product-gallery-collage {
     position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-page {
+    padding-top: 5.25rem;
+    padding-bottom: 4rem;
+    overflow-x: hidden;
+  }
+
+  .product-breadcrumbs {
+    padding: 0 1.15rem;
+    margin-bottom: 1.15rem;
+    font-size: 0.76rem;
+    gap: 0.35rem;
+  }
+
+  .product-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 1.5rem;
+    padding: 0 1.15rem;
+  }
+
+  .product-gallery-collage,
+  .product-details-panel,
+  .carousel-sticky-wrap {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .carousel-main-frame {
+    min-height: 290px;
+    max-height: 360px;
+    border-radius: 14px;
+  }
+
+  .carousel-thumbnails-strip {
+    max-width: 100%;
+    gap: 0.5rem;
+  }
+
+  .carousel-thumb-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+  }
+
+  .gallery-mini-perks {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem 0.75rem;
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .pdp-title {
+    font-size: 1.75rem;
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  .pdp-price {
+    font-size: 1.35rem;
+  }
+
+  .pdp-configurator-box {
+    padding: 1.25rem 1.15rem;
+    border-radius: 14px;
+    margin-bottom: 1.5rem;
+  }
+
+  .config-pills {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .config-pill {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.84rem;
+  }
+
+  .pdp-candle-value-props {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.15rem 0.75rem;
+    padding: 1.25rem 0;
+  }
+
+  .product-cross-sell {
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+  }
+
+  .cross-sell-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
   }
 }
 

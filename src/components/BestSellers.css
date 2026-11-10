@@ -299,10 +299,18 @@
    RESPONSIVE
    ================================================================ */
 @media (max-width: 900px) {
+  .bestsellers {
+    padding: 4.5rem 0;
+  }
+
+  .bestsellers__header {
+    margin-bottom: 2.5rem;
+  }
+
   .bs-drawer__header {
     flex-wrap: wrap;
-    gap: 1rem;
-    padding: 1.5rem 0;
+    gap: 0.65rem;
+    padding: 1.35rem 0.25rem;
   }
   
   .bs-drawer__col-tag {
@@ -313,6 +321,7 @@
   .bs-drawer__col-price {
     order: 2;
     flex: auto;
+    font-size: 0.95rem;
   }
   
   .bs-drawer__col-name {
@@ -321,7 +330,8 @@
   }
   
   .bs-drawer__col-name h3 {
-    font-size: 1.8rem;
+    font-size: 1.45rem;
+    line-height: 1.25;
   }
   
   .bs-drawer__content {
@@ -329,9 +339,38 @@
     padding: 0;
     gap: 0;
   }
+
+  .bs-drawer.is-open .bs-drawer__content {
+    padding: 0.5rem 0 2rem;
+  }
+
+  .bs-drawer__image {
+    flex: none;
+    width: 100%;
+    height: 260px;
+    border-radius: 12px;
+  }
+
+  .bs-drawer__image-overlay {
+    padding: 1.5rem;
+  }
+
+  .emotional-name {
+    font-size: 2rem;
+  }
   
   .bs-drawer__shop {
-    padding: 2rem 0 0 0;
+    padding: 1.35rem 0 0 0;
+  }
+
+  .bs-rating {
+    margin-bottom: 0.85rem;
+  }
+
+  .bs-desc {
+    font-size: 0.98rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
   }
   
   .bs-actions {
@@ -341,5 +380,16 @@
   
   .bs-qty {
     justify-content: space-between;
+  }
+
+  .btn-add-to-cart {
+    flex: none;
+    width: 100%;
+    height: auto;
+    min-height: 52px;
+    padding: 0.95rem 1.25rem;
+    font-size: 0.76rem;
+    line-height: 1.35;
+    border-radius: 999px;
   }
 }

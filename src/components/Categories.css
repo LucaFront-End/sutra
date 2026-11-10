@@ -187,39 +187,79 @@
 
 @media (max-width: 768px) {
   .categories-accordion {
-    height: auto;
-    min-height: 100vh;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 1.5rem 1.15rem 2.5rem;
+    background: #0A0807;
   }
   
   .accordion-container {
     flex-direction: column;
+    height: auto !important;
+    gap: 1rem;
   }
   
-  .accordion-item {
+  .accordion-item,
+  .accordion-item.is-active {
+    flex: none !important;
+    width: 100%;
+    height: 235px !important;
+    min-height: 235px !important;
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    /* On mobile, inactive height is small, active takes up most space */
-    min-height: 80px; 
+    border: 1px solid rgba(212, 167, 106, 0.25);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .accordion-bg {
+    filter: brightness(0.75) contrast(1.05);
+    transform: scale(1.02) !important;
+  }
+
+  .accordion-overlay,
+  .accordion-item.is-active .accordion-overlay {
+    background: linear-gradient(
+      to top,
+      rgba(10, 8, 5, 0.92) 0%,
+      rgba(10, 8, 5, 0.45) 55%,
+      rgba(10, 8, 5, 0.15) 100%
+    ) !important;
   }
   
   .title-vertical-wrapper {
-    align-items: center;
-  }
-
-  .title-vertical {
-    transform: rotate(0deg); /* Horizontal on mobile */
-    font-size: 0.85rem;
+    display: none !important;
   }
   
-  .accordion-item.is-active .title-vertical {
-    transform: rotate(0deg) scale(0.9);
-  }
-  
-  .content-active {
-    padding: 2rem;
+  .content-active,
+  .accordion-item.is-active .content-active {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    transition: none !important;
+    padding: 1.35rem 1.35rem !important;
   }
   
   .content-active h2 {
-    font-size: 2.2rem;
+    font-size: 1.7rem;
+    margin-bottom: 0.3rem;
+    line-height: 1.15;
+  }
+
+  .content-active p {
+    font-size: 0.86rem;
+    line-height: 1.45;
+    margin-bottom: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .content-active .btn {
+    padding: 0.55rem 1.15rem;
+    font-size: 0.7rem;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.45);
   }
 }

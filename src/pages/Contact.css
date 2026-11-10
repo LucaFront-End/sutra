@@ -564,3 +564,49 @@
 .faq-answer p {
   margin: 0;
 }
+
+@media (max-width: 768px) {
+  .contact-page {
+    padding-top: 5.25rem;
+    padding-bottom: 4rem;
+    overflow-x: hidden;
+  }
+
+  .contact-hero {
+    padding: 1.75rem 1.25rem 2.25rem;
+  }
+
+  .contact-hero__title {
+    font-size: 2.15rem;
+  }
+
+  .contact-container {
+    padding: 0 1.15rem;
+  }
+
+  .contact-channels {
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .channel-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .contact-main-grid {
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .contact-form-col {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .form-submit-btn {
+    width: 100%;
+  }
+
+  .aside-card {
+    padding: 1.75rem 1.35rem;
+  }
+}

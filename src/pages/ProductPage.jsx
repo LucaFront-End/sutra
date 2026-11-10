@@ -532,7 +532,7 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
                   <div key={opt.id} className="config-section">
                     <div className="config-label-row">
                       <span className="config-label">
-                        <span>{opt.label}:</span>
+                        <span>{String(opt.label || '').replace(/:+$/, '')}:</span>
                         <strong className="config-current-val">{activeChoice?.label}</strong>
                       </span>
                     </div>
