@@ -46,6 +46,7 @@ export default function SEO({
   canonical: propCanonical,
   image: propImage,
   type: propType,
+  productMeta = null,
   schema: propSchema,
 }) {
   const base = pageKey && SEO_DATA[pageKey] ? SEO_DATA[pageKey] : {};
@@ -96,9 +97,21 @@ export default function SEO({
     updateMetaTag('name', 'twitter:description', finalDesc);
     updateMetaTag('name', 'twitter:image', finalImage);
 
-    // 5. JSON-LD
+    // 5. Meta Product Microdata (for Meta Catalog / Pixel matching)
+    if (productMeta) {
+      updateMetaTag('property', 'product:retailer_item_id', productMeta.retailerItemId);
+      updateMetaTag('property', 'product:brand', productMeta.brand);
+      updateMetaTag('property', 'product:availability', productMeta.availability);
+      updateMetaTag('property', 'product:condition', productMeta.condition);
+      updateMetaTag('property', 'product:price:amount', productMeta.priceAmount);
+      updateMetaTag('property', 'product:price:currency', productMeta.priceCurrency);
+    } else {
+      document.querySelectorAll('meta[property^="product:"]').forEach((el) => el.remove());
+    }
+
+    // 6. JSON-LD
     updateJsonLd(finalSchema);
-  }, [finalTitle, finalDesc, finalCanonical, finalImage, finalType, finalSchema]);
+  }, [finalTitle, finalDesc, finalCanonical, finalImage, finalType, productMeta, finalSchema]);
 
   return null;
 }

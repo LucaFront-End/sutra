@@ -1,6 +1,22 @@
 {
   "rewrites": [
     {
+      "source": "/meta-catalog-feed.xml",
+      "destination": "/api/catalog-feed?marketplace=meta&format=xml"
+    },
+    {
+      "source": "/meta-catalog-feed.csv",
+      "destination": "/api/catalog-feed?marketplace=meta&format=csv"
+    },
+    {
+      "source": "/meta-catalog-feed.tsv",
+      "destination": "/api/catalog-feed?marketplace=meta&format=tsv"
+    },
+    {
+      "source": "/google-merchant-feed.tsv",
+      "destination": "/api/catalog-feed?marketplace=google&format=tsv"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },

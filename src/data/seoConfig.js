@@ -146,11 +146,13 @@ export function getProductSEO(product) {
   if (!product) return SEO_DATA.tienda;
   const name = product.name || 'Vela de Arena Sutra';
   const slug = product.slug || product._wixId || product.id;
+  const retailerItemId = String(product._wixId || product.id || slug);
   const desc = product.shortDesc || product.description || SEO_DATA.tienda.description;
   const rawImg = product.img || (product.images && product.images[0]?.src) || DEFAULT_OG_IMAGE;
   const imgUrl = typeof rawImg === 'string' ? rawImg : (rawImg?.src || DEFAULT_OG_IMAGE);
 
   const priceNum = product.priceNum || (product.price ? parseInt(String(product.price).replace(/\D/g, ''), 10) : 690);
+  const isOutOfStock = product.stock?.inStock === false || product.stock?.inventoryStatus === 'OUT_OF_STOCK';
 
   const schema = {
     '@context': 'https://schema.org/',
@@ -158,7 +160,7 @@ export function getProductSEO(product) {
     name: name,
     image: [imgUrl],
     description: desc,
-    sku: String(product.id || slug),
+    sku: retailerItemId,
     brand: {
       '@type': 'Brand',
       name: 'Sutra México',
@@ -168,7 +170,7 @@ export function getProductSEO(product) {
       url: `${SITE_URL}/producto/${slug}`,
       priceCurrency: 'MXN',
       price: priceNum,
-      availability: 'https://schema.org/InStock',
+      availability: isOutOfStock ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
       seller: {
         '@type': 'Organization',
@@ -188,6 +190,14 @@ export function getProductSEO(product) {
     canonical: `${SITE_URL}/producto/${slug}`,
     image: imgUrl,
     type: 'product',
+    productMeta: {
+      retailerItemId,
+      brand: 'SUTRA México',
+      availability: isOutOfStock ? 'out of stock' : 'in stock',
+      condition: 'new',
+      priceAmount: Number(priceNum).toFixed(2),
+      priceCurrency: 'MXN',
+    },
     schema,
   };
 }
