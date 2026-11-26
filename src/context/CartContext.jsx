@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useWixClient } from './WixContext';
 import { WIX_STORES_APP_ID, KNOWN_SUBSCRIPTION_OPTIONS } from '../lib/wixClient';
+import { trackAddToCart, trackBeginCheckout } from '../services/dataLayerService';
 
 export const CartContext = createContext(null);
 
@@ -127,6 +128,7 @@ export const CartProvider = ({ children }) => {
       });
     }
 
+    trackAddToCart(product, quantity, product.priceNum);
     setIsLoading(false);
     setIsCartOpen(true);
   };
@@ -260,6 +262,7 @@ export const CartProvider = ({ children }) => {
         });
 
         if (redirectSession?.fullUrl) {
+          trackBeginCheckout(cartItems, getSubtotal());
           window.location.href = redirectSession.fullUrl;
           return;
         }
@@ -301,6 +304,7 @@ export const CartProvider = ({ children }) => {
             });
 
             if (redirectSession?.fullUrl) {
+              trackBeginCheckout(cartItems, getSubtotal());
               window.location.href = redirectSession.fullUrl;
               return;
             }
@@ -339,9 +343,13 @@ export const CartProvider = ({ children }) => {
 
       const price = Number(item.price?.amount || 0);
 
+      const catalogItemId = item.catalogReference?.catalogItemId || item._id;
+
       return {
         id: item._id,
         _id: item._id,
+        _wixId: catalogItemId,
+        catalogItemId,
         key: item._id,
         name: item.productName?.translated || item.productName?.original || 'Producto SUTRA',
         price: `$${price.toLocaleString()} MXN`,

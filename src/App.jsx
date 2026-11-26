@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useCart } from './context/CartContext';
 
 function LegacyLandingRedirect() {
@@ -39,11 +39,19 @@ import DynamicLanding from './pages/DynamicLanding';
 import DynamicTienda from './pages/DynamicTienda';
 import Zonas from './pages/Zonas';
 import LegalPage from './pages/LegalPage';
+import MetaAdminPage from './pages/MetaAdminPage';
+import TrackingScriptsManager from './components/TrackingScriptsManager';
 
 export default function App() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+
+  const isMetaAdminRoute =
+    pathname === '/admin-meta' ||
+    pathname === '/meta-pixel' ||
+    pathname === '/configuracion-meta';
 
   // Wix Cart context
   const {
@@ -118,12 +126,15 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
-      <Navbar 
-        onNavigate={handleNavigate} 
-        onOpenUser={() => handleNavigate('cuenta')}
-        onOpenCart={() => setIsCartOpen(true)}
-        cartCount={getItemCount()}
-      />
+      <TrackingScriptsManager />
+      {!isMetaAdminRoute && (
+        <Navbar
+          onNavigate={handleNavigate}
+          onOpenUser={() => handleNavigate('cuenta')}
+          onOpenCart={() => setIsCartOpen(true)}
+          cartCount={getItemCount()}
+        />
+      )}
 
       <main>
         <Routes>
@@ -329,12 +340,17 @@ export default function App() {
             element={<LegalPage onNavigate={handleNavigate} />} 
           />
 
+          {/* Protected Meta Pixel & Global Tracking Admin Console (wixpartner@dilodigitalmx.com) */}
+          <Route path="/admin-meta" element={<MetaAdminPage />} />
+          <Route path="/meta-pixel" element={<MetaAdminPage />} />
+          <Route path="/configuracion-meta" element={<MetaAdminPage />} />
+
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
 
-      <Footer onNavigate={handleNavigate} />
+      {!isMetaAdminRoute && <Footer onNavigate={handleNavigate} />}
 
       {/* User Account Modal */}
       <UserModal 
@@ -352,10 +368,10 @@ export default function App() {
       />
 
       {/* Dual Floating Actions: WhatsApp & Wix Inbox Chat */}
-      <FloatingActions />
+      {!isMetaAdminRoute && <FloatingActions />}
 
       {/* Welcome Discount Popup (10% OFF First Purchase) */}
-      <DiscountPopup onNavigate={handleNavigate} />
+      {!isMetaAdminRoute && <DiscountPopup onNavigate={handleNavigate} />}
     </>
   );
 }

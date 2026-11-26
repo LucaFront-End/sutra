@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { allProducts } from '../data/shopData';
 import { useWixProducts } from '../hooks/useWixProducts';
 import { parseWixMediaUrl } from '../lib/wixProducts';
+import { trackViewItem } from '../services/dataLayerService';
 import ProductReviews from '../components/ProductReviews';
 import ProductHowToUse from '../components/ProductHowToUse';
 import SEO from '../components/SEO';
@@ -155,6 +156,17 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
   }
 
   const totalPrice = Math.max(0, basePrice + priceDeltaSum);
+
+  // Track ViewContent / view_item once per resolved product with Wix UUID matching catalog feeds
+  const lastTrackedViewKeyRef = useRef('');
+  useEffect(() => {
+    if (!product) return;
+    if (slug && wixLoading && !product.isWixProduct) return;
+    const viewKey = String(product._wixId || product.id || product.slug || '');
+    if (!viewKey || lastTrackedViewKeyRef.current === viewKey) return;
+    lastTrackedViewKeyRef.current = viewKey;
+    trackViewItem(product, totalPrice);
+  }, [product, slug, wixLoading, totalPrice]);
 
   // Helper to normalize strings for accent-insensitive matching
   const normStr = (s = '') => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
