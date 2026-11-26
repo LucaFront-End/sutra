@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   AUTHORIZED_META_ADMIN_EMAIL,
   DEFAULT_TRACKING_CONFIG,
+  TRACKING_CONFIG_EVENT,
   completeWixAdminOAuthIfPresent,
   fetchPublicTrackingConfig,
   loginStrictMetaAdmin,
@@ -78,6 +79,23 @@ export default function MetaAdminPage() {
   const [saving, setSaving] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState(null);
   const [copiedFeedKey, setCopiedFeedKey] = useState('');
+  const [fbqLive, setFbqLive] = useState(
+    () => typeof window !== 'undefined' && typeof window.fbq === 'function'
+  );
+
+  // Sync SDK Meta indicator when runtime injects fbq after load/publish
+  useEffect(() => {
+    const syncFbqState = () => {
+      setFbqLive(typeof window !== 'undefined' && typeof window.fbq === 'function');
+    };
+    const timer = setTimeout(syncFbqState, 250);
+    const onConfigUpdated = () => setTimeout(syncFbqState, 150);
+    window.addEventListener(TRACKING_CONFIG_EVENT, onConfigUpdated);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener(TRACKING_CONFIG_EVENT, onConfigUpdated);
+    };
+  }, [config.metaEnabled, config.metaPixelId]);
 
   // Ensure admin page uses private title & noindex
   useEffect(() => {
@@ -294,7 +312,6 @@ export default function MetaAdminPage() {
     return warnings;
   }, [config.metaCustomCode, config.customHeadCode, config.customBodyCode]);
 
-  const fbqLive = typeof window !== 'undefined' && typeof window.fbq === 'function';
   const siteOrigin =
     typeof window !== 'undefined' ? window.location.origin : 'https://www.sutramexico.com';
 

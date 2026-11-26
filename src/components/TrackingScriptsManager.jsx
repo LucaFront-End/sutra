@@ -7,8 +7,18 @@ import {
   getCachedTrackingConfig,
   normalizeTrackingConfig,
 } from '../services/trackingService';
+import { flushPendingMetaPixelEvents } from '../services/dataLayerService';
 
 const SLOT_ATTR = 'data-sutra-tracking-slot';
+
+function extractPixelIdFallback(code = '') {
+  const text = String(code || '');
+  const initMatch = text.match(/fbq\(\s*['"]init['"]\s*,\s*['"](\d{8,24})['"]/i);
+  if (initMatch?.[1]) return initMatch[1];
+  const imgMatch = text.match(/facebook\.com\/tr\?id=(\d{8,24})/i);
+  if (imgMatch?.[1]) return imgMatch[1];
+  return '';
+}
 
 function clearInjectedSlot(slotName) {
   if (typeof document === 'undefined') return;
@@ -138,18 +148,36 @@ export default function TrackingScriptsManager() {
     return cached || { ...DEFAULT_TRACKING_CONFIG };
   });
   const lastTrackedPathRef = useRef('');
+  const lastAppliedSlotsRef = useRef({
+    metaCustom: null,
+    customHead: null,
+    customBody: null,
+  });
 
   useEffect(() => {
     let active = true;
     fetchPublicTrackingConfig().then((res) => {
-      if (active && res?.config) {
-        setConfig(normalizeTrackingConfig(res.config));
+      if (typeof window !== 'undefined') {
+        window._sutraTrackingResolved = true;
       }
+      if (!active || !res?.config) return;
+      const next = normalizeTrackingConfig(res.config);
+      const effectivePixel = next.metaPixelId || extractPixelIdFallback(next.metaCustomCode);
+      if (!next.metaEnabled || !effectivePixel) {
+        if (typeof window !== 'undefined') {
+          window._sutraPendingMetaEvents = [];
+        }
+      }
+      setConfig((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
     });
 
     const handleUpdated = (event) => {
       if (event?.detail) {
-        setConfig(normalizeTrackingConfig(event.detail));
+        if (typeof window !== 'undefined') {
+          window._sutraTrackingResolved = true;
+        }
+        const next = normalizeTrackingConfig(event.detail);
+        setConfig(next);
         lastTrackedPathRef.current = '';
       }
     };
@@ -161,48 +189,80 @@ export default function TrackingScriptsManager() {
     };
   }, []);
 
+  const effectivePixelId =
+    config.metaPixelId || extractPixelIdFallback(config.metaCustomCode);
+
   // Inject Meta Pixel + Meta extra snippet + Custom Head & Body snippets when config changes
   useEffect(() => {
     if (typeof document === 'undefined') return undefined;
 
-    if (config.metaEnabled && config.metaPixelId) {
-      ensureMetaPixelRuntime(config.metaPixelId);
+    if (config.metaEnabled && effectivePixelId) {
+      ensureMetaPixelRuntime(effectivePixelId);
+      // Fire PageView before flushing any queued ViewContent/AddToCart events from cold load
+      const currentRouteKey = `${effectivePixelId}::${pathname}${search}`;
+      if (lastTrackedPathRef.current !== currentRouteKey && typeof window.fbq === 'function') {
+        lastTrackedPathRef.current = currentRouteKey;
+        window.fbq('track', 'PageView');
+      }
+      flushPendingMetaPixelEvents();
     } else {
       clearInjectedSlot('meta-noscript');
     }
 
-    if (config.metaEnabled && config.metaCustomCode) {
-      injectHtmlSlot('meta-custom', config.metaCustomCode, document.head);
-    } else {
-      clearInjectedSlot('meta-custom');
+    const desiredMetaCustom =
+      config.metaEnabled && config.metaCustomCode ? config.metaCustomCode.trim() : '';
+    if (lastAppliedSlotsRef.current.metaCustom !== desiredMetaCustom) {
+      lastAppliedSlotsRef.current.metaCustom = desiredMetaCustom;
+      if (desiredMetaCustom) {
+        injectHtmlSlot('meta-custom', desiredMetaCustom, document.head);
+      } else {
+        clearInjectedSlot('meta-custom');
+      }
     }
 
-    if (config.customEnabled && config.customHeadCode) {
-      injectHtmlSlot('custom-head', config.customHeadCode, document.head);
-    } else {
-      clearInjectedSlot('custom-head');
+    const desiredCustomHead =
+      config.customEnabled && config.customHeadCode ? config.customHeadCode.trim() : '';
+    if (lastAppliedSlotsRef.current.customHead !== desiredCustomHead) {
+      lastAppliedSlotsRef.current.customHead = desiredCustomHead;
+      if (desiredCustomHead) {
+        injectHtmlSlot('custom-head', desiredCustomHead, document.head);
+      } else {
+        clearInjectedSlot('custom-head');
+      }
     }
 
-    if (config.customEnabled && config.customBodyCode) {
-      injectHtmlSlot('custom-body', config.customBodyCode, document.body);
-    } else {
-      clearInjectedSlot('custom-body');
+    const desiredCustomBody =
+      config.customEnabled && config.customBodyCode ? config.customBodyCode.trim() : '';
+    if (lastAppliedSlotsRef.current.customBody !== desiredCustomBody) {
+      lastAppliedSlotsRef.current.customBody = desiredCustomBody;
+      if (desiredCustomBody) {
+        injectHtmlSlot('custom-body', desiredCustomBody, document.body);
+      } else {
+        clearInjectedSlot('custom-body');
+      }
     }
 
     return undefined;
-  }, [config]);
+  }, [
+    config.metaEnabled,
+    effectivePixelId,
+    config.metaCustomCode,
+    config.customEnabled,
+    config.customHeadCode,
+    config.customBodyCode,
+  ]);
 
   // Trigger Meta Pixel PageView on initial mount and SPA route changes
   useEffect(() => {
-    if (!config.metaEnabled || !config.metaPixelId) return;
+    if (!config.metaEnabled || !effectivePixelId) return;
     if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
 
-    const currentRouteKey = `${config.metaPixelId}::${pathname}${search}`;
+    const currentRouteKey = `${effectivePixelId}::${pathname}${search}`;
     if (lastTrackedPathRef.current === currentRouteKey) return;
 
     lastTrackedPathRef.current = currentRouteKey;
     window.fbq('track', 'PageView');
-  }, [config.metaEnabled, config.metaPixelId, pathname, search]);
+  }, [config.metaEnabled, effectivePixelId, pathname, search]);
 
   return null;
 }

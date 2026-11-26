@@ -39,6 +39,7 @@ export const CartProvider = ({ children }) => {
    */
   const addToCart = async (product, quantity = 1, selectedVariant = null) => {
     setIsLoading(true);
+    trackAddToCart(product, quantity, product.priceNum);
     let addedToWix = false;
 
     if (isReady && wixClient && (product._wixId || product.isWixProduct)) {
@@ -128,7 +129,6 @@ export const CartProvider = ({ children }) => {
       });
     }
 
-    trackAddToCart(product, quantity, product.priceNum);
     setIsLoading(false);
     setIsCartOpen(true);
   };

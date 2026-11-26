@@ -484,69 +484,161 @@ async function ensureCollectionExists(apiKey, siteId) {
   }
 }
 
+const FALLBACK_COLLECTION_ID = 'ContactoGeneral';
+const FALLBACK_RECORD_MARKER = '__SUTRA_META_CONFIG__';
+
+async function readFallbackConfigFromContactoGeneral(apiKey, siteId) {
+  try {
+    const queryRes = await wixDataFetch('/wix-data/v2/items/query', apiKey, siteId, {
+      method: 'POST',
+      body: JSON.stringify({
+        dataCollectionId: FALLBACK_COLLECTION_ID,
+        query: {
+          filter: { empresa: FALLBACK_RECORD_MARKER },
+          paging: { limit: 1 },
+        },
+      }),
+    });
+    const existing = queryRes?.dataItems?.[0];
+    if (!existing) return null;
+    const rawJson = existing.data?.mensaje || existing.mensaje || '';
+    if (!rawJson) return null;
+    const parsed = JSON.parse(rawJson);
+    return {
+      itemId: existing.id || existing.data?._id || null,
+      config: normalizeConfigPayload(parsed),
+      source: 'wix-cms-fallback',
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function upsertFallbackConfigInContactoGeneral(apiKey, siteId, configData) {
+  const existing = await readFallbackConfigFromContactoGeneral(apiKey, siteId);
+  const itemBody = {
+    nombre: 'Configuración Global Meta Pixel',
+    email: AUTHORIZED_META_ADMIN_EMAIL,
+    telefono: configData.metaPixelId || '',
+    empresa: FALLBACK_RECORD_MARKER,
+    industria: 'Configuración Meta & Tracking',
+    mensaje: JSON.stringify(configData),
+    fecha: configData.updatedAt || new Date().toISOString(),
+  };
+
+  if (existing?.itemId) {
+    const updated = await wixDataFetch(`/wix-data/v2/items/${existing.itemId}`, apiKey, siteId, {
+      method: 'PUT',
+      body: JSON.stringify({
+        dataCollectionId: FALLBACK_COLLECTION_ID,
+        dataItem: {
+          id: existing.itemId,
+          data: itemBody,
+        },
+      }),
+    });
+    return {
+      itemId: updated?.dataItem?.id || existing.itemId,
+      config: normalizeConfigPayload(configData),
+      source: 'wix-cms-fallback',
+    };
+  }
+
+  const inserted = await wixDataFetch('/wix-data/v1/items', apiKey, siteId, {
+    method: 'POST',
+    body: JSON.stringify({
+      dataCollectionId: FALLBACK_COLLECTION_ID,
+      item: itemBody,
+    }),
+  });
+  return {
+    itemId: inserted?.item?._id || inserted?.dataItem?.id || null,
+    config: normalizeConfigPayload(configData),
+    source: 'wix-cms-fallback',
+  };
+}
+
 async function readStoredConfig(apiKey, siteId) {
   if (!apiKey) {
     return { itemId: null, config: { ...DEFAULT_CONFIG }, source: 'default-no-key' };
   }
 
-  const queryRes = await wixDataFetch('/wix-data/v2/items/query', apiKey, siteId, {
-    method: 'POST',
-    body: JSON.stringify({
-      dataCollectionId: COLLECTION_ID,
-      query: {
-        filter: { slug: CONFIG_SLUG },
-        paging: { limit: 1 },
-      },
-    }),
-  });
+  try {
+    const queryRes = await wixDataFetch('/wix-data/v2/items/query', apiKey, siteId, {
+      method: 'POST',
+      body: JSON.stringify({
+        dataCollectionId: COLLECTION_ID,
+        query: {
+          filter: { slug: CONFIG_SLUG },
+          paging: { limit: 1 },
+        },
+      }),
+    });
 
-  const existing = queryRes?.dataItems?.[0];
-  if (!existing) {
-    return { itemId: null, config: { ...DEFAULT_CONFIG }, source: 'wix-cms-empty' };
+    const existing = queryRes?.dataItems?.[0];
+    if (existing) {
+      return {
+        itemId: existing.id || existing.data?._id || null,
+        config: normalizeConfigPayload(existing.data || existing),
+        source: 'wix-cms',
+      };
+    }
+  } catch (err) {
+    const fallback = await readFallbackConfigFromContactoGeneral(apiKey, siteId);
+    if (fallback) return fallback;
+    throw err;
   }
 
-  return {
-    itemId: existing.id || existing.data?._id || null,
-    config: normalizeConfigPayload(existing.data || existing),
-    source: 'wix-cms',
-  };
+  const fallback = await readFallbackConfigFromContactoGeneral(apiKey, siteId);
+  if (fallback) return fallback;
+
+  return { itemId: null, config: { ...DEFAULT_CONFIG }, source: 'wix-cms-empty' };
 }
 
 async function upsertStoredConfig(apiKey, siteId, configData) {
-  await ensureCollectionExists(apiKey, siteId);
-  const { itemId } = await readStoredConfig(apiKey, siteId);
+  try {
+    await ensureCollectionExists(apiKey, siteId);
+    const { itemId } = await readStoredConfig(apiKey, siteId);
 
-  if (itemId) {
-    const updated = await wixDataFetch(`/wix-data/v2/items/${itemId}`, apiKey, siteId, {
-      method: 'PUT',
+    if (itemId) {
+      const updated = await wixDataFetch(`/wix-data/v2/items/${itemId}`, apiKey, siteId, {
+        method: 'PUT',
+        body: JSON.stringify({
+          dataCollectionId: COLLECTION_ID,
+          dataItem: {
+            id: itemId,
+            data: configData,
+          },
+        }),
+      });
+      return {
+        itemId: updated?.dataItem?.id || itemId,
+        config: normalizeConfigPayload(updated?.dataItem?.data || configData),
+        source: 'wix-cms',
+      };
+    }
+
+    const inserted = await wixDataFetch('/wix-data/v2/items', apiKey, siteId, {
+      method: 'POST',
       body: JSON.stringify({
         dataCollectionId: COLLECTION_ID,
         dataItem: {
-          id: itemId,
           data: configData,
         },
       }),
     });
+
     return {
-      itemId: updated?.dataItem?.id || itemId,
-      config: normalizeConfigPayload(updated?.dataItem?.data || configData),
+      itemId: inserted?.dataItem?.id || null,
+      config: normalizeConfigPayload(inserted?.dataItem?.data || configData),
+      source: 'wix-cms',
     };
+  } catch (primaryErr) {
+    // Fallback to ContactoGeneral if API key lacks Manage Collections / ConfiguracionMeta permission
+    return upsertFallbackConfigInContactoGeneral(apiKey, siteId, configData).catch(() => {
+      throw primaryErr;
+    });
   }
-
-  const inserted = await wixDataFetch('/wix-data/v2/items', apiKey, siteId, {
-    method: 'POST',
-    body: JSON.stringify({
-      dataCollectionId: COLLECTION_ID,
-      dataItem: {
-        data: configData,
-      },
-    }),
-  });
-
-  return {
-    itemId: inserted?.dataItem?.id || null,
-    config: normalizeConfigPayload(inserted?.dataItem?.data || configData),
-  };
 }
 
 export default async function handler(req, res) {
@@ -667,7 +759,7 @@ export default async function handler(req, res) {
       const saved = await upsertStoredConfig(apiKey, siteId, nextConfig);
       return res.status(200).json({
         ok: true,
-        source: 'wix-cms',
+        source: saved.source || 'wix-cms',
         itemId: saved.itemId,
         config: saved.config,
       });

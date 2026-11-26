@@ -131,21 +131,56 @@ export function pushEcommerceDataLayer(eventName, ecommercePayload, extraTopLeve
 }
 
 function fireNativeMetaPixelEvent(eventName, params) {
+  if (typeof window === 'undefined') return false;
+
+  if (
+    typeof window.fbq === 'function' &&
+    window._sutraMetaInitializedIds &&
+    window._sutraMetaInitializedIds.size > 0
+  ) {
+    try {
+      window.fbq('track', eventName, params);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // On cold landing before /api/tracking-config resolves, queue the event so ViewContent isn't lost
+  if (!window._sutraTrackingResolved) {
+    window._sutraPendingMetaEvents = window._sutraPendingMetaEvents || [];
+    if (window._sutraPendingMetaEvents.length < 20) {
+      window._sutraPendingMetaEvents.push({ eventName, params });
+    }
+    return true;
+  }
+
+  return false;
+}
+
+export function flushPendingMetaPixelEvents() {
   if (
     typeof window === 'undefined' ||
     typeof window.fbq !== 'function' ||
     !window._sutraMetaInitializedIds ||
-    window._sutraMetaInitializedIds.size === 0
+    window._sutraMetaInitializedIds.size === 0 ||
+    !Array.isArray(window._sutraPendingMetaEvents) ||
+    window._sutraPendingMetaEvents.length === 0
   ) {
-    return false;
+    return 0;
   }
 
-  try {
-    window.fbq('track', eventName, params);
-    return true;
-  } catch {
-    return false;
+  const pending = window._sutraPendingMetaEvents.splice(0);
+  let sent = 0;
+  for (const ev of pending) {
+    try {
+      window.fbq('track', ev.eventName, ev.params);
+      sent += 1;
+    } catch {
+      // ignore individual event errors
+    }
   }
+  return sent;
 }
 
 export function trackViewItem(product, unitPrice) {
