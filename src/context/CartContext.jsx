@@ -75,6 +75,8 @@ export const CartProvider = ({ children }) => {
 
         if (resolvedVariantId) {
           optionsPayload.variantId = resolvedVariantId;
+        } else if (product.wixOptions && typeof product.wixOptions === 'object' && Object.keys(product.wixOptions).length > 0) {
+          optionsPayload.options = product.wixOptions;
         } else if (selectedVariant && typeof selectedVariant === 'string' && !selectedVariant.includes('|') && !selectedVariant.includes('(')) {
           optionsPayload.options = { 'Color:': selectedVariant };
         }
@@ -218,7 +220,9 @@ export const CartProvider = ({ children }) => {
             if (subOptionId) {
               optionsPayload.subscriptionOptionId = subOptionId;
             }
-            if (localItem.selectedVariant && typeof localItem.selectedVariant === 'string' && !localItem.selectedVariant.includes('|') && !localItem.selectedVariant.includes('(')) {
+            if (localItem.wixOptions && typeof localItem.wixOptions === 'object' && Object.keys(localItem.wixOptions).length > 0) {
+              optionsPayload.options = localItem.wixOptions;
+            } else if (localItem.selectedVariant && typeof localItem.selectedVariant === 'string' && !localItem.selectedVariant.includes('|') && !localItem.selectedVariant.includes('(')) {
               optionsPayload.options = { 'Color:': localItem.selectedVariant };
             }
             if (Object.keys(optionsPayload).length > 0) {
@@ -344,6 +348,16 @@ export const CartProvider = ({ children }) => {
       const price = Number(item.price?.amount || 0);
 
       const catalogItemId = item.catalogReference?.catalogItemId || item._id;
+      const variantLabels = (item.descriptionLines || [])
+        .map(
+          (dl) =>
+            dl?.plainText?.translated ||
+            dl?.plainText?.original ||
+            dl?.colorInfo?.translated ||
+            dl?.colorInfo?.original ||
+            ''
+        )
+        .filter(Boolean);
 
       return {
         id: item._id,
@@ -356,9 +370,7 @@ export const CartProvider = ({ children }) => {
         priceNum: price,
         quantity: item.quantity,
         img: image,
-        variant: item.descriptionLines?.[0]?.plainText?.translated
-          || item.descriptionLines?.[0]?.plainText?.original
-          || null,
+        variant: variantLabels.length > 0 ? variantLabels.join(' · ') : null,
         isWix: true,
       };
     });

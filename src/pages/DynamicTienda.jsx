@@ -73,10 +73,11 @@ export default function DynamicTienda({ onNavigate, onAddToCart }) {
     navigate(`/producto/${productSlug}`);
   };
 
-  // Dynamic catalog from Wix Stores / allProducts
-  const catalog = (wixProducts && wixProducts.length > 0)
+  // Dynamic catalog from Wix Stores / allProducts, excluding hidden shop items
+  const rawCatalog = (wixProducts && wixProducts.length > 0)
     ? wixProducts
     : allProducts;
+  const catalog = rawCatalog.filter((p) => !p.hideFromShop);
 
   // Filter products logic
   const filteredProducts = catalog.filter((product) => {
@@ -212,7 +213,9 @@ export default function DynamicTienda({ onNavigate, onAddToCart }) {
         <aside className="shop-filters">
           <span className="filters-heading">Categorías</span>
           <ul className="filters-list">
-            {storeCategories.map((cat) => (
+            {storeCategories
+              .filter((cat) => cat.id !== 'suscripciones' || wixLoading || getCategoryCount('suscripciones') > 0)
+              .map((cat) => (
               <li key={cat.id} className="filter-item">
                 <button
                   className={`filter-btn ${(filter === cat.id || ((cat.id === 'te' || cat.id === 'tes') && (filter === 'te' || filter === 'tes'))) ? 'active' : ''}`}

@@ -55,6 +55,12 @@ const LANDING_PAGES = [
 // 3. PRODUCTOS DINÁMICOS
 const PRODUCTS = [
   {
+    slug: 'vela-de-arena-sutra',
+    name: 'Vela de Arena Sutra',
+    desc: 'Kit de Vela en polvo + Contenedor + Esencias. 500g de cera vegetal en arena, 5 pabilos, aroma y cerillos largos.',
+    image: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png',
+  },
+  {
     slug: 'vela-en-polvo-aroma-toronja-ritual-mente-clara',
     name: 'Vela en Polvo Aroma Toronja - Ritual Mente Clara',
     desc: 'Toronja fresca, 500g cera vegetal en polvo y 5 pabilos. Despeja tu mente y encuentra claridad con cera vegetal perlada.',

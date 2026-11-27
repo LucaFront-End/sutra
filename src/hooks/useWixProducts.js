@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useWixClient } from '../context/WixContext';
 import { fetchAllProducts, fetchProductBySlug } from '../lib/wixProducts';
 
 /**
  * Hook to fetch all products from Wix Stores.
+ * Excludes items in "NO MOSTRAR EN TIENDA" unless includeHidden is true.
  */
-export function useWixProducts() {
+export function useWixProducts(options = {}) {
+  const { includeHidden = false } = options;
   const { wixClient, isReady } = useWixClient();
-  const [products, setProducts] = useState([]);
+  const [allProductsState, setAllProductsState] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,7 +23,7 @@ export function useWixProducts() {
         setLoading(true);
         setError(null);
         const data = await fetchAllProducts(wixClient);
-        if (!cancelled) setProducts(data);
+        if (!cancelled) setAllProductsState(data);
       } catch (err) {
         if (!cancelled) {
           setError(err.message || 'Failed to load products');
@@ -36,7 +38,17 @@ export function useWixProducts() {
     return () => { cancelled = true; };
   }, [wixClient, isReady]);
 
-  return { products, loading, error };
+  const visibleProducts = useMemo(
+    () => allProductsState.filter((p) => !p.hideFromShop),
+    [allProductsState]
+  );
+
+  return {
+    products: includeHidden ? allProductsState : visibleProducts,
+    allWixProducts: allProductsState,
+    loading,
+    error,
+  };
 }
 
 /**

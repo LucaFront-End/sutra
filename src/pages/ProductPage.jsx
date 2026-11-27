@@ -2,7 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { allProducts } from '../data/shopData';
 import { useWixProducts } from '../hooks/useWixProducts';
-import { parseWixMediaUrl } from '../lib/wixProducts';
+import {
+  parseWixMediaUrl,
+  formatDescriptionHtml,
+  VELA_DE_ARENA_SKU,
+  VELA_DE_ARENA_WIX_ID,
+  VELA_DE_ARENA_CANONICAL_SLUG,
+} from '../lib/wixProducts';
 import { trackViewItem } from '../services/dataLayerService';
 import ProductReviews from '../components/ProductReviews';
 import ProductHowToUse from '../components/ProductHowToUse';
@@ -10,10 +16,101 @@ import SEO from '../components/SEO';
 import { getProductSEO } from '../data/seoConfig';
 import './ProductPage.css';
 
+const VELA_DE_ARENA_RAW_DESCRIPTION =
+  '<p>Kit de Vela en polvo + Contenedor + Esencias | Ritual Sutra</p><p>Crea una vela diferente cada vez con la Vela de Arena Sutra. Su cera vegetal en polvo te permite transformar prácticamente cualquier recipiente adecuado en una vela, cambiar su diseño cuando quieras y crear ambientes únicos en casa, eventos, restaurantes, hoteles o espacios de bienestar.</p><p>📦 Incluye: 500 g de cera de Arena · 5 pabilos o mechas · 1 Aroma · Botesito con Cerillos largos · Disponible en color blanco o negro</p>';
+
+const VELA_DE_ARENA_FALLBACK = {
+  id: VELA_DE_ARENA_WIX_ID,
+  _wixId: VELA_DE_ARENA_WIX_ID,
+  sku: VELA_DE_ARENA_SKU,
+  slug: VELA_DE_ARENA_CANONICAL_SLUG,
+  wixSlug: 'copia-de-kit-de-velas-de-arena-2-esencias-contenedor-dorado',
+  name: 'Vela de Arena Sutra',
+  emotionalName: 'Ritual Sutra',
+  price: '$690 MXN',
+  priceNum: 690,
+  category: 'velas',
+  shortDesc: '500 g de cera de arena vegetal, 5 pabilos, 1 aroma y cerillos largos.',
+  description: 'Kit de Vela en polvo + Contenedor + Esencias | Ritual Sutra. Crea una vela diferente cada vez con la Vela de Arena Sutra.',
+  descriptionHtml: formatDescriptionHtml(VELA_DE_ARENA_RAW_DESCRIPTION, ''),
+  img: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png',
+  images: [
+    {
+      id: 'wix-img-0',
+      src: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png',
+      label: '',
+    },
+    {
+      id: 'wix-img-1',
+      src: 'https://static.wixstatic.com/media/45119e_6f31282f3a9b421dad79be68ffeb1a4b~mv2.png',
+      label: '',
+    },
+  ],
+  options: [
+    {
+      id: 'color:',
+      label: 'Color:',
+      type: 'color',
+      choices: [
+        {
+          label: 'Blanco',
+          value: 'Blanco',
+          hex: '#FAF7F2',
+          isDefault: true,
+          img: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png',
+        },
+        {
+          label: 'Negro',
+          value: 'Negro',
+          hex: '#1C1917',
+          isDefault: false,
+          img: 'https://static.wixstatic.com/media/45119e_6f31282f3a9b421dad79be68ffeb1a4b~mv2.png',
+        },
+      ],
+    },
+    {
+      id: 'aroma-1:',
+      label: 'Aroma 1:',
+      type: 'select',
+      choices: [
+        { label: '"Abrazo de Calma" Manzanilla', value: '"Abrazo de Calma" Manzanilla', isDefault: true },
+        { label: '"Amanecer Vivo" Mandarina-Toronja', value: '"Amanecer Vivo" Mandarina-Toronja', isDefault: false },
+        { label: '"Deseo Dorado" Ylang-Ylang', value: '"Deseo Dorado" Ylang-Ylang', isDefault: false },
+        { label: '"Limpia Aura" Copal', value: '"Limpia Aura" Copal', isDefault: false },
+        { label: '"Luz Alegre" Mandarina', value: '"Luz Alegre" Mandarina', isDefault: false },
+        { label: '"Madre Rose" Rosewood', value: '"Madre Rose" Rosewood', isDefault: false },
+        { label: '"Menta Clara" Toronja', value: '"Menta Clara" Toronja', isDefault: false },
+        { label: '"Noche Serena" Lavanda', value: '"Noche Serena" Lavanda', isDefault: false },
+        { label: '"Raiz Profunda" Patchouli', value: '"Raiz Profunda" Patchouli', isDefault: false },
+        { label: '"Sol Interior" Naranja', value: '"Sol Interior" Naranja', isDefault: false },
+        { label: '"Templo Interior" Incienso', value: '"Templo Interior" Incienso', isDefault: false },
+        { label: 'Sin Aroma', value: 'Sin Aroma', isDefault: false },
+      ],
+    },
+    {
+      id: 'vasija',
+      label: 'Vasija',
+      type: 'pills',
+      choices: [
+        { label: 'Sin Vasija', value: 'Sin Vasija', isDefault: true },
+        { label: 'Vasija chica blanca', value: 'Vasija chica blanca', isDefault: false },
+        { label: 'Vasija grande negra', value: 'Vasija grande negra', isDefault: false },
+        { label: 'Vasija grande blanca', value: 'Vasija grande blanca', isDefault: false },
+        { label: 'Vasija grande dorada', value: 'Vasija grande dorada', isDefault: false },
+        { label: 'Vasija chica tacita', value: 'Vasija chica tacita', isDefault: false },
+        { label: 'Vasija chica de Bambu', value: 'Vasija chica de Bambu', isDefault: false },
+      ],
+    },
+  ],
+  wixVariants: [],
+  stock: { inStock: true, inventoryStatus: 'IN_STOCK' },
+  isWixProduct: true,
+};
+
 export default function ProductPage({ product: incomingProduct, onNavigate, onAddToCart }) {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { products: wixProducts, loading: wixLoading } = useWixProducts();
+  const { products: wixProducts, loading: wixLoading } = useWixProducts({ includeHidden: true });
 
   // Resolve product either by finding slug in dynamic wixProducts/allProducts, or valid incomingProduct
   const isCompleteProduct = (p) => p && Boolean(p.name && (p.priceNum !== undefined || p.price));
@@ -27,13 +124,47 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
   };
   const targetSlugNorm = normalizeSlug(slug);
 
+  const isVelaDeArenaSlug =
+    targetSlugNorm === VELA_DE_ARENA_CANONICAL_SLUG ||
+    targetSlugNorm === VELA_DE_ARENA_SKU.toLowerCase() ||
+    targetSlugNorm === VELA_DE_ARENA_WIX_ID ||
+    targetSlugNorm === 'copia-de-kit-de-velas-de-arena-2-esencias-contenedor-dorado';
+
+  const wixList = wixProducts || [];
   const matchedProduct = (
-    slug
-      ? (wixProducts || []).find((p) => p.slug === slug || p._wixId === slug || p.id === slug || normalizeSlug(p.slug) === targetSlugNorm)
-        || allProducts.find((p) => p.slug === slug || p._wixId === slug || p.id === slug || normalizeSlug(p.slug) === targetSlugNorm)
-      : null
+    isVelaDeArenaSlug
+      ? (
+          wixList.find(
+            (p) =>
+              p.sku?.toUpperCase() === VELA_DE_ARENA_SKU ||
+              p._wixId === VELA_DE_ARENA_WIX_ID ||
+              p.slug === slug ||
+              p.wixSlug === slug
+          ) || VELA_DE_ARENA_FALLBACK
+        )
+      : (
+          slug
+            ? wixList.find(
+                (p) =>
+                  p.slug === slug ||
+                  p.wixSlug === slug ||
+                  p._wixId === slug ||
+                  p.id === slug ||
+                  normalizeSlug(p.slug) === targetSlugNorm ||
+                  normalizeSlug(p.wixSlug) === targetSlugNorm ||
+                  normalizeSlug(p.sku) === targetSlugNorm
+              )
+              || allProducts.find(
+                (p) =>
+                  p.slug === slug ||
+                  p._wixId === slug ||
+                  p.id === slug ||
+                  normalizeSlug(p.slug) === targetSlugNorm
+              )
+            : null
+        )
   ) || (isCompleteProduct(incomingProduct) ? incomingProduct : null)
-    || (wixProducts && wixProducts.length > 0 ? wixProducts[0] : allProducts[0]);
+    || (wixList.length > 0 ? wixList[0] : allProducts[0]);
 
   const product = matchedProduct;
 
@@ -322,14 +453,18 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
 
   // Add to cart handler
   const handleAdd = () => {
-    // Build human-readable option summary
+    // Build human-readable option summary & exact Wix Store options map
     const optionLabels = [];
+    const wixOptions = {};
     if (product.options && Array.isArray(product.options)) {
       product.options.forEach((opt) => {
         const val = selectedChoices[opt.id];
         const choice = opt.choices?.find((c) => c.value === val);
         if (choice) {
           optionLabels.push(choice.label);
+          if (opt.label) {
+            wixOptions[opt.label] = choice.value;
+          }
         }
       });
     }
@@ -346,6 +481,7 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
       priceNum: totalPrice,
       img: activeImg,
       customDetails: selectedChoices,
+      wixOptions: Object.keys(wixOptions).length > 0 ? wixOptions : undefined,
     };
 
     if (onAddToCart) {
@@ -353,8 +489,9 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
     }
   };
 
-  // Cross-sell items (pick complementary items dynamically from Wix or catalog)
-  const catalogForCross = (wixProducts && wixProducts.length > 0) ? wixProducts : allProducts;
+  // Cross-sell items (pick complementary items dynamically from Wix or catalog, excluding hidden shop items)
+  const rawCatalogForCross = (wixProducts && wixProducts.length > 0) ? wixProducts : allProducts;
+  const catalogForCross = rawCatalogForCross.filter((p) => !p.hideFromShop);
   const complementaryProducts = catalogForCross
     .filter((p) => (p._wixId || p.id) !== (product._wixId || product.id) && p.category !== product.category)
     .slice(0, 2);

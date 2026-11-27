@@ -2,6 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
+    <loc>https://www.sutramexico.com/producto/vela-de-arena-sutra</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png</image:loc>
+      <image:title>Vela de Arena Sutra</image:title>
+      <image:caption>Kit de Vela en polvo + Contenedor + Esencias. 500g de cera vegetal en arena, 5 pabilos, aroma y cerillos largos.</image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://www.sutramexico.com/producto/vela-en-polvo-aroma-toronja-ritual-mente-clara</loc>
     <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>

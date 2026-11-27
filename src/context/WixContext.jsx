@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { createClient, OAuthStrategy, EMPTY_TOKENS } from '@wix/sdk';
-import { products } from '@wix/stores';
+import { products, collections } from '@wix/stores';
 import { currentCart, orders, checkout } from '@wix/ecom';
 import { redirects } from '@wix/redirects';
 import { members } from '@wix/members';
@@ -70,7 +70,7 @@ function createTokenStorage() {
 // ─── Build client ──────────────────────────────────────────────────────────────
 function buildWixClient() {
   return createClient({
-    modules: { products, currentCart, checkout, orders, redirects, members, items, conversations, messages },
+    modules: { products, collections, currentCart, checkout, orders, redirects, members, items, conversations, messages },
     auth: OAuthStrategy({
       clientId: WIX_CLIENT_ID,
       tokenStorage: createTokenStorage(),

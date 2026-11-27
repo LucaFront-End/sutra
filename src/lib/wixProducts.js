@@ -1,5 +1,30 @@
 import { KNOWN_SUBSCRIPTION_OPTIONS } from './wixClient';
 
+export const HIDDEN_SHOP_COLLECTION_ID = 'a0789006-8b3b-44bb-8997-c1adb0d7cb03';
+export const VELA_DE_ARENA_SKU = 'S-VG-0001';
+export const VELA_DE_ARENA_WIX_ID = '8f2638e1-9d93-43a0-ba82-f46b6d1dd212';
+export const VELA_DE_ARENA_CANONICAL_SLUG = 'vela-de-arena-sutra';
+
+export function resolveChoiceColorHex(rawVal = '') {
+  const trimmed = String(rawVal || '').trim();
+  if (trimmed.startsWith('#')) return trimmed;
+
+  const normalized = trimmed
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  if (/\b(blanco|white)\b/.test(normalized)) return '#FAF7F2';
+  if (/\b(negro|black|carbon)\b/.test(normalized)) return '#1C1917';
+  if (/\b(dorado|gold|oro)\b/.test(normalized)) return '#D4A76A';
+  if (/\b(arena|beige|sand)\b/.test(normalized)) return '#E8DFC8';
+  if (/\b(rosa|rose)\b/.test(normalized)) return '#E8B4B8';
+  if (/\b(verde|oliva|green)\b/.test(normalized)) return '#7B8A6E';
+  if (/\b(terracota|barro)\b/.test(normalized)) return '#C27856';
+  if (/\b(gris|gray|grey)\b/.test(normalized)) return '#9E9E9E';
+  return '#D4A76A';
+}
+
 /**
  * Converts a raw Wix media URL (wix:image://v1/{fileId}/...) to a public Wix static CDN URL.
  * Also strips downscaled thumbnail parameters (/v1/fit/w_50... or /v1/fill/...) to return the full-resolution master.
@@ -126,7 +151,10 @@ export function formatDescriptionHtml(rawHtml, plainText) {
 /**
  * Normalizes a Wix Stores product into the shape expected by Sutra components.
  */
-export function normalizeProduct(wixProduct) {
+export function normalizeProduct(
+  wixProduct,
+  hiddenCollectionIds = new Set([HIDDEN_SHOP_COLLECTION_ID])
+) {
   const {
     _id,
     slug,
@@ -282,7 +310,7 @@ export function normalizeProduct(wixProduct) {
         return {
           label: ch.description || ch.value || `Opción ${idx + 1}`,
           value: ch.value || ch.description || `opt-${idx}`,
-          hex: isColor && ch.value && ch.value.startsWith('#') ? ch.value : (isColor ? '#D4A76A' : undefined),
+          hex: isColor ? resolveChoiceColorHex(ch.value || ch.description) : undefined,
           isDefault: idx === 0,
           img: chImg,
         };
@@ -299,10 +327,25 @@ export function normalizeProduct(wixProduct) {
     });
   }
 
+  const sku = String(wixProduct.sku || wixProduct.variants?.[0]?.variant?.sku || '').trim();
+  const isVelaDeArenaHero =
+    sku.toUpperCase() === VELA_DE_ARENA_SKU || _id === VELA_DE_ARENA_WIX_ID;
+  const wixSlug = slug || _id;
+  const canonicalSlug =
+    isVelaDeArenaHero && (!slug || slug.startsWith('copia-de-'))
+      ? VELA_DE_ARENA_CANONICAL_SLUG
+      : wixSlug;
+  const hideFromShop =
+    Array.isArray(collectionIds) &&
+    collectionIds.some((cid) => hiddenCollectionIds.has(cid));
+
   return {
     id: _id,
     _wixId: _id,
-    slug: slug || _id,
+    slug: canonicalSlug,
+    wixSlug,
+    sku,
+    hideFromShop,
     name: name || 'Producto SUTRA',
     emotionalName: ribbon || (subcategory === 'jardin-zen' ? 'Meditación & Enfoque' : 'Ritual Sutra'),
     price: `$${priceNum.toLocaleString()} MXN`,
@@ -328,12 +371,35 @@ export function normalizeProduct(wixProduct) {
 }
 
 /**
- * Fetch all products from Wix Stores.
+ * Fetch all products from Wix Stores, resolving "NO MOSTRAR EN TIENDA" collection IDs dynamically.
  */
 export async function fetchAllProducts(wixClient) {
   try {
-    const result = await wixClient.products.queryProducts().find();
-    return (result.items || []).map(normalizeProduct);
+    const [result, collectionsRes] = await Promise.all([
+      wixClient.products.queryProducts().limit(100).find(),
+      wixClient.collections?.queryCollections
+        ? wixClient.collections.queryCollections().limit(100).find().catch(() => null)
+        : Promise.resolve(null),
+    ]);
+
+    const hiddenCollectionIds = new Set([HIDDEN_SHOP_COLLECTION_ID]);
+    (collectionsRes?.items || []).forEach((col) => {
+      const normName = String(col?.name || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+      const normSlug = String(col?.slug || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+      if (normName === 'no mostrar en tienda' || normSlug === 'no-mostrar-en-tienda') {
+        if (col._id) hiddenCollectionIds.add(col._id);
+      }
+    });
+
+    return (result.items || []).map((item) => normalizeProduct(item, hiddenCollectionIds));
   } catch (error) {
     console.error('[Wix] Failed to fetch products:', error);
     const msg = error?.message

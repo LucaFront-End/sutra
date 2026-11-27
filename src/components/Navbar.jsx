@@ -34,9 +34,15 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
     }, 140);
   };
 
+  const VELA_DE_ARENA_ROUTE = '/producto/vela-de-arena-sutra';
   const currentPath = location.pathname;
   const isHome = currentPath === '/';
-  const isShop = (currentPath === '/tienda' || currentPath.startsWith('/tienda/')) || currentPath.startsWith('/producto') || currentPath.startsWith('/productos') || currentPath.startsWith('/tiendas');
+  const isVelaDeArena =
+    currentPath === '/producto/vela-de-arena-sutra' ||
+    currentPath === '/productos/vela-de-arena-sutra' ||
+    currentPath === '/producto/copia-de-kit-de-velas-de-arena-2-esencias-contenedor-dorado' ||
+    currentPath.toLowerCase() === '/producto/s-vg-0001';
+  const isShop = !isVelaDeArena && ((currentPath === '/tienda' || currentPath.startsWith('/tienda/')) || currentPath.startsWith('/producto') || currentPath.startsWith('/productos') || currentPath.startsWith('/tiendas'));
   const isEvents = currentPath.startsWith('/eventos');
   const isAbout = currentPath.startsWith('/nosotros');
   const isCommunity = currentPath.startsWith('/comunidad') || currentPath.startsWith('/blog');
@@ -85,6 +91,7 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
     if (onNavigate) {
       if (path === '/') onNavigate('home');
       else if (path === '/tienda') onNavigate('shop');
+      else if (path === VELA_DE_ARENA_ROUTE) onNavigate(VELA_DE_ARENA_ROUTE);
       else if (path === '/nosotros') onNavigate('about');
       else if (path === '/eventos') onNavigate('events');
       else if (path === '/comunidad') onNavigate('blog');
@@ -325,6 +332,17 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
             </div>
           </li>
 
+          {/* Vela de Arena (SKU S-VG-0001) */}
+          <li className="navbar__item">
+            <button
+              className={`navbar__link ${isVelaDeArena ? 'active-link' : ''}`}
+              onClick={() => handleLinkClick(VELA_DE_ARENA_ROUTE)}
+              title="Vela de Arena Sutra"
+            >
+              Vela de Arena
+            </button>
+          </li>
+
           {/* Eventos */}
           <li className="navbar__item">
             <button
@@ -479,6 +497,15 @@ export default function Navbar({ onNavigate, currentPage, onOpenUser, onOpenCart
                   </li>
                 </ul>
               )}
+            </li>
+
+            <li className="mobile-item">
+              <button
+                className="mobile-direct-link"
+                onClick={() => handleLinkClick(VELA_DE_ARENA_ROUTE)}
+              >
+                Vela de Arena
+              </button>
             </li>
 
             <li className="mobile-item">

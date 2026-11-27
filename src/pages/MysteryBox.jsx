@@ -145,7 +145,7 @@ function getColorHex(value, defaultHex = '#D4A76A') {
 export default function MysteryBox({ onNavigate }) {
   const navigate = useNavigate();
   const { addToCart, setIsCartOpen } = useCart();
-  const { products: wixProducts, loading: wixLoading } = useWixProducts();
+  const { products: wixProducts, loading: wixLoading } = useWixProducts({ includeHidden: true });
 
   const [activeCompletoImg, setActiveCompletoImg] = useState(0);
   const [activeEsencialImg, setActiveEsencialImg] = useState(0);
