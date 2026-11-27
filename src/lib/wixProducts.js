@@ -302,15 +302,20 @@ export function normalizeProduct(
       const optKind = isColor ? 'color' : (isAromaOpt ? 'aroma' : (isVasijaOpt ? 'vasija' : 'other'));
 
       let choices = (pOpt.choices || []).map((ch, idx) => {
-        let chImg = ch.media?.mainMedia?.image?.url ? parseWixMediaUrl(ch.media.mainMedia.image.url) : undefined;
+        const rawDirectImg = ch.media?.mainMedia?.image?.url
+          || ch.media?.items?.[0]?.image?.url
+          || ch.media?.mainMedia?.thumbnail?.url;
+        let chImg = rawDirectImg ? parseWixMediaUrl(rawDirectImg) : undefined;
         // If choice has no direct media, look in wixVariants for an image corresponding to this choice
         if (!chImg && Array.isArray(wixVariants)) {
           const val = ch.value || ch.description;
           const matchingVar = wixVariants.find((v) => {
             return v.choices && (v.choices[pOpt.name] === val || Object.values(v.choices).includes(val));
           });
-          const rawVarImg = matchingVar?.media?.mainMedia?.image?.url 
-            || matchingVar?.media?.items?.[0]?.image?.url 
+          const rawVarImg = matchingVar?.variant?.media?.mainMedia?.image?.url
+            || matchingVar?.variant?.media?.items?.[0]?.image?.url
+            || matchingVar?.media?.mainMedia?.image?.url
+            || matchingVar?.media?.items?.[0]?.image?.url
             || matchingVar?.image?.url;
           if (rawVarImg) chImg = parseWixMediaUrl(rawVarImg);
         }

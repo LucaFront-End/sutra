@@ -126,8 +126,8 @@ export default function App() {
     }
   };
 
-  const handleAddToCart = (product, qty = 1, variant = null) => {
-    addToCart(product, qty, variant);
+  const handleAddToCart = async (product, qty = 1, variant = null) => {
+    await addToCart(product, qty, variant);
     setIsCartOpen(true);
   };
 

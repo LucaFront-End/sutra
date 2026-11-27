@@ -8,6 +8,7 @@ import { products } from '@wix/stores';
 export const WIX_CLIENT_ID = '7bf257ab-ef88-41f5-9904-da15badacfc1';
 export const SITE_URL = 'https://www.sutramexico.com';
 export const DEFAULT_BRAND = 'SUTRA México';
+export const DEFAULT_GOOGLE_STORE_CODE = '06984961168883982863';
 
 export function cleanText(raw = '') {
   return String(raw)
@@ -138,6 +139,21 @@ export function normalizeFeedProducts(wixItems = []) {
 
       const inStock =
         item.stock?.inStock !== false && item.stock?.inventoryStatus !== 'OUT_OF_STOCK';
+      const trackInventory = Boolean(item.stock?.trackInventory);
+      const rawQuantity = item.stock?.quantity;
+      const numericQuantity =
+        typeof rawQuantity === 'number' && Number.isFinite(rawQuantity)
+          ? Math.max(0, Math.floor(rawQuantity))
+          : null;
+      let localQuantity = '';
+      if (!inStock) {
+        localQuantity = '0';
+      } else if (trackInventory && numericQuantity !== null) {
+        localQuantity = String(numericQuantity);
+      } else if (numericQuantity !== null && numericQuantity > 0) {
+        localQuantity = String(numericQuantity);
+      }
+
       const metaAvailability = inStock ? 'in stock' : 'out of stock';
       const googleAvailability = inStock ? 'in_stock' : 'out_of_stock';
       const condition = 'new';
@@ -173,6 +189,7 @@ export function normalizeFeedProducts(wixItems = []) {
         image_link,
         additional_image_links,
         inStock,
+        localQuantity,
         metaAvailability,
         googleAvailability,
         condition,
@@ -350,6 +367,38 @@ export function buildGoogleMerchantTsv(items = []) {
   return lines.join('\n') + '\n';
 }
 
+const GOOGLE_LOCAL_HEADERS = ['id', 'store_code', 'availability', 'quantity', 'price'];
+
+function mapGoogleLocalRow(p, storeCode) {
+  return [p.id, storeCode, p.googleAvailability, p.localQuantity ?? '', p.price];
+}
+
+function buildDelimitedFeed(headers, rows, escapeFn, delimiter) {
+  const lines = [headers.map(escapeFn).join(delimiter)];
+  for (const row of rows) {
+    lines.push(row.map(escapeFn).join(delimiter));
+  }
+  return lines.join('\n') + '\n';
+}
+
+export function buildGoogleLocalInventoryTsv(
+  items = [],
+  storeCode = DEFAULT_GOOGLE_STORE_CODE
+) {
+  const resolvedStoreCode = String(storeCode || DEFAULT_GOOGLE_STORE_CODE).trim();
+  const rows = items.map((p) => mapGoogleLocalRow(p, resolvedStoreCode));
+  return buildDelimitedFeed(GOOGLE_LOCAL_HEADERS, rows, escapeTsv, '\t');
+}
+
+export function buildGoogleLocalInventoryCsv(
+  items = [],
+  storeCode = DEFAULT_GOOGLE_STORE_CODE
+) {
+  const resolvedStoreCode = String(storeCode || DEFAULT_GOOGLE_STORE_CODE).trim();
+  const rows = items.map((p) => mapGoogleLocalRow(p, resolvedStoreCode));
+  return buildDelimitedFeed(GOOGLE_LOCAL_HEADERS, rows, escapeCsv, ',');
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
@@ -363,18 +412,44 @@ export default async function handler(req, res) {
   }
 
   const rawMarketplace = String(req.query?.marketplace || 'meta').toLowerCase();
-  const marketplace = rawMarketplace === 'google' ? 'google' : 'meta';
+  const isGoogleLocal =
+    rawMarketplace === 'google_local' ||
+    rawMarketplace === 'google-local' ||
+    rawMarketplace === 'google_local_inventory';
+  const marketplace = isGoogleLocal
+    ? 'google_local'
+    : rawMarketplace === 'google'
+      ? 'google'
+      : 'meta';
 
-  const defaultFormat = marketplace === 'google' ? 'tsv' : 'xml';
+  const defaultFormat =
+    marketplace === 'google' || marketplace === 'google_local' ? 'tsv' : 'xml';
   const rawFormat = String(req.query?.format || defaultFormat).toLowerCase();
   const format = ['xml', 'csv', 'tsv'].includes(rawFormat) ? rawFormat : defaultFormat;
+  const storeCode = String(req.query?.store_code || DEFAULT_GOOGLE_STORE_CODE).trim() || DEFAULT_GOOGLE_STORE_CODE;
 
   try {
     const wixItems = await fetchWixCatalogItems();
     const productsList = normalizeFeedProducts(wixItems);
 
     let output = '';
-    if (marketplace === 'google') {
+    if (marketplace === 'google_local') {
+      if (format === 'csv') {
+        output = buildGoogleLocalInventoryCsv(productsList, storeCode);
+        res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+        res.setHeader(
+          'Content-Disposition',
+          'inline; filename="google-local-inventory-feed.csv"'
+        );
+      } else {
+        output = buildGoogleLocalInventoryTsv(productsList, storeCode);
+        res.setHeader('Content-Type', 'text/tab-separated-values; charset=utf-8');
+        res.setHeader(
+          'Content-Disposition',
+          'inline; filename="google-local-inventory-feed.tsv"'
+        );
+      }
+    } else if (marketplace === 'google') {
       output = buildGoogleMerchantTsv(productsList);
       res.setHeader('Content-Type', 'text/tab-separated-values; charset=utf-8');
       res.setHeader('Content-Disposition', 'inline; filename="google-merchant-feed.tsv"');

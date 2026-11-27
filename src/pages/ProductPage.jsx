@@ -19,6 +19,22 @@ import './ProductPage.css';
 const VELA_DE_ARENA_RAW_DESCRIPTION =
   '<p>Kit de Vela en polvo + Contenedor + Esencias | Ritual Sutra</p><p>Crea una vela diferente cada vez con la Vela de Arena Sutra. Su cera vegetal en polvo te permite transformar prácticamente cualquier recipiente adecuado en una vela, cambiar su diseño cuando quieras y crear ambientes únicos en casa, eventos, restaurantes, hoteles o espacios de bienestar.</p><p>📦 Incluye: 500 g de cera de Arena · 5 pabilos o mechas · 1 Aroma opcional · Botesito con Cerillos largos · Disponible en color blanco o negro</p>';
 
+const ENCENDEDOR_WIX_ID = '74ddbed9-4167-490b-9544-769a935ae79a';
+const ENCENDEDOR_SKU = 'S-AEN-001';
+const ENCENDEDOR_FALLBACK_PRODUCT = {
+  id: ENCENDEDOR_WIX_ID,
+  _wixId: ENCENDEDOR_WIX_ID,
+  sku: ENCENDEDOR_SKU,
+  slug: 'encendedor-eléctrico-de-plasma-negro-grafito-sutra',
+  wixSlug: 'encendedor-eléctrico-de-plasma-negro-grafito-sutra',
+  name: 'Encendedor Eléctrico de Plasma Negro Grafito – Sutra',
+  emotionalName: 'Ritual Sutra',
+  category: 'accesorios',
+  price: '$385 MXN',
+  priceNum: 385,
+  img: 'https://static.wixstatic.com/media/45119e_38ab930c00e1484cba470cd795690d4c~mv2.png',
+};
+
 const SUTRA_AROMA_MEDIA = [
   { match: /manzanilla|abrazo/i, img: 'https://static.wixstatic.com/media/45119e_a55e6b41fba5423b94079a6d83594173~mv2.png' },
   { match: /mandarina.*toronja|amanecer/i, img: 'https://static.wixstatic.com/media/45119e_5e27bea406904aa58137f6a397639f34~mv2.png' },
@@ -265,55 +281,30 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
 
   const product = matchedProduct;
 
-  // Dynamic gallery images safely parsed whether object or string
-  const rawImages = (product.images && product.images.length > 0)
-    ? [...product.images]
-    : [product.img || '/assets/images/cera-blanca.jpg'];
+  const lighterProduct =
+    wixList.find(
+      (p) =>
+        p._wixId === ENCENDEDOR_WIX_ID ||
+        p.id === ENCENDEDOR_WIX_ID ||
+        p.sku?.toUpperCase() === ENCENDEDOR_SKU
+    ) ||
+    allProducts.find(
+      (p) => p._wixId === ENCENDEDOR_WIX_ID || p.sku?.toUpperCase() === ENCENDEDOR_SKU
+    ) ||
+    ENCENDEDOR_FALLBACK_PRODUCT;
 
-  // Add any variant choice images not already in rawImages
-  if (product.options && Array.isArray(product.options)) {
-    product.options.forEach((opt) => {
-      opt.choices?.forEach((ch) => {
-        if (ch.img) {
-          const exists = rawImages.some((img) => {
-            const s = typeof img === 'string' ? img : (img?.src || img?.url);
-            return s === ch.img || parseWixMediaUrl(s) === parseWixMediaUrl(ch.img);
-          });
-          if (!exists) {
-            rawImages.push({
-              id: `opt-img-${ch.value}`,
-              src: ch.img,
-              label: ch.label || '',
-              color: ch.value,
-            });
-          }
-        }
-      });
-    });
-  }
+  const isLighterProduct =
+    product._wixId === ENCENDEDOR_WIX_ID ||
+    product.id === ENCENDEDOR_WIX_ID ||
+    product.sku?.toUpperCase() === ENCENDEDOR_SKU ||
+    /encendedor/i.test(product.slug || '');
 
-  // Also include images from wixVariants if any
-  if (product.wixVariants && Array.isArray(product.wixVariants)) {
-    product.wixVariants.forEach((v, idx) => {
-      const vImg = v.media?.mainMedia?.image?.url || v.media?.items?.[0]?.image?.url || v.image?.url || v.img;
-      if (vImg) {
-        const parsedVImg = parseWixMediaUrl(vImg);
-        const exists = rawImages.some((img) => {
-          const s = typeof img === 'string' ? img : (img?.src || img?.url);
-          return parseWixMediaUrl(s) === parsedVImg;
-        });
-        if (!exists) {
-          rawImages.push({
-            id: `wix-var-img-${idx}`,
-            src: parsedVImg,
-            label: Object.values(v.choices || {}).join(' - '),
-          });
-        }
-      }
-    });
-  }
-
-  const galleryImages = rawImages.map((img, idx) => {
+  // Dynamic gallery images safely parsed whether object or string, with choice <-> image links
+  const galleryEntries = (
+    (product.images && product.images.length > 0)
+      ? [...product.images]
+      : [product.img || '/assets/images/cera-blanca.jpg']
+  ).map((img, idx) => {
     const rawSrc = typeof img === 'string' ? img : (img?.src || img?.url || product.img);
     const parsedSrc = parseWixMediaUrl(rawSrc);
     return {
@@ -321,8 +312,90 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
       src: parsedSrc,
       label: typeof img === 'object' && img?.label ? img.label : '',
       color: img?.color,
+      linkedChoices: [],
     };
   }).filter((item) => Boolean(item.src));
+
+  const mergeGalleryChoiceImage = (rawUrl, linkMetaList = [], fallbackLabel = '', fallbackColor = undefined) => {
+    const parsed = parseWixMediaUrl(rawUrl);
+    if (!parsed) return;
+    let entry = galleryEntries.find((item) => item.src === parsed);
+    if (!entry) {
+      entry = {
+        id: linkMetaList[0] ? `opt-img-${linkMetaList[0].choiceValue}` : `var-img-${galleryEntries.length}`,
+        src: parsed,
+        label: fallbackLabel || '',
+        color: fallbackColor,
+        linkedChoices: [],
+      };
+      galleryEntries.push(entry);
+    } else {
+      if (!entry.label && fallbackLabel) entry.label = fallbackLabel;
+      if (!entry.color && fallbackColor) entry.color = fallbackColor;
+    }
+    linkMetaList.forEach((meta) => {
+      if (
+        meta &&
+        !entry.linkedChoices.some((existing) => existing.optId === meta.optId && existing.choiceValue === meta.choiceValue)
+      ) {
+        entry.linkedChoices.push(meta);
+      }
+    });
+  };
+
+  // Link option choice images to gallery entries (adds or attaches metadata to existing image)
+  if (product.options && Array.isArray(product.options)) {
+    product.options.forEach((opt) => {
+      const isColorOpt = opt.type === 'color' || opt.optKind === 'color' || /color/i.test(opt.label || '');
+      opt.choices?.forEach((ch) => {
+        if (ch.img) {
+          mergeGalleryChoiceImage(
+            ch.img,
+            [{ optId: opt.id, choiceValue: ch.value, label: ch.label || ch.value }],
+            ch.label || '',
+            isColorOpt ? ch.value : undefined
+          );
+        }
+      });
+    });
+  }
+
+  // Also include images from wixVariants if any, linking matching option choices
+  if (product.wixVariants && Array.isArray(product.wixVariants)) {
+    product.wixVariants.forEach((v) => {
+      const vImg =
+        v.variant?.media?.mainMedia?.image?.url ||
+        v.variant?.media?.items?.[0]?.image?.url ||
+        v.media?.mainMedia?.image?.url ||
+        v.media?.items?.[0]?.image?.url ||
+        v.image?.url ||
+        v.img;
+      if (!vImg) return;
+
+      const linkMetaList = [];
+      if (v.choices && product.options && Array.isArray(product.options)) {
+        Object.entries(v.choices).forEach(([vKey, vVal]) => {
+          const opt = product.options.find(
+            (o) =>
+              o.id === vKey ||
+              (o.label || '').toLowerCase().trim() === vKey.toLowerCase().trim()
+          );
+          const ch = opt?.choices?.find((c) => c.value === vVal || c.label === vVal);
+          if (opt && ch) {
+            linkMetaList.push({ optId: opt.id, choiceValue: ch.value, label: ch.label || ch.value });
+          }
+        });
+      }
+
+      mergeGalleryChoiceImage(
+        vImg,
+        linkMetaList,
+        Object.values(v.choices || {}).join(' - ')
+      );
+    });
+  }
+
+  const galleryImages = galleryEntries;
 
   const [activeImg, setActiveImg] = useState(() => {
     return galleryImages[0]?.src || parseWixMediaUrl(product.img) || '/assets/images/cera-blanca.jpg';
@@ -342,6 +415,9 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
     return initial;
   });
 
+  const [addLighterAddon, setAddLighterAddon] = useState(false);
+  const [isAddingBundle, setIsAddingBundle] = useState(false);
+
   const lastProductIdentityRef = useRef(product._wixId || product.id || product.slug);
   const lastAromaChoiceRef = useRef(null);
   const lastVasijaChoiceRef = useRef(null);
@@ -356,6 +432,7 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
       lastProductIdentityRef.current = nextIdentity;
       lastAromaChoiceRef.current = null;
       lastVasijaChoiceRef.current = null;
+      setAddLighterAddon(false);
 
       const currentRaw = (product.images && product.images.length > 0)
         ? product.images
@@ -434,6 +511,11 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
       ? Math.max(0, matchedVariantPrice)
       : Math.max(0, basePrice + priceDeltaSum);
 
+  const showLighterAddon = Boolean(lighterProduct) && !isLighterProduct;
+  const lighterPriceNum = Number(lighterProduct?.priceNum) || 385;
+  const displayTotalPrice =
+    totalPrice + (showLighterAddon && addLighterAddon ? lighterPriceNum : 0);
+
   // Track ViewContent / view_item once per resolved product with Wix UUID matching catalog feeds
   const lastTrackedViewKeyRef = useRef('');
   useEffect(() => {
@@ -456,6 +538,34 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
       .filter((w) => w.length >= 3 && !stopWords.has(w));
   };
 
+  const findGalleryMatchForChoice = (choice) => {
+    if (!choice || !galleryImages || galleryImages.length === 0) return null;
+    const choiceValNorm = normStr(choice.value);
+    const choiceLabelNorm = normStr(choice.label);
+
+    const colorMatch = galleryImages.find((img) => {
+      if (!img.color) return false;
+      const cNorm = normStr(img.color);
+      return cNorm === choiceValNorm || cNorm === choiceLabelNorm || choiceValNorm.includes(cNorm) || choiceLabelNorm.includes(cNorm);
+    });
+    if (colorMatch) return colorMatch.src;
+
+    const kws = getKeywords(`${choice.value} ${choice.label}`);
+    if (kws.length === 0) return null;
+
+    let bestImg = null;
+    let bestScore = 0;
+    galleryImages.forEach((img) => {
+      const imgText = `${normStr(img.label)} ${normStr(img.id)} ${normStr(img.src)}`;
+      const score = kws.reduce((acc, kw) => (imgText.includes(kw) ? acc + 1 : acc), 0);
+      if (score > bestScore) {
+        bestScore = score;
+        bestImg = img;
+      }
+    });
+    return bestImg && bestScore > 0 ? bestImg.src : null;
+  };
+
   // Handle option change with 100% dynamic bidirectional variant-to-image resolution
   const handleOptionChange = (optionId, choice) => {
     const updated = {
@@ -464,6 +574,7 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
     };
     setSelectedChoices(updated);
 
+    const isNeutralNone = /^sin\s*(aroma|vasija)$/i.test(normStr(choice.value || choice.label || ''));
     let resolvedImg = null;
 
     // 1. Direct image configured on choice
@@ -489,49 +600,54 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
         });
       });
       if (match) {
-        const rawVar = match.media?.mainMedia?.image?.url 
-          || match.media?.items?.[0]?.image?.url 
-          || match.image?.url 
+        const rawVar = match.variant?.media?.mainMedia?.image?.url
+          || match.variant?.media?.items?.[0]?.image?.url
+          || match.media?.mainMedia?.image?.url
+          || match.media?.items?.[0]?.image?.url
+          || match.image?.url
           || match.img;
         if (rawVar) resolvedImg = parseWixMediaUrl(rawVar);
       }
     }
 
-    // 3. Dynamic color or keyword match across galleryImages (completely generic)
-    if (!resolvedImg && galleryImages && galleryImages.length > 0) {
-      const choiceValNorm = normStr(choice.value);
-      const choiceLabelNorm = normStr(choice.label);
+    // 3. Dynamic color or keyword match across galleryImages for clicked choice
+    if (!resolvedImg && !isNeutralNone) {
+      resolvedImg = findGalleryMatchForChoice(choice);
+    }
 
-      // 3a. Exact or partial color match in gallery
-      const colorMatch = galleryImages.find((img) => {
-        if (!img.color) return false;
-        const cNorm = normStr(img.color);
-        return cNorm === choiceValNorm || cNorm === choiceLabelNorm || choiceValNorm.includes(cNorm) || choiceLabelNorm.includes(cNorm);
-      });
+    // 4. Fallback when selecting a neutral "Sin aroma" / "Sin vasija" (or choice without media):
+    // resolve from the remaining active options (Vasija -> Aroma -> Color) or lead gallery image
+    if (!resolvedImg && product.options && Array.isArray(product.options)) {
+      const priorityRank = (opt) => {
+        const key = `${opt.optKind || ''} ${opt.label || ''}`.toLowerCase();
+        if (/vasija|contenedor/.test(key)) return 0;
+        if (/aroma|esencia/.test(key)) return 1;
+        if (/color/.test(key)) return 2;
+        return 3;
+      };
+      const remainingOpts = [...product.options]
+        .filter((o) => o.id !== optionId)
+        .sort((a, b) => priorityRank(a) - priorityRank(b));
 
-      if (colorMatch) {
-        resolvedImg = colorMatch.src;
-      } else {
-        // 3b. Generic keyword match: dynamically score image relevance based on shared words
-        const kws = getKeywords(`${choice.value} ${choice.label}`);
-        if (kws.length > 0) {
-          let bestImg = null;
-          let bestScore = 0;
-
-          galleryImages.forEach((img) => {
-            const imgText = `${normStr(img.label)} ${normStr(img.id)} ${normStr(img.src)}`;
-            const score = kws.reduce((acc, kw) => (imgText.includes(kw) ? acc + 1 : acc), 0);
-            if (score > bestScore) {
-              bestScore = score;
-              bestImg = img;
-            }
-          });
-
-          if (bestImg && bestScore > 0) {
-            resolvedImg = bestImg.src;
-          }
+      for (const remOpt of remainingOpts) {
+        const remVal = updated[remOpt.id];
+        const remChoice = remOpt.choices?.find((c) => c.value === remVal);
+        if (!remChoice) continue;
+        if (/^sin\s*(aroma|vasija)$/i.test(normStr(remChoice.value || remChoice.label || ''))) continue;
+        if (remChoice.img) {
+          resolvedImg = parseWixMediaUrl(remChoice.img);
+          break;
+        }
+        const galleryHit = findGalleryMatchForChoice(remChoice);
+        if (galleryHit) {
+          resolvedImg = galleryHit;
+          break;
         }
       }
+    }
+
+    if (!resolvedImg && isNeutralNone && galleryImages[0]?.src) {
+      resolvedImg = galleryImages[0].src;
     }
 
     if (resolvedImg) {
@@ -542,38 +658,63 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
   // Bidirectional sync: clicking a thumbnail dynamically selects the matching option/variant choice
   const syncOptionFromImage = (imgItem) => {
     if (!product.options || !Array.isArray(product.options)) return;
-    const imgKws = getKeywords(`${imgItem.label} ${imgItem.id} ${imgItem.src}`);
+    const updates = {};
 
+    // 1. Explicit links captured from Wix choice media / variant media
+    if (Array.isArray(imgItem.linkedChoices) && imgItem.linkedChoices.length > 0) {
+      imgItem.linkedChoices.forEach((link) => {
+        if (link?.optId && link?.choiceValue) {
+          updates[link.optId] = link.choiceValue;
+        }
+      });
+    }
+
+    // 2. Fallback matching for options not already linked explicitly
+    const imgKws = getKeywords(`${imgItem.label} ${imgItem.id} ${imgItem.src}`);
     product.options.forEach((opt) => {
+      if (updates[opt.id]) return;
       const matchedChoice = opt.choices?.find((choice) => {
         const chVal = normStr(choice.value);
         const chLabel = normStr(choice.label);
 
-        // 1. Direct src or choice.img match
         if (choice.img && (choice.img === imgItem.src || parseWixMediaUrl(choice.img) === imgItem.src)) {
           return true;
         }
-        // 2. Direct color match
         if (imgItem.color) {
           const cNorm = normStr(imgItem.color);
           if (cNorm === chVal || cNorm === chLabel || chVal.includes(cNorm)) return true;
         }
-        // 3. Dynamic keyword match
         if (imgKws.length > 0) {
           const chKws = getKeywords(`${choice.value} ${choice.label}`);
-          const hasCommonWord = chKws.some((ckw) => imgKws.includes(ckw));
-          if (hasCommonWord) return true;
+          if (chKws.some((ckw) => imgKws.includes(ckw))) return true;
         }
         return false;
       });
 
       if (matchedChoice) {
-        setSelectedChoices((prev) => ({
-          ...prev,
-          [opt.id]: matchedChoice.value,
-        }));
+        updates[opt.id] = matchedChoice.value;
       }
     });
+
+    if (Object.keys(updates).length > 0) {
+      product.options.forEach((opt) => {
+        const pickedVal = updates[opt.id];
+        if (!pickedVal || /^sin\s*(aroma|vasija)$/i.test(normStr(pickedVal))) return;
+        const pickedChoice = opt.choices?.find((c) => c.value === pickedVal);
+        if (!pickedChoice) return;
+        const kindStr = `${opt.optKind || ''} ${opt.label || ''}`.toLowerCase();
+        if (opt.optKind === 'aroma' || /aroma|esencia/.test(kindStr)) {
+          lastAromaChoiceRef.current = pickedChoice;
+        } else if (opt.optKind === 'vasija' || /vasija|contenedor/.test(kindStr)) {
+          lastVasijaChoiceRef.current = pickedChoice;
+        }
+      });
+
+      setSelectedChoices((prev) => ({
+        ...prev,
+        ...updates,
+      }));
+    }
   };
 
   // Carousel navigation
@@ -598,40 +739,57 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
   };
 
   // Add to cart handler
-  const handleAdd = () => {
-    // Build human-readable option summary & exact Wix Store options map
-    const optionLabels = [];
-    const wixOptions = {};
-    if (product.options && Array.isArray(product.options)) {
-      product.options.forEach((opt) => {
-        const val = selectedChoices[opt.id];
-        const choice = opt.choices?.find((c) => c.value === val);
-        if (choice) {
-          optionLabels.push(choice.label);
-          if (opt.label) {
-            wixOptions[opt.label] = choice.value;
+  const handleAdd = async () => {
+    if (isAddingBundle || !onAddToCart) return;
+    setIsAddingBundle(true);
+    try {
+      // Build human-readable option summary & exact Wix Store options map
+      const optionLabels = [];
+      const wixOptions = {};
+      if (product.options && Array.isArray(product.options)) {
+        product.options.forEach((opt) => {
+          const val = selectedChoices[opt.id];
+          const choice = opt.choices?.find((c) => c.value === val);
+          if (choice) {
+            optionLabels.push(choice.label);
+            if (opt.label) {
+              wixOptions[opt.label] = choice.value;
+            }
           }
-        }
-      });
-    }
+        });
+      }
 
-    const optionsText = optionLabels.length > 0 ? ` (${optionLabels.join(', ')})` : '';
+      const optionsText = optionLabels.length > 0 ? ` (${optionLabels.join(', ')})` : '';
 
-    const customizedItem = {
-      ...product,
-      id: `${product.id}-${Object.values(selectedChoices).join('-') || 'default'}`,
-      _wixId: product._wixId,
-      name: `${product.name}${optionsText}`,
-      emotionalName: product.emotionalName || 'Ritual Sutra',
-      price: `$${totalPrice.toLocaleString()} MXN`,
-      priceNum: totalPrice,
-      img: activeImg,
-      customDetails: selectedChoices,
-      wixOptions: Object.keys(wixOptions).length > 0 ? wixOptions : undefined,
-    };
+      const customizedItem = {
+        ...product,
+        id: `${product.id}-${Object.values(selectedChoices).join('-') || 'default'}`,
+        _wixId: product._wixId,
+        name: `${product.name}${optionsText}`,
+        emotionalName: product.emotionalName || 'Ritual Sutra',
+        price: `$${totalPrice.toLocaleString()} MXN`,
+        priceNum: totalPrice,
+        img: activeImg,
+        customDetails: selectedChoices,
+        wixOptions: Object.keys(wixOptions).length > 0 ? wixOptions : undefined,
+      };
 
-    if (onAddToCart) {
-      onAddToCart(customizedItem);
+      await onAddToCart(customizedItem);
+
+      if (showLighterAddon && addLighterAddon && lighterProduct) {
+        await onAddToCart({
+          ...lighterProduct,
+          id: lighterProduct.id || ENCENDEDOR_WIX_ID,
+          _wixId: lighterProduct._wixId || ENCENDEDOR_WIX_ID,
+          name: lighterProduct.name || ENCENDEDOR_FALLBACK_PRODUCT.name,
+          emotionalName: lighterProduct.emotionalName || 'Ritual Sutra',
+          price: lighterProduct.price || `$${lighterPriceNum.toLocaleString()} MXN`,
+          priceNum: lighterPriceNum,
+          img: parseWixMediaUrl(lighterProduct.img) || ENCENDEDOR_FALLBACK_PRODUCT.img,
+        });
+      }
+    } finally {
+      setIsAddingBundle(false);
     }
   };
 
@@ -808,12 +966,6 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
               <span className="pdp-rating-num">{product.rating || 4.9}</span>
               <span className="pdp-reviews-count">({product.reviewCount || 38} reseñas)</span>
             </a>
-
-            {firstParagraphText && (
-              <p className="pdp-intro-lead">
-                {firstParagraphText}
-              </p>
-            )}
           </div>
 
           {/* Dynamic Options Configurator: Guided 3-step builder for Vela de Arena Sutra, generic fallback otherwise */}
@@ -1239,16 +1391,71 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
             );
           })()}
 
+          {/* Order Bump: Encendedor Eléctrico de Plasma (Kamibi-style mini box) */}
+          {showLighterAddon && (
+            <div
+              className={`sutra-addon-card ${addLighterAddon ? 'active' : ''}`}
+              onClick={() => setAddLighterAddon((prev) => !prev)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setAddLighterAddon((prev) => !prev);
+                }
+              }}
+              role="checkbox"
+              aria-checked={addLighterAddon}
+              tabIndex={0}
+            >
+              <div className="sutra-addon-toggle">
+                <div className={`sutra-addon-checkbox ${addLighterAddon ? 'checked' : ''}`}>
+                  {addLighterAddon && (
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
+                </div>
+                <img
+                  src={parseWixMediaUrl(lighterProduct.img) || ENCENDEDOR_FALLBACK_PRODUCT.img}
+                  alt={lighterProduct.name}
+                  className="sutra-addon-thumb"
+                />
+                <div className="sutra-addon-info">
+                  <span className="sutra-addon-title">
+                    Agregar Encendedor Eléctrico de Plasma
+                  </span>
+                  <span className="sutra-addon-desc">
+                    Arco eléctrico sin llama · Recargable USB · Negro Grafito
+                  </span>
+                </div>
+              </div>
+              <span className="sutra-addon-price">
+                +${lighterPriceNum.toLocaleString()} MXN
+              </span>
+            </div>
+          )}
+
           {/* Add to Cart CTA */}
           <div className="pdp-cta-wrap">
             <button
               type="button"
               className="btn-add-to-cart-large"
               onClick={handleAdd}
+              disabled={isAddingBundle}
             >
-              Personalizar & Añadir — ${totalPrice.toLocaleString()} MXN
+              {isAddingBundle
+                ? 'Añadiendo...'
+                : `${product.options?.length > 0 ? 'Personalizar & Añadir' : 'Añadir al Carrito'} — $${displayTotalPrice.toLocaleString()} MXN`}
             </button>
           </div>
+
+          {/* Product description placed below customization options & CTA */}
+          {firstParagraphText && (
+            <div className="pdp-description-block">
+              <p className="pdp-intro-lead">
+                {firstParagraphText}
+              </p>
+            </div>
+          )}
 
           {/* Candle Unique Value Propositions (Úsala en el envase que quieras, etc.) */}
           {(product.category === 'velas' || /vela|arena|cera|wax/i.test(product.name || '')) && (

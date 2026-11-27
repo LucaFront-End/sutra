@@ -17,6 +17,14 @@
       "destination": "/api/catalog-feed?marketplace=google&format=tsv"
     },
     {
+      "source": "/google-local-inventory-feed.tsv",
+      "destination": "/api/catalog-feed?marketplace=google_local&format=tsv"
+    },
+    {
+      "source": "/google-local-inventory-feed.csv",
+      "destination": "/api/catalog-feed?marketplace=google_local&format=csv"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },

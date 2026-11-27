@@ -763,6 +763,11 @@ export default function MetaAdminPage() {
                   label: 'Google Merchant Center (Feed TSV)',
                   url: `${siteOrigin}/google-merchant-feed.tsv`,
                 },
+                {
+                  key: 'google-local-tsv',
+                  label: 'Google Local Inventory Ads (Feed TSV · Tienda 06984961168883982863)',
+                  url: `${siteOrigin}/google-local-inventory-feed.tsv`,
+                },
               ].map((feed) => (
                 <div key={feed.key} className="meta-admin-feed-item">
                   <div className="meta-admin-feed-label">{feed.label}</div>
