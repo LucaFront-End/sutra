@@ -285,16 +285,23 @@ export function normalizeProduct(
     category = 'velas';
   }
 
+  const sku = String(wixProduct.sku || wixProduct.variants?.[0]?.variant?.sku || '').trim();
+  const isVelaDeArenaHero =
+    sku.toUpperCase() === VELA_DE_ARENA_SKU || _id === VELA_DE_ARENA_WIX_ID;
+
   // Extract dynamic options from Wix productOptions
   const options = [];
   if (Array.isArray(productOptions) && productOptions.length > 0) {
     productOptions.forEach((pOpt) => {
       const optName = pOpt.name || 'Opción';
       const isColor = pOpt.optionType === 'COLOR' || optName.toLowerCase().includes('color');
-      const isSelect = !isColor && ((pOpt.choices && pOpt.choices.length > 4) || optName.toLowerCase().includes('aroma') || optName.toLowerCase().includes('esencia'));
+      const isAromaOpt = /aroma|esencia/i.test(optName);
+      const isVasijaOpt = /vasija|contenedor/i.test(optName);
+      const isSelect = !isColor && ((pOpt.choices && pOpt.choices.length > 4) || isAromaOpt);
       const optType = isColor ? 'color' : (isSelect ? 'select' : 'pills');
+      const optKind = isColor ? 'color' : (isAromaOpt ? 'aroma' : (isVasijaOpt ? 'vasija' : 'other'));
 
-      const choices = (pOpt.choices || []).map((ch, idx) => {
+      let choices = (pOpt.choices || []).map((ch, idx) => {
         let chImg = ch.media?.mainMedia?.image?.url ? parseWixMediaUrl(ch.media.mainMedia.image.url) : undefined;
         // If choice has no direct media, look in wixVariants for an image corresponding to this choice
         if (!chImg && Array.isArray(wixVariants)) {
@@ -316,20 +323,46 @@ export function normalizeProduct(
         };
       });
 
+      const isSinAromaChoice = (c) =>
+        /^sin\s*aroma$/i.test(String(c?.value || '').trim()) ||
+        /^sin\s*aroma$/i.test(String(c?.label || '').trim());
+      const isSinVasijaChoice = (c) =>
+        /^sin\s*vasija$/i.test(String(c?.value || '').trim()) ||
+        /^sin\s*vasija$/i.test(String(c?.label || '').trim());
+
+      if (isVelaDeArenaHero && isAromaOpt && !choices.some(isSinAromaChoice)) {
+        choices.push({ label: 'Sin Aroma', value: 'Sin Aroma', isDefault: true });
+      }
+      if (isVelaDeArenaHero && isVasijaOpt && !choices.some(isSinVasijaChoice)) {
+        choices.unshift({ label: 'Sin Vasija', value: 'Sin Vasija', isDefault: true });
+      }
+
+      if (isAromaOpt) {
+        const sinAromaIdx = choices.findIndex(isSinAromaChoice);
+        if (sinAromaIdx !== -1) {
+          choices = choices.map((c, idx) => ({ ...c, isDefault: idx === sinAromaIdx }));
+        }
+      }
+
+      if (isVasijaOpt) {
+        const sinVasijaIdx = choices.findIndex(isSinVasijaChoice);
+        if (sinVasijaIdx !== -1) {
+          choices = choices.map((c, idx) => ({ ...c, isDefault: idx === sinVasijaIdx }));
+        }
+      }
+
       if (choices.length > 0) {
         options.push({
           id: pOpt.id || pOpt.name?.toLowerCase().replace(/\s+/g, '-') || `opt-${options.length}`,
           label: optName,
           type: optType,
+          optKind,
           choices,
         });
       }
     });
   }
 
-  const sku = String(wixProduct.sku || wixProduct.variants?.[0]?.variant?.sku || '').trim();
-  const isVelaDeArenaHero =
-    sku.toUpperCase() === VELA_DE_ARENA_SKU || _id === VELA_DE_ARENA_WIX_ID;
   const wixSlug = slug || _id;
   const canonicalSlug =
     isVelaDeArenaHero && (!slug || slug.startsWith('copia-de-'))

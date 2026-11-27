@@ -17,7 +17,101 @@ import { getProductSEO } from '../data/seoConfig';
 import './ProductPage.css';
 
 const VELA_DE_ARENA_RAW_DESCRIPTION =
-  '<p>Kit de Vela en polvo + Contenedor + Esencias | Ritual Sutra</p><p>Crea una vela diferente cada vez con la Vela de Arena Sutra. Su cera vegetal en polvo te permite transformar prácticamente cualquier recipiente adecuado en una vela, cambiar su diseño cuando quieras y crear ambientes únicos en casa, eventos, restaurantes, hoteles o espacios de bienestar.</p><p>📦 Incluye: 500 g de cera de Arena · 5 pabilos o mechas · 1 Aroma · Botesito con Cerillos largos · Disponible en color blanco o negro</p>';
+  '<p>Kit de Vela en polvo + Contenedor + Esencias | Ritual Sutra</p><p>Crea una vela diferente cada vez con la Vela de Arena Sutra. Su cera vegetal en polvo te permite transformar prácticamente cualquier recipiente adecuado en una vela, cambiar su diseño cuando quieras y crear ambientes únicos en casa, eventos, restaurantes, hoteles o espacios de bienestar.</p><p>📦 Incluye: 500 g de cera de Arena · 5 pabilos o mechas · 1 Aroma opcional · Botesito con Cerillos largos · Disponible en color blanco o negro</p>';
+
+const SUTRA_AROMA_MEDIA = [
+  { match: /manzanilla|abrazo/i, img: 'https://static.wixstatic.com/media/45119e_a55e6b41fba5423b94079a6d83594173~mv2.png' },
+  { match: /mandarina.*toronja|amanecer/i, img: 'https://static.wixstatic.com/media/45119e_5e27bea406904aa58137f6a397639f34~mv2.png' },
+  { match: /ylang|deseo/i, img: 'https://static.wixstatic.com/media/45119e_9e0f9019f01e4a34a1e0011c584f9b21~mv2.png' },
+  { match: /copal|limpia/i, img: 'https://static.wixstatic.com/media/45119e_1cea18a09df44703897b7b7af038eade~mv2.png' },
+  { match: /mandarina|luz alegre/i, img: 'https://static.wixstatic.com/media/45119e_382c858566db4ac0ad8b81620c16bfff~mv2.png' },
+  { match: /rosewood|madre rose|madera rose/i, img: 'https://static.wixstatic.com/media/45119e_a0916ab2abfe4b5e879a34baaf7833a1~mv2.png' },
+  { match: /toronja|menta clara|mente clara/i, img: 'https://static.wixstatic.com/media/45119e_ec75ceffb47d40cd9023b9cd83a00ca9~mv2.png' },
+  { match: /lavanda|noche serena/i, img: 'https://static.wixstatic.com/media/45119e_cf5a919e806c4c1dbac6219d1648d45b~mv2.png' },
+  { match: /patchouli|raiz/i, img: 'https://static.wixstatic.com/media/45119e_1fa84aa50de547beac9d4321fb63d568~mv2.png' },
+  { match: /naranja|sol interior/i, img: 'https://static.wixstatic.com/media/45119e_44cf3af8c8dc4e8abbb6c8a849f19703~mv2.png' },
+  { match: /incienso|templo/i, img: 'https://static.wixstatic.com/media/45119e_23e71e74391842f1915d2ee54205d74b~mv2.png' },
+];
+
+function resolveAromaVisual(choice) {
+  const rawLabel = String(choice?.label || choice?.value || '').trim();
+  const imgEntry = SUTRA_AROMA_MEDIA.find((entry) => entry.match.test(rawLabel));
+  const quotedMatch = rawLabel.match(/^"([^"]+)"\s*(.*)$/);
+  const ritualName = quotedMatch ? quotedMatch[1].trim() : rawLabel;
+  const botanicalNote = quotedMatch && quotedMatch[2] ? quotedMatch[2].trim() : 'Esencia botánica';
+
+  return {
+    img: choice?.img || imgEntry?.img || '',
+    ritualName,
+    botanicalNote,
+  };
+}
+
+function resolveVasijaVisual(choice) {
+  const rawLabel = String(choice?.label || choice?.value || '').trim();
+  const norm = rawLabel.toLowerCase();
+
+  let img = choice?.img || '';
+  let finishNote = 'Contenedor reutilizable';
+  let tint = '#D4C5A9';
+
+  if (norm.includes('dorada')) {
+    img = img || 'https://static.wixstatic.com/media/45119e_a442d8897f69409ca6067c4af521237b~mv2.png';
+    finishNote = 'Acabado dorado metálico';
+    tint = '#D4A76A';
+  } else if (norm.includes('grande negra') || norm.includes('negra')) {
+    img = img || 'https://static.wixstatic.com/media/45119e_a3c4fe32e4214ab3a9d4ae1a12719c63~mv2.png';
+    finishNote = 'Cerámica negra mate';
+    tint = '#2B2520';
+  } else if (norm.includes('grande blanca')) {
+    img = img || 'https://static.wixstatic.com/media/45119e_4d297947c09f44409795834c69b2fa1c~mv2.png';
+    finishNote = 'Cerámica blanca grande';
+    tint = '#F2EDE4';
+  } else if (norm.includes('chica blanca')) {
+    img = img || 'https://static.wixstatic.com/media/45119e_452226efbfee4dc1b03ee36a6948a0b5~mv2.png';
+    finishNote = 'Cerámica blanca chica';
+    tint = '#F5F0E8';
+  } else if (norm.includes('tacita')) {
+    finishNote = 'Formato tacita artesanal';
+    tint = '#D9CFC1';
+  } else if (norm.includes('bambu') || norm.includes('bambú')) {
+    finishNote = 'Bambú natural orgánico';
+    tint = '#C8A97E';
+  }
+
+  return {
+    img,
+    label: rawLabel,
+    finishNote,
+    tint,
+  };
+}
+
+function VesselThumbnail({ img, label, tint }) {
+  const [failed, setFailed] = useState(false);
+
+  if (img && !failed) {
+    return (
+      <img
+        src={img}
+        alt={label}
+        className="lumii-choice-thumb"
+        loading="eager"
+        onError={() => setFailed(true)}
+      />
+    );
+  }
+
+  return (
+    <span className="lumii-vessel-svg-wrap" style={{ '--vessel-tint': tint }} aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 10h14l-1.3 6.8a3.2 3.2 0 0 1-3.1 2.5H9.4a3.2 3.2 0 0 1-3.1-2.5L5 10Z" />
+        <ellipse cx="12" cy="10" rx="7" ry="1.8" />
+        <path d="M12 4.2c1.2 1.4 1.5 2.5.9 3.6" />
+      </svg>
+    </span>
+  );
+}
 
 const VELA_DE_ARENA_FALLBACK = {
   id: VELA_DE_ARENA_WIX_ID,
@@ -30,7 +124,7 @@ const VELA_DE_ARENA_FALLBACK = {
   price: '$690 MXN',
   priceNum: 690,
   category: 'velas',
-  shortDesc: '500 g de cera de arena vegetal, 5 pabilos, 1 aroma y cerillos largos.',
+  shortDesc: '500 g de cera de arena vegetal, 5 pabilos, aroma opcional y cerillos largos.',
   description: 'Kit de Vela en polvo + Contenedor + Esencias | Ritual Sutra. Crea una vela diferente cada vez con la Vela de Arena Sutra.',
   descriptionHtml: formatDescriptionHtml(VELA_DE_ARENA_RAW_DESCRIPTION, ''),
   img: 'https://static.wixstatic.com/media/45119e_0103574325954391bd4cda1a23be17dd~mv2.png',
@@ -51,6 +145,7 @@ const VELA_DE_ARENA_FALLBACK = {
       id: 'color:',
       label: 'Color:',
       type: 'color',
+      optKind: 'color',
       choices: [
         {
           label: 'Blanco',
@@ -72,8 +167,9 @@ const VELA_DE_ARENA_FALLBACK = {
       id: 'aroma-1:',
       label: 'Aroma 1:',
       type: 'select',
+      optKind: 'aroma',
       choices: [
-        { label: '"Abrazo de Calma" Manzanilla', value: '"Abrazo de Calma" Manzanilla', isDefault: true },
+        { label: '"Abrazo de Calma" Manzanilla', value: '"Abrazo de Calma" Manzanilla', isDefault: false },
         { label: '"Amanecer Vivo" Mandarina-Toronja', value: '"Amanecer Vivo" Mandarina-Toronja', isDefault: false },
         { label: '"Deseo Dorado" Ylang-Ylang', value: '"Deseo Dorado" Ylang-Ylang', isDefault: false },
         { label: '"Limpia Aura" Copal', value: '"Limpia Aura" Copal', isDefault: false },
@@ -84,13 +180,14 @@ const VELA_DE_ARENA_FALLBACK = {
         { label: '"Raiz Profunda" Patchouli', value: '"Raiz Profunda" Patchouli', isDefault: false },
         { label: '"Sol Interior" Naranja', value: '"Sol Interior" Naranja', isDefault: false },
         { label: '"Templo Interior" Incienso', value: '"Templo Interior" Incienso', isDefault: false },
-        { label: 'Sin Aroma', value: 'Sin Aroma', isDefault: false },
+        { label: 'Sin Aroma', value: 'Sin Aroma', isDefault: true },
       ],
     },
     {
       id: 'vasija',
       label: 'Vasija',
       type: 'pills',
+      optKind: 'vasija',
       choices: [
         { label: 'Sin Vasija', value: 'Sin Vasija', isDefault: true },
         { label: 'Vasija chica blanca', value: 'Vasija chica blanca', isDefault: false },
@@ -245,34 +342,64 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
     return initial;
   });
 
-  // When product changes, reset active image and options
+  const lastProductIdentityRef = useRef(product._wixId || product.id || product.slug);
+  const lastAromaChoiceRef = useRef(null);
+  const lastVasijaChoiceRef = useRef(null);
+
+  // When navigating to a different product, reset active image and options;
+  // when fallback upgrades to live Wix product with the same ID, preserve user selections
   useEffect(() => {
-    const currentRaw = (product.images && product.images.length > 0)
-      ? product.images
-      : [product.img || '/assets/images/cera-blanca.jpg'];
+    const nextIdentity = product._wixId || product.id || product.slug;
+    const isSameProduct = nextIdentity === lastProductIdentityRef.current;
 
-    const firstSrc = parseWixMediaUrl(
-      typeof currentRaw[0] === 'string' 
-        ? currentRaw[0] 
-        : (currentRaw[0]?.src || currentRaw[0]?.url || product.img)
-    );
+    if (!isSameProduct) {
+      lastProductIdentityRef.current = nextIdentity;
+      lastAromaChoiceRef.current = null;
+      lastVasijaChoiceRef.current = null;
 
-    setActiveImg(firstSrc);
+      const currentRaw = (product.images && product.images.length > 0)
+        ? product.images
+        : [product.img || '/assets/images/cera-blanca.jpg'];
 
-    const initial = {};
-    if (product.options && Array.isArray(product.options)) {
-      product.options.forEach((opt) => {
-        const defaultChoice = opt.choices?.find((c) => c.isDefault) || opt.choices?.[0];
-        if (defaultChoice) {
-          initial[opt.id] = defaultChoice.value;
-        }
+      const firstSrc = parseWixMediaUrl(
+        typeof currentRaw[0] === 'string' 
+          ? currentRaw[0] 
+          : (currentRaw[0]?.src || currentRaw[0]?.url || product.img)
+      );
+
+      setActiveImg(firstSrc);
+
+      const initial = {};
+      if (product.options && Array.isArray(product.options)) {
+        product.options.forEach((opt) => {
+          const defaultChoice = opt.choices?.find((c) => c.isDefault) || opt.choices?.[0];
+          if (defaultChoice) {
+            initial[opt.id] = defaultChoice.value;
+          }
+        });
+      }
+      setSelectedChoices(initial);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (product.options && Array.isArray(product.options)) {
+      setSelectedChoices((prev) => {
+        const next = { ...prev };
+        let changed = false;
+        product.options.forEach((opt) => {
+          const validChoice = opt.choices?.find((c) => c.value === next[opt.id]);
+          if (!validChoice) {
+            const fallbackChoice = opt.choices?.find((c) => c.isDefault) || opt.choices?.[0];
+            if (fallbackChoice) {
+              next[opt.id] = fallbackChoice.value;
+              changed = true;
+            }
+          }
+        });
+        return changed ? next : prev;
       });
     }
-    setSelectedChoices(initial);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [product]);
 
-  // Calculate dynamic price based on base price + selected options deltas
+  // Calculate dynamic price based on matching Wix variant (if priced) or base price + selected deltas
   const basePrice = product.priceNum || 0;
   let priceDeltaSum = 0;
 
@@ -286,7 +413,26 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
     });
   }
 
-  const totalPrice = Math.max(0, basePrice + priceDeltaSum);
+  let matchedVariantPrice = null;
+  if (product.wixVariants && Array.isArray(product.wixVariants) && product.options?.length > 0) {
+    const exactVar = product.wixVariants.find((v) => {
+      if (!v._id || v._id === '00000000-0000-0000-0000-000000000000' || !v.choices) return false;
+      return product.options.every((opt) => {
+        const picked = selectedChoices[opt.id];
+        return !picked || v.choices[opt.label] === picked;
+      });
+    });
+    const rawVarPrice =
+      exactVar?.variant?.priceData?.discountedPrice ?? exactVar?.variant?.priceData?.price;
+    if (rawVarPrice !== undefined && Number.isFinite(Number(rawVarPrice))) {
+      matchedVariantPrice = Number(rawVarPrice);
+    }
+  }
+
+  const totalPrice =
+    matchedVariantPrice !== null
+      ? Math.max(0, matchedVariantPrice)
+      : Math.max(0, basePrice + priceDeltaSum);
 
   // Track ViewContent / view_item once per resolved product with Wix UUID matching catalog feeds
   const lastTrackedViewKeyRef = useRef('');
@@ -670,141 +816,428 @@ export default function ProductPage({ product: incomingProduct, onNavigate, onAd
             )}
           </div>
 
-          {/* Dynamic Options Configurator: Positioned prominently at top */}
-          {product.options && product.options.length > 0 && (
-            <div className="pdp-configurator-box">
-              {product.options.map((opt) => {
-                const currentVal = selectedChoices[opt.id];
-                const activeChoice = opt.choices?.find((c) => c.value === currentVal) || opt.choices?.[0];
+          {/* Dynamic Options Configurator: Guided 3-step builder for Vela de Arena Sutra, generic fallback otherwise */}
+          {product.options && product.options.length > 0 && (() => {
+            const colorOption = product.options.find(
+              (o) => o.optKind === 'color' || o.type === 'color' || /color/i.test(o.label || '')
+            );
+            const aromaOption = product.options.find(
+              (o) => o.optKind === 'aroma' || /aroma|esencia/i.test(o.label || '')
+            );
+            const vasijaOption = product.options.find(
+              (o) => o.optKind === 'vasija' || /vasija|contenedor/i.test(o.label || '')
+            );
 
-                return (
-                  <div key={opt.id} className="config-section">
-                    <div className="config-label-row">
-                      <span className="config-label">
-                        <span>{String(opt.label || '').replace(/:+$/, '')}:</span>
-                        <strong className="config-current-val">{activeChoice?.label}</strong>
-                      </span>
-                    </div>
+            const isSinAromaChoice = (c) =>
+              /^sin\s*aroma$/i.test(String(c?.value || '').trim()) ||
+              /^sin\s*aroma$/i.test(String(c?.label || '').trim());
+            const isSinVasijaChoice = (c) =>
+              /^sin\s*vasija$/i.test(String(c?.value || '').trim()) ||
+              /^sin\s*vasija$/i.test(String(c?.label || '').trim());
 
-                    {/* 1. COLOR SWATCHES */}
-                    {opt.type === 'color' && (
-                      <div className="config-pills">
-                        {opt.choices.map((choice) => {
-                          const isSelected = selectedChoices[opt.id] === choice.value;
-                          return (
-                            <button
-                              key={choice.value}
-                              type="button"
-                              className={`config-pill ${isSelected ? 'active' : ''}`}
-                              onClick={() => handleOptionChange(opt.id, choice)}
-                            >
-                              <span 
-                                className="color-dot" 
-                                style={{ backgroundColor: choice.hex || '#E8DED1' }} 
-                              />
-                              <span>{choice.label}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+            const hasSinAromaChoice = Boolean(aromaOption?.choices?.some(isSinAromaChoice));
+            const hasSinVasijaChoice = Boolean(vasijaOption?.choices?.some(isSinVasijaChoice));
 
-                    {/* 2. PILLS SELECTOR (for small amount of choices) */}
-                    {opt.type === 'pills' && (
-                      <div className="config-pills config-pills--wrap">
-                        {opt.choices.map((choice) => {
-                          const isSelected = selectedChoices[opt.id] === choice.value;
-                          const priceLabel = choice.priceDelta 
-                            ? ` (${choice.priceDelta > 0 ? '+' : ''}$${choice.priceDelta} MXN)`
-                            : '';
-                          return (
-                            <button
-                              key={choice.value}
-                              type="button"
-                              className={`config-pill ${isSelected ? 'active' : ''}`}
-                              onClick={() => handleOptionChange(opt.id, choice)}
-                            >
-                              <span>{choice.label}{priceLabel}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+            const isGuidedCandleBuilder = Boolean(
+              colorOption &&
+              aromaOption &&
+              vasijaOption &&
+              (
+                product.sku?.toUpperCase() === VELA_DE_ARENA_SKU ||
+                product._wixId === VELA_DE_ARENA_WIX_ID ||
+                (hasSinAromaChoice && hasSinVasijaChoice)
+              )
+            );
 
-                    {/* 3. SELECT DROPDOWN WITH ICON (For aromas or many choices) */}
-                    {opt.type === 'select' && (
-                      <div className="luxury-select-box">
-                        <div className="luxury-select-control">
-                          <span className="luxury-select-icon">
-                            {(() => {
-                              const l = (activeChoice?.label || '').toLowerCase();
-                              if (l.includes('mandarina') || l.includes('toronja') || l.includes('naranja') || l.includes('sol') || l.includes('alegre') || l.includes('amanecer')) return '🍊';
-                              if (l.includes('lavanda') || l.includes('serena') || l.includes('noche')) return '🌿';
-                              if (l.includes('manzanilla') || l.includes('calma') || l.includes('abrazo')) return '🌼';
-                              if (l.includes('ylang') || l.includes('dorado') || l.includes('deseo')) return '🌸';
-                              if (l.includes('menta')) return '🍃';
-                              if (l.includes('patchouli') || l.includes('raiz') || l.includes('raíz')) return '🪵';
-                              if (l.includes('incienso') || l.includes('templo')) return '✨';
-                              if (l.includes('copal') || l.includes('aura') || l.includes('limpia')) return '🕊️';
-                              if (l.includes('rosewood') || l.includes('madre') || l.includes('rosa')) return '🌹';
-                              return '✦';
-                            })()}
+            if (!isGuidedCandleBuilder) {
+              return (
+                <div className="pdp-configurator-box">
+                  {product.options.map((opt) => {
+                    const currentVal = selectedChoices[opt.id];
+                    const activeChoice = opt.choices?.find((c) => c.value === currentVal) || opt.choices?.[0];
+
+                    return (
+                      <div key={opt.id} className="config-section">
+                        <div className="config-label-row">
+                          <span className="config-label">
+                            <span>{String(opt.label || '').replace(/:+$/, '')}:</span>
+                            <strong className="config-current-val">{activeChoice?.label}</strong>
                           </span>
-                          <select
-                            className="luxury-custom-select"
-                            value={currentVal}
-                            onChange={(e) => {
-                              const found = opt.choices.find((c) => c.value === e.target.value);
-                              if (found) handleOptionChange(opt.id, found);
-                            }}
-                          >
-                            {opt.choices.map((choice) => (
-                              <option key={choice.value} value={choice.value}>
-                                {choice.label}
-                              </option>
-                            ))}
-                          </select>
                         </div>
-                        {activeChoice?.desc && (
-                          <div className="aroma-sensory-note">
-                            <span className="sensory-icon">✧</span>
-                            <p>{activeChoice.desc}</p>
+
+                        {/* 1. COLOR SWATCHES */}
+                        {opt.type === 'color' && (
+                          <div className="config-pills">
+                            {opt.choices.map((choice) => {
+                              const isSelected = selectedChoices[opt.id] === choice.value;
+                              return (
+                                <button
+                                  key={choice.value}
+                                  type="button"
+                                  className={`config-pill ${isSelected ? 'active' : ''}`}
+                                  onClick={() => handleOptionChange(opt.id, choice)}
+                                >
+                                  <span 
+                                    className="color-dot" 
+                                    style={{ backgroundColor: choice.hex || '#E8DED1' }} 
+                                  />
+                                  <span>{choice.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* 2. PILLS SELECTOR (for small amount of choices) */}
+                        {opt.type === 'pills' && (
+                          <div className="config-pills config-pills--wrap">
+                            {opt.choices.map((choice) => {
+                              const isSelected = selectedChoices[opt.id] === choice.value;
+                              const priceLabel = choice.priceDelta 
+                                ? ` (${choice.priceDelta > 0 ? '+' : ''}$${choice.priceDelta} MXN)`
+                                : '';
+                              return (
+                                <button
+                                  key={choice.value}
+                                  type="button"
+                                  className={`config-pill ${isSelected ? 'active' : ''}`}
+                                  onClick={() => handleOptionChange(opt.id, choice)}
+                                >
+                                  <span>{choice.label}{priceLabel}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* 3. SELECT DROPDOWN WITH ICON (For aromas or many choices) */}
+                        {opt.type === 'select' && (
+                          <div className="luxury-select-box">
+                            <div className="luxury-select-control">
+                              <span className="luxury-select-icon">
+                                {(() => {
+                                  const l = (activeChoice?.label || '').toLowerCase();
+                                  if (l.includes('mandarina') || l.includes('toronja') || l.includes('naranja') || l.includes('sol') || l.includes('alegre') || l.includes('amanecer')) return '🍊';
+                                  if (l.includes('lavanda') || l.includes('serena') || l.includes('noche')) return '🌿';
+                                  if (l.includes('manzanilla') || l.includes('calma') || l.includes('abrazo')) return '🌼';
+                                  if (l.includes('ylang') || l.includes('dorado') || l.includes('deseo')) return '🌸';
+                                  if (l.includes('menta')) return '🍃';
+                                  if (l.includes('patchouli') || l.includes('raiz') || l.includes('raíz')) return '🪵';
+                                  if (l.includes('incienso') || l.includes('templo')) return '✨';
+                                  if (l.includes('copal') || l.includes('aura') || l.includes('limpia')) return '🕊️';
+                                  if (l.includes('rosewood') || l.includes('madre') || l.includes('rosa')) return '🌹';
+                                  return '✦';
+                                })()}
+                              </span>
+                              <select
+                                className="luxury-custom-select"
+                                value={currentVal}
+                                onChange={(e) => {
+                                  const found = opt.choices.find((c) => c.value === e.target.value);
+                                  if (found) handleOptionChange(opt.id, found);
+                                }}
+                              >
+                                {opt.choices.map((choice) => (
+                                  <option key={choice.value} value={choice.value}>
+                                    {choice.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            {activeChoice?.desc && (
+                              <div className="aroma-sensory-note">
+                                <span className="sensory-icon">✧</span>
+                                <p>{activeChoice.desc}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* 4. CARDS SELECTOR (Vessels, Editions, etc.) */}
+                        {opt.type === 'cards' && (
+                          <div className="vasija-options-grid">
+                            {opt.choices.map((choice) => {
+                              const isSelected = selectedChoices[opt.id] === choice.value;
+                              return (
+                                <div
+                                  key={choice.value}
+                                  className={`vasija-card ${isSelected ? 'active' : ''}`}
+                                  onClick={() => handleOptionChange(opt.id, choice)}
+                                >
+                                  <div className="vasija-icon-box">
+                                    {choice.value === 'sin-vasija' ? '⊘' : '🏺'}
+                                  </div>
+                                  <div className="vasija-info">
+                                    <strong>{choice.label}</strong>
+                                    {choice.sub && <small>{choice.sub}</small>}
+                                  </div>
+                                  <span className="vasija-price-tag">
+                                    {choice.priceDelta ? `+$${choice.priceDelta} MXN` : 'Incluido'}
+                                  </span>
+                                </div>
+                              );
+                            })}
                           </div>
                         )}
                       </div>
-                    )}
+                    );
+                  })}
+                </div>
+              );
+            }
 
-                    {/* 4. CARDS SELECTOR (Vessels, Editions, etc.) */}
-                    {opt.type === 'cards' && (
-                      <div className="vasija-options-grid">
-                        {opt.choices.map((choice) => {
-                          const isSelected = selectedChoices[opt.id] === choice.value;
+            // Guided 3-step builder for Vela de Arena Sutra
+            const currentColorVal = selectedChoices[colorOption.id] || colorOption.choices[0]?.value;
+            const sinAromaChoice =
+              aromaOption.choices.find(isSinAromaChoice) ||
+              { label: 'Sin Aroma', value: 'Sin Aroma' };
+            const includedAromas = aromaOption.choices.filter((c) => !isSinAromaChoice(c));
+            const currentAromaVal = selectedChoices[aromaOption.id] ?? sinAromaChoice.value;
+            const isAromaIncluded = !/^sin\s*aroma$/i.test(String(currentAromaVal || '').trim());
+
+            const sinVasijaChoice =
+              vasijaOption.choices.find(isSinVasijaChoice) ||
+              { label: 'Sin Vasija', value: 'Sin Vasija' };
+            const includedVasijas = vasijaOption.choices.filter((c) => !isSinVasijaChoice(c));
+            const currentVasijaVal = selectedChoices[vasijaOption.id] ?? sinVasijaChoice.value;
+            const isVasijaIncluded = !/^sin\s*vasija$/i.test(String(currentVasijaVal || '').trim());
+
+            const handleSelectAromaMode = (include) => {
+              if (!include) {
+                if (isAromaIncluded) {
+                  const prevChoice = includedAromas.find((c) => c.value === currentAromaVal);
+                  if (prevChoice) lastAromaChoiceRef.current = prevChoice;
+                }
+                handleOptionChange(aromaOption.id, sinAromaChoice);
+              } else {
+                const restore =
+                  (lastAromaChoiceRef.current &&
+                    includedAromas.find((c) => c.value === lastAromaChoiceRef.current.value)) ||
+                  includedAromas[0];
+                if (restore) {
+                  lastAromaChoiceRef.current = restore;
+                  handleOptionChange(aromaOption.id, restore);
+                }
+              }
+            };
+
+            const handleSelectVasijaMode = (include) => {
+              if (!include) {
+                if (isVasijaIncluded) {
+                  const prevChoice = includedVasijas.find((c) => c.value === currentVasijaVal);
+                  if (prevChoice) lastVasijaChoiceRef.current = prevChoice;
+                }
+                handleOptionChange(vasijaOption.id, sinVasijaChoice);
+              } else {
+                const restore =
+                  (lastVasijaChoiceRef.current &&
+                    includedVasijas.find((c) => c.value === lastVasijaChoiceRef.current.value)) ||
+                  includedVasijas[0];
+                if (restore) {
+                  lastVasijaChoiceRef.current = restore;
+                  handleOptionChange(vasijaOption.id, restore);
+                }
+              }
+            };
+
+            return (
+              <div className="pdp-configurator-box lumii-configurator">
+                {/* STEP 1: COLOR BLANCO O NEGRO */}
+                <div className="lumii-step-block">
+                  <div className="lumii-step-header">
+                    <span className="lumii-step-title">
+                      <span className="lumii-step-num">1</span>
+                      <span>Elige el color de cera</span>
+                    </span>
+                    <strong className="lumii-step-value">{currentColorVal}</strong>
+                  </div>
+
+                  <div className="lumii-color-grid">
+                    {colorOption.choices.map((choice) => {
+                      const isSelected = currentColorVal === choice.value;
+                      const isDarkWax = /negro|black/i.test(choice.label || choice.value);
+                      return (
+                        <button
+                          key={choice.value}
+                          type="button"
+                          data-testid={`color-card-${choice.value.toLowerCase()}`}
+                          className={`lumii-color-card ${isSelected ? 'is-active' : ''}`}
+                          onClick={() => handleOptionChange(colorOption.id, choice)}
+                        >
+                          {choice.img && (
+                            <img
+                              src={choice.img}
+                              alt={`Cera ${choice.label}`}
+                              className="lumii-color-thumb"
+                              loading="lazy"
+                            />
+                          )}
+                          <span className="lumii-color-meta">
+                            <span className="lumii-color-name-row">
+                              <span
+                                className="color-dot"
+                                style={{ backgroundColor: choice.hex || '#FAF7F2' }}
+                              />
+                              <strong>{choice.label}</strong>
+                            </span>
+                            <small>{isDarkWax ? 'Cera perlada negra' : 'Cera perlada blanca'}</small>
+                          </span>
+                          <span className="lumii-check-badge" aria-hidden="true">
+                            {isSelected ? '✓' : ''}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* STEP 2: AROMA (SIN AROMA / INCLUIR AROMA) */}
+                <div className="lumii-step-block">
+                  <div className="lumii-step-header">
+                    <span className="lumii-step-title">
+                      <span className="lumii-step-num">2</span>
+                      <span>¿Quieres incluir aroma?</span>
+                    </span>
+                    <strong className="lumii-step-value">{currentAromaVal}</strong>
+                  </div>
+
+                  <div className="lumii-mode-toggle">
+                    <button
+                      type="button"
+                      data-testid="aroma-mode-none"
+                      className={`lumii-mode-btn ${!isAromaIncluded ? 'is-active' : ''}`}
+                      onClick={() => handleSelectAromaMode(false)}
+                    >
+                      <strong>Sin aroma</strong>
+                      <span>Cera neutra sin fragancia</span>
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="aroma-mode-include"
+                      className={`lumii-mode-btn ${isAromaIncluded ? 'is-active' : ''}`}
+                      onClick={() => handleSelectAromaMode(true)}
+                    >
+                      <strong>Incluir aroma</strong>
+                      <span>Elige entre {includedAromas.length} esencias</span>
+                    </button>
+                  </div>
+
+                  {isAromaIncluded && (
+                    <div className="lumii-subpanel" data-testid="aroma-options-panel">
+                      <div className="lumii-aroma-grid">
+                        {includedAromas.map((choice) => {
+                          const isSelected = currentAromaVal === choice.value;
+                          const visual = resolveAromaVisual(choice);
                           return (
-                            <div
+                            <button
                               key={choice.value}
-                              className={`vasija-card ${isSelected ? 'active' : ''}`}
-                              onClick={() => handleOptionChange(opt.id, choice)}
+                              type="button"
+                              className={`lumii-choice-card ${isSelected ? 'is-active' : ''}`}
+                              onClick={() => {
+                                lastAromaChoiceRef.current = choice;
+                                handleOptionChange(aromaOption.id, choice);
+                              }}
                             >
-                              <div className="vasija-icon-box">
-                                {choice.value === 'sin-vasija' ? '⊘' : '🏺'}
-                              </div>
-                              <div className="vasija-info">
-                                <strong>{choice.label}</strong>
-                                {choice.sub && <small>{choice.sub}</small>}
-                              </div>
-                              <span className="vasija-price-tag">
-                                {choice.priceDelta ? `+$${choice.priceDelta} MXN` : 'Incluido'}
+                              {visual.img && (
+                                <img
+                                  src={visual.img}
+                                  alt={visual.ritualName}
+                                  className="lumii-choice-thumb"
+                                  loading="eager"
+                                />
+                              )}
+                              <span className="lumii-choice-text">
+                                <strong>{visual.ritualName}</strong>
+                                <small>{visual.botanicalNote}</small>
                               </span>
-                            </div>
+                            </button>
                           );
                         })}
                       </div>
-                    )}
+                    </div>
+                  )}
+                </div>
+
+                {/* STEP 3: VASIJA (SIN VASIJA / AGREGAR VASIJA) */}
+                <div className="lumii-step-block">
+                  <div className="lumii-step-header">
+                    <span className="lumii-step-title">
+                      <span className="lumii-step-num">3</span>
+                      <span>¿Quieres agregar vasija?</span>
+                    </span>
+                    <strong className="lumii-step-value">{currentVasijaVal}</strong>
                   </div>
-                );
-              })}
-            </div>
-          )}
+
+                  <div className="lumii-mode-toggle">
+                    <button
+                      type="button"
+                      data-testid="vasija-mode-none"
+                      className={`lumii-mode-btn ${!isVasijaIncluded ? 'is-active' : ''}`}
+                      onClick={() => handleSelectVasijaMode(false)}
+                    >
+                      <strong>Sin vasija</strong>
+                      <span>Usa tu propio recipiente</span>
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="vasija-mode-include"
+                      className={`lumii-mode-btn ${isVasijaIncluded ? 'is-active' : ''}`}
+                      onClick={() => handleSelectVasijaMode(true)}
+                    >
+                      <strong>Agregar vasija</strong>
+                      <span>Elige tu contenedor artesanal</span>
+                    </button>
+                  </div>
+
+                  {isVasijaIncluded && (
+                    <div className="lumii-subpanel" data-testid="vasija-options-panel">
+                      <div className="lumii-vasija-grid">
+                        {includedVasijas.map((choice) => {
+                          const isSelected = currentVasijaVal === choice.value;
+                          const visual = resolveVasijaVisual(choice);
+                          return (
+                            <button
+                              key={choice.value}
+                              type="button"
+                              className={`lumii-choice-card ${isSelected ? 'is-active' : ''}`}
+                              onClick={() => {
+                                lastVasijaChoiceRef.current = choice;
+                                handleOptionChange(vasijaOption.id, choice);
+                              }}
+                            >
+                              <VesselThumbnail
+                                img={visual.img}
+                                label={visual.label}
+                                tint={visual.tint}
+                              />
+                              <span className="lumii-choice-text">
+                                <strong>{visual.label}</strong>
+                                <small>
+                                  {choice.priceDelta
+                                    ? `${visual.finishNote} · +$${choice.priceDelta} MXN`
+                                    : visual.finishNote}
+                                </small>
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* SUMMARY BAR */}
+                <div className="lumii-summary-bar" aria-label="Resumen de tu configuración">
+                  <span className="lumii-summary-label">Tu ritual:</span>
+                  <div className="lumii-summary-chips">
+                    <span className="lumii-summary-chip">{currentColorVal}</span>
+                    <span className="lumii-summary-chip">{currentAromaVal}</span>
+                    <span className="lumii-summary-chip">{currentVasijaVal}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Add to Cart CTA */}
           <div className="pdp-cta-wrap">

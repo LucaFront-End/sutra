@@ -47,7 +47,16 @@ export const CartProvider = ({ children }) => {
         let resolvedVariantId = null;
 
         if (product.wixVariants && product.wixVariants.length > 0) {
-          if (selectedVariant) {
+          if (product.wixOptions && typeof product.wixOptions === 'object' && Object.keys(product.wixOptions).length > 0) {
+            const multiMatched = product.wixVariants.find((v) => {
+              if (!v.choices || !v._id || v._id === '00000000-0000-0000-0000-000000000000') return false;
+              return Object.entries(product.wixOptions).every(([optLabel, optVal]) => v.choices[optLabel] === optVal);
+            });
+            if (multiMatched) {
+              resolvedVariantId = multiMatched._id;
+            }
+          }
+          if (!resolvedVariantId && selectedVariant) {
             const matched = product.wixVariants.find((v) => {
               if (!v.choices) return false;
               return Object.values(v.choices).some((val) => val === selectedVariant);
