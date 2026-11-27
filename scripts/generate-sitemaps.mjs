@@ -37,6 +37,7 @@ const MAIN_PAGES = [
   { url: '/politica-de-privacidad', changefreq: 'monthly', priority: '0.6' },
   { url: '/politica-de-reembolso', changefreq: 'monthly', priority: '0.6' },
   { url: '/politica-de-envios', changefreq: 'monthly', priority: '0.7' },
+  { url: '/links', changefreq: 'weekly', priority: '0.8' },
 ];
 
 // 2. SITEMAP DE LANDINGS DINÁMICAS (Categorías y colecciones del catálogo)

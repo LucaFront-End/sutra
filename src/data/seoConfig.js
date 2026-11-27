@@ -112,6 +112,14 @@ export const SEO_DATA = {
     canonical: `${SITE_URL}/tienda/te`,
     type: 'website',
   },
+
+  // 13. ENLACES OFICIALES / LINKTREE
+  links: {
+    title: 'Enlaces Oficiales | Sutra México',
+    description: 'Explora todos los canales y enlaces oficiales de Sutra México: tienda en línea, Mystery Box, velas en arena y redes sociales.',
+    canonical: `${SITE_URL}/links`,
+    type: 'website',
+  },
 };
 
 /**

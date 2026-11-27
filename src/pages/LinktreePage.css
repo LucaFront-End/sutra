@@ -1,0 +1,416 @@
+/* ================================================================
+   SUTRA MEXICO — Linktree / Taplink Bio Page
+   Quiet Luxury Dark Sanctuary x Capsule Bio Links
+   ================================================================ */
+
+.sutra-lt-page {
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+  overflow-x: clip;
+  background-color: #0F0D0B;
+  color: var(--sutra-cream, #FAF7F2);
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sutra-lt-ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(62% 45% at 50% 0%, rgba(212, 167, 106, 0.14) 0%, rgba(212, 167, 106, 0.03) 50%, transparent 78%),
+    radial-gradient(50% 38% at 50% 100%, rgba(60, 36, 21, 0.24) 0%, transparent 72%);
+}
+
+.sutra-lt-shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 560px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 1.5rem 1.15rem 3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ——— Top Share Control ——— */
+.sutra-lt-topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.35rem;
+}
+
+.sutra-lt-share-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(250, 247, 242, 0.86);
+  background: rgba(250, 247, 242, 0.08);
+  border: 1px solid rgba(212, 197, 169, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.22s ease, background-color 0.22s ease, border-color 0.22s ease;
+}
+
+.sutra-lt-share-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sutra-lt-share-btn:hover {
+  background: rgba(212, 167, 106, 0.18);
+  border-color: rgba(212, 167, 106, 0.5);
+  transform: translateY(-1px);
+}
+
+.sutra-lt-share-btn:active {
+  transform: scale(0.96);
+}
+
+/* ——— Profile Header ——— */
+.sutra-lt-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.85rem;
+}
+
+.sutra-lt-avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 9999px;
+  padding: 19px;
+  margin-bottom: 1rem;
+  background: radial-gradient(circle at 35% 25%, #231912 0%, #140F0B 72%);
+  border: 1.5px solid rgba(212, 167, 106, 0.52);
+  box-shadow:
+    0 0 0 5px rgba(212, 167, 106, 0.08),
+    0 14px 36px rgba(0, 0, 0, 0.48),
+    0 0 32px rgba(212, 167, 106, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sutra-lt-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.sutra-lt-title {
+  font-family: var(--font-serif, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(1.9rem, 5.2vw, 2.35rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: #FAF7F2;
+  margin-bottom: 0.42rem;
+}
+
+.sutra-lt-bio {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: rgba(212, 197, 169, 0.88);
+  max-width: 34ch;
+  margin-bottom: 1.15rem;
+}
+
+.sutra-lt-socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+}
+
+.sutra-lt-social-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #FAF7F2;
+  background: rgba(250, 247, 242, 0.04);
+  border: 1px solid rgba(212, 197, 169, 0.18);
+  transition: transform 0.22s ease, color 0.22s ease, border-color 0.22s ease, background-color 0.22s ease;
+}
+
+.sutra-lt-social-btn svg {
+  width: 19px;
+  height: 19px;
+}
+
+.sutra-lt-social-btn:hover {
+  color: #D4A76A;
+  border-color: rgba(212, 167, 106, 0.55);
+  background: rgba(212, 167, 106, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ——— Links Stack ——— */
+.sutra-lt-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+  flex: 1 0 auto;
+}
+
+.sutra-lt-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-radius: 26px;
+  background: rgba(250, 247, 242, 0.04);
+  border: 1px solid rgba(212, 197, 169, 0.28);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.26);
+  transition:
+    transform 0.28s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.sutra-lt-card:hover {
+  transform: translateY(-2px);
+  background: rgba(250, 247, 242, 0.075);
+  border-color: rgba(212, 167, 106, 0.58);
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.36),
+    0 0 24px rgba(212, 167, 106, 0.12);
+}
+
+.sutra-lt-card:active {
+  transform: scale(0.99);
+}
+
+.sutra-lt-card__anchor {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 0.5rem 0.9rem 1rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.sutra-lt-card__vector {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(212, 167, 106, 0.1);
+  border: 1px solid rgba(212, 167, 106, 0.28);
+  color: #E3BC82;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.sutra-lt-card:hover .sutra-lt-card__vector {
+  background: rgba(212, 167, 106, 0.16);
+  border-color: rgba(212, 167, 106, 0.48);
+  transform: scale(1.03);
+}
+
+.sutra-lt-card__vector svg {
+  width: 22px;
+  height: 22px;
+}
+
+.sutra-lt-card__img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.sutra-lt-card__svg-inline {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sutra-lt-card__svg-inline svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sutra-lt-card__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.16rem;
+  text-align: left;
+}
+
+.sutra-lt-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  color: #FAF7F2;
+  word-break: break-word;
+}
+
+.sutra-lt-card__excerpt {
+  font-size: 0.8125rem;
+  line-height: 1.38;
+  color: rgba(212, 197, 169, 0.8);
+  word-break: break-word;
+}
+
+.sutra-lt-card__more {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  margin-right: 0.55rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(212, 197, 169, 0.62);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sutra-lt-card__more svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sutra-lt-card__more:hover {
+  background: rgba(250, 247, 242, 0.08);
+  color: #FAF7F2;
+}
+
+/* ——— Skeleton Loading ——— */
+.sutra-lt-skeleton {
+  height: 76px;
+  width: 100%;
+  border-radius: 26px;
+  border: 1px solid rgba(212, 197, 169, 0.14);
+  background: linear-gradient(
+    90deg,
+    rgba(250, 247, 242, 0.03) 25%,
+    rgba(250, 247, 242, 0.08) 50%,
+    rgba(250, 247, 242, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: sutra-lt-shimmer 1.35s infinite linear;
+}
+
+@keyframes sutra-lt-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ——— Footer Signature ——— */
+.sutra-lt-footer {
+  margin-top: 2.35rem;
+  display: flex;
+  justify-content: center;
+}
+
+.sutra-lt-brand-mark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  opacity: 0.72;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.sutra-lt-brand-mark:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.sutra-lt-brand-mark img {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+}
+
+.sutra-lt-brand-domain {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(212, 197, 169, 0.72);
+}
+
+/* ——— Floating Toast ——— */
+.sutra-lt-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  z-index: 40;
+  padding: 0.65rem 1.15rem;
+  border-radius: 9999px;
+  background: rgba(28, 22, 17, 0.94);
+  border: 1px solid rgba(212, 167, 106, 0.55);
+  color: #FAF7F2;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+/* ——— Responsive Breakpoints ——— */
+@media (min-width: 640px) {
+  .sutra-lt-shell {
+    padding: 2.5rem 1.5rem 3.5rem;
+  }
+
+  .sutra-lt-card__anchor {
+    gap: 1rem;
+    padding: 1rem 0.65rem 1rem 1.15rem;
+  }
+
+  .sutra-lt-card__vector {
+    width: 48px;
+    height: 48px;
+  }
+
+  .sutra-lt-card__title {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .sutra-lt-shell {
+    padding: 1.25rem 0.85rem 2.5rem;
+  }
+
+  .sutra-lt-card__anchor {
+    gap: 0.75rem;
+    padding: 0.85rem 0.4rem 0.85rem 0.85rem;
+  }
+
+  .sutra-lt-card__vector {
+    width: 40px;
+    height: 40px;
+  }
+}

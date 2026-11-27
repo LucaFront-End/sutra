@@ -40,7 +40,10 @@ import DynamicTienda from './pages/DynamicTienda';
 import Zonas from './pages/Zonas';
 import LegalPage from './pages/LegalPage';
 import MetaAdminPage from './pages/MetaAdminPage';
+import LinktreePage from './pages/LinktreePage';
 import TrackingScriptsManager from './components/TrackingScriptsManager';
+
+const LINKTREE_ROUTES = ['/links', '/linktree', '/taplink', '/bio', '/enlaces'];
 
 export default function App() {
   const navigate = useNavigate();
@@ -48,10 +51,13 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
+  const normalizedPathname = pathname.toLowerCase().replace(/\/+$/, '') || '/';
   const isMetaAdminRoute =
-    pathname === '/admin-meta' ||
-    pathname === '/meta-pixel' ||
-    pathname === '/configuracion-meta';
+    normalizedPathname === '/admin-meta' ||
+    normalizedPathname === '/meta-pixel' ||
+    normalizedPathname === '/configuracion-meta';
+  const isLinktreeRoute = LINKTREE_ROUTES.includes(normalizedPathname);
+  const hideGlobalChrome = isMetaAdminRoute || isLinktreeRoute;
 
   // Wix Cart context
   const {
@@ -113,6 +119,8 @@ export default function App() {
       navigate('/politica-de-reembolso');
     } else if (page === 'envios' || page === 'politica-de-envios') {
       navigate('/politica-de-envios');
+    } else if (page === 'links' || page === 'linktree' || page === 'bio') {
+      navigate('/links');
     } else {
       navigate(page);
     }
@@ -127,7 +135,7 @@ export default function App() {
     <>
       <ScrollToTop />
       <TrackingScriptsManager />
-      {!isMetaAdminRoute && (
+      {!hideGlobalChrome && (
         <Navbar
           onNavigate={handleNavigate}
           onOpenUser={() => handleNavigate('cuenta')}
@@ -345,12 +353,19 @@ export default function App() {
           <Route path="/meta-pixel" element={<MetaAdminPage />} />
           <Route path="/configuracion-meta" element={<MetaAdminPage />} />
 
+          {/* Taplink / Linktree Bio Links Page (Wix CMS LINKTREE) */}
+          <Route path="/links" element={<LinktreePage />} />
+          <Route path="/linktree" element={<LinktreePage />} />
+          <Route path="/taplink" element={<LinktreePage />} />
+          <Route path="/bio" element={<LinktreePage />} />
+          <Route path="/enlaces" element={<LinktreePage />} />
+
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
 
-      {!isMetaAdminRoute && <Footer onNavigate={handleNavigate} />}
+      {!hideGlobalChrome && <Footer onNavigate={handleNavigate} />}
 
       {/* User Account Modal */}
       <UserModal 
@@ -368,10 +383,10 @@ export default function App() {
       />
 
       {/* Dual Floating Actions: WhatsApp & Wix Inbox Chat */}
-      {!isMetaAdminRoute && <FloatingActions />}
+      {!hideGlobalChrome && <FloatingActions />}
 
       {/* Welcome Discount Popup (10% OFF First Purchase) */}
-      {!isMetaAdminRoute && <DiscountPopup onNavigate={handleNavigate} />}
+      {!hideGlobalChrome && <DiscountPopup onNavigate={handleNavigate} />}
     </>
   );
 }
