@@ -128,12 +128,12 @@ async function ensurePolicyCollectionFields(collectionId, apiKey, siteId) {
       if (existingKeys.has(field.key)) continue;
       try {
         await wixRestFetch(
-          `/wix-data/v2/collections/${encodeURIComponent(collectionId)}/fields`,
+          '/wix-data/v2/collections/create-field',
           apiKey,
           siteId,
           {
             method: 'POST',
-            body: JSON.stringify({ field }),
+            body: JSON.stringify({ dataCollectionId: collectionId, field }),
           }
         );
         added.push(field.key);

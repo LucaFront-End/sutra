@@ -76,11 +76,31 @@ function renderRicosNodes(nodes = []) {
       if (node.type === 'BLOCKQUOTE') {
         return `<blockquote>${childrenHtml}</blockquote>`;
       }
+      if (node.type === 'DIVIDER') {
+        return '<hr />';
+      }
       return childrenHtml;
     })
     .filter(Boolean)
     .join('\n');
 }
+
+const IGNORED_META_KEYS = new Set([
+  '_id',
+  '_owner',
+  '_createdDate',
+  '_updatedDate',
+  '_publishDate',
+  '_draftDate',
+  '_publishStatus',
+  'title',
+  'titulo',
+  'slug',
+  'subtitulo',
+  'subtitle',
+  'tag',
+  'etiqueta',
+]);
 
 function extractHtmlContent(rawItem) {
   if (!rawItem) return '';
@@ -97,7 +117,25 @@ function extractHtmlContent(rawItem) {
       if (converted.trim()) return converted;
     }
   }
+
+  // Fallback: accept any custom field created by client in Wix CMS
+  for (const [key, val] of Object.entries(data)) {
+    if (IGNORED_META_KEYS.has(key) || !val) continue;
+    if (typeof val === 'string' && val.trim().length > 20) {
+      return val;
+    }
+    if (typeof val === 'object' && Array.isArray(val.nodes)) {
+      const converted = renderRicosNodes(val.nodes);
+      if (converted.trim().length > 20) return converted;
+    }
+  }
   return '';
+}
+
+function resolveDateIso(rawDate) {
+  if (!rawDate) return null;
+  if (typeof rawDate === 'object' && rawDate.$date) return rawDate.$date;
+  return rawDate;
 }
 
 function pickBestLegalItem(items = []) {
@@ -112,8 +150,12 @@ function pickBestLegalItem(items = []) {
   if (candidates.length === 0) return null;
 
   candidates.sort((a, b) => {
-    const tA = new Date(a.rawData?._updatedDate || a.rawData?._createdDate || 0).getTime();
-    const tB = new Date(b.rawData?._updatedDate || b.rawData?._createdDate || 0).getTime();
+    const tA = new Date(
+      resolveDateIso(a.rawData?._updatedDate) || resolveDateIso(a.rawData?._createdDate) || 0
+    ).getTime();
+    const tB = new Date(
+      resolveDateIso(b.rawData?._updatedDate) || resolveDateIso(b.rawData?._createdDate) || 0
+    ).getTime();
     return tB - tA;
   });
 
@@ -128,7 +170,10 @@ function normalizeLiveItem(picked, config) {
     subtitle: rawData.subtitulo || rawData.subtitle || '',
     tag: rawData.tag || rawData.etiqueta || '',
     content: htmlContent,
-    lastUpdated: rawData._updatedDate || rawData._createdDate || config.lastUpdated,
+    lastUpdated:
+      resolveDateIso(rawData._updatedDate) ||
+      resolveDateIso(rawData._createdDate) ||
+      config.lastUpdated,
     isLive: true,
   };
 }
