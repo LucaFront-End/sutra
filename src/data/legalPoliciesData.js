@@ -7,7 +7,7 @@
 export const LEGAL_POLICIES_CONFIG = {
   terms: {
     key: 'terms',
-    collection: 'Temrinosycondiciones',
+    collection: 'TerminosYCondiciones',
     path: '/terminos-y-condiciones',
     aliasPaths: ['/terminos', '/legal/terminos'],
     label: 'Términos y Condiciones',
@@ -18,7 +18,7 @@ export const LEGAL_POLICIES_CONFIG = {
   },
   refund: {
     key: 'refund',
-    collection: 'PoliticadeReembolsos',
+    collection: 'PoliticaDeReembolsos',
     path: '/politica-de-reembolso',
     aliasPaths: ['/politica-de-reembolsos', '/reembolsos', '/devoluciones', '/legal/reembolsos'],
     label: 'Política de Reembolsos',
@@ -29,7 +29,7 @@ export const LEGAL_POLICIES_CONFIG = {
   },
   privacy: {
     key: 'privacy',
-    collection: 'AvisodePrivacidad',
+    collection: 'AvisoDePrivacidad',
     path: '/politica-de-privacidad',
     aliasPaths: ['/aviso-de-privacidad', '/privacidad', '/legal/privacidad'],
     label: 'Aviso de Privacidad',
@@ -40,7 +40,7 @@ export const LEGAL_POLICIES_CONFIG = {
   },
   shipping: {
     key: 'shipping',
-    collection: 'PoliticadeEnvios',
+    collection: 'PoliticaDeEnvios',
     path: '/politica-de-envios',
     aliasPaths: ['/envios', '/politica-de-envio', '/legal/envios'],
     label: 'Política de Envíos',

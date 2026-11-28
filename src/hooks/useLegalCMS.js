@@ -5,156 +5,246 @@ import { LEGAL_POLICIES_CONFIG, DEFAULT_LEGAL_CONTENT } from '../data/legalPolic
 // In-memory cache across navigation sessions
 const legalCache = new Map();
 
-/**
- * Normalizes rich text or HTML returned by Wix CMS or headless sources
- */
+const LEGACY_COLLECTIONS = {
+  terms: ['Terminosycondiciones', 'Temrinosycondiciones', 'Politicas'],
+  refund: ['PoliticadeReembolsos', 'PoliticaDeReembolso', 'Politicas'],
+  privacy: ['AvisodePrivacidad', 'PoliticaDePrivacidad', 'Politicas'],
+  shipping: ['PoliticadeEnvios', 'Politicas'],
+};
+
+const CONTENT_FIELD_KEYS = [
+  'contenido',
+  'texto',
+  'politica',
+  'cuerpo',
+  'descripcin',
+  'descripcion',
+  'richtext',
+  'description',
+  'content',
+];
+
+function escapeHtml(text = '') {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderRicosTextNode(node) {
+  const rawText = node?.textData?.text ?? '';
+  let html = escapeHtml(rawText);
+  const decorations = node?.textData?.decorations || [];
+
+  for (const dec of decorations) {
+    if (dec.type === 'BOLD') html = `<strong>${html}</strong>`;
+    else if (dec.type === 'ITALIC') html = `<em>${html}</em>`;
+    else if (dec.type === 'UNDERLINE') html = `<u>${html}</u>`;
+    else if (dec.type === 'LINK' && dec.linkData?.link?.url) {
+      const href = escapeHtml(dec.linkData.link.url);
+      html = `<a href="${href}" target="_blank" rel="noopener noreferrer">${html}</a>`;
+    }
+  }
+  return html;
+}
+
+function renderRicosNodes(nodes = []) {
+  if (!Array.isArray(nodes)) return '';
+  return nodes
+    .map((node) => {
+      if (!node || typeof node !== 'object') return '';
+      if (node.type === 'TEXT') return renderRicosTextNode(node);
+
+      const childrenHtml = renderRicosNodes(node.nodes || []);
+      if (node.type === 'HEADING') {
+        const level = Math.min(4, Math.max(2, Number(node.headingData?.level) || 2));
+        return `<h${level}>${childrenHtml}</h${level}>`;
+      }
+      if (node.type === 'PARAGRAPH') {
+        return childrenHtml ? `<p>${childrenHtml}</p>` : '';
+      }
+      if (node.type === 'BULLETED_LIST') {
+        return `<ul>${childrenHtml}</ul>`;
+      }
+      if (node.type === 'ORDERED_LIST') {
+        return `<ol>${childrenHtml}</ol>`;
+      }
+      if (node.type === 'LIST_ITEM') {
+        return `<li>${childrenHtml}</li>`;
+      }
+      if (node.type === 'BLOCKQUOTE') {
+        return `<blockquote>${childrenHtml}</blockquote>`;
+      }
+      return childrenHtml;
+    })
+    .filter(Boolean)
+    .join('\n');
+}
+
 function extractHtmlContent(rawItem) {
   if (!rawItem) return '';
-  const data = rawItem.data || rawItem;
-  return (
-    data.contenido || 
-    data.descripcin || 
-    data.descripcion || 
-    data.richtext || 
-    data.description || 
-    data.content || 
-    ''
-  );
+  const data = rawItem.data && typeof rawItem.data === 'object' ? rawItem.data : rawItem;
+
+  for (const key of CONTENT_FIELD_KEYS) {
+    const val = data[key];
+    if (!val) continue;
+    if (typeof val === 'string' && val.trim()) {
+      return val;
+    }
+    if (typeof val === 'object' && Array.isArray(val.nodes)) {
+      const converted = renderRicosNodes(val.nodes);
+      if (converted.trim()) return converted;
+    }
+  }
+  return '';
+}
+
+function pickBestLegalItem(items = []) {
+  const candidates = (Array.isArray(items) ? items : [])
+    .map((item) => {
+      const rawData = item?.data && typeof item.data === 'object' ? item.data : item;
+      const htmlContent = extractHtmlContent(item);
+      return { rawItem: item, rawData, htmlContent };
+    })
+    .filter((entry) => entry.htmlContent && entry.htmlContent.trim().length > 20);
+
+  if (candidates.length === 0) return null;
+
+  candidates.sort((a, b) => {
+    const tA = new Date(a.rawData?._updatedDate || a.rawData?._createdDate || 0).getTime();
+    const tB = new Date(b.rawData?._updatedDate || b.rawData?._createdDate || 0).getTime();
+    return tB - tA;
+  });
+
+  return candidates[0];
+}
+
+function normalizeLiveItem(picked, config) {
+  const { rawItem, rawData, htmlContent } = picked;
+  return {
+    id: rawData._id || rawItem.id || `cms-${config.key}`,
+    title: rawData.title || rawData.titulo || config.label,
+    subtitle: rawData.subtitulo || rawData.subtitle || '',
+    tag: rawData.tag || rawData.etiqueta || '',
+    content: htmlContent,
+    lastUpdated: rawData._updatedDate || rawData._createdDate || config.lastUpdated,
+    isLive: true,
+  };
 }
 
 /**
- * Hook to dynamically fetch legal policies from CMS (Wix CMS / Supabase / Built-in high-fidelity dataset)
+ * Hook to dynamically fetch legal policies from Wix CMS with local luxury dataset fallback.
  * @param {string} policyKey - 'terms' | 'refund' | 'privacy' | 'shipping'
  */
 export function useLegalCMS(policyKey = 'terms') {
   const { wixClient } = useWixClient();
   const config = LEGAL_POLICIES_CONFIG[policyKey] || LEGAL_POLICIES_CONFIG.terms;
-  const cached = legalCache.get(config.key);
 
-  const [data, setData] = useState(cached || null);
-  const [loading, setLoading] = useState(!cached);
-  const [error, setError] = useState(null);
-  const [isCMSLive, setIsCMSLive] = useState(Boolean(cached?.isLive));
+  const [state, setState] = useState(() => {
+    const cached = legalCache.get(config.key) || null;
+    return { key: cached ? config.key : null, entry: cached };
+  });
 
   useEffect(() => {
-    // If already cached in memory, use it immediately
-    if (legalCache.has(config.key)) {
-      const entry = legalCache.get(config.key);
-      setData(entry);
-      setIsCMSLive(Boolean(entry.isLive));
-      setLoading(false);
-      return;
-    }
-
     let isCancelled = false;
 
-    async function fetchPolicyFromCMS() {
-      setLoading(true);
-      setError(null);
+    const fallbackEntry = {
+      id: `default-${config.key}`,
+      title: config.label,
+      subtitle: '',
+      tag: '',
+      content: DEFAULT_LEGAL_CONTENT[config.key] || '',
+      lastUpdated: config.lastUpdated,
+      isLive: false,
+    };
 
-      // Default fallback content from high-fidelity dataset
-      const defaultContent = DEFAULT_LEGAL_CONTENT[config.key] || '';
-      const fallbackEntry = {
-        id: `default-${config.key}`,
-        title: config.label,
-        content: defaultContent,
-        lastUpdated: config.lastUpdated,
-        isLive: false,
-      };
+    async function fetchPolicyFromCMS() {
+      let liveEntry = null;
 
       try {
-        // 1. Try querying Wix CMS collection if available
         if (wixClient?.items?.query) {
-          const candidateCollections = [
-            config.collection,
-            config.key === 'terms' ? 'Terminosycondiciones' : null,
-            config.key === 'terms' ? 'TerminosYCondiciones' : null,
-            config.key === 'refund' ? 'PoliticaDeReembolsos' : null,
-            config.key === 'privacy' ? 'AvisoDePrivacidad' : null,
-            config.key === 'shipping' ? 'PoliticaDeEnvios' : null,
-          ].filter(Boolean);
-
-          let foundItem = null;
+          const legacyList = LEGACY_COLLECTIONS[config.key] || [];
+          const candidateCollections = [config.collection, ...legacyList];
 
           for (const coll of candidateCollections) {
+            if (isCancelled) return;
             try {
-              const res = await wixClient.items.query(coll).limit(1).find();
-              if (res.items && res.items.length > 0) {
-                foundItem = res.items[0];
+              const queryBuilder = wixClient.items.query(coll);
+              const res =
+                coll === 'Politicas'
+                  ? await queryBuilder.eq('slug', config.key).limit(10).find()
+                  : await queryBuilder.limit(10).find();
+              const picked = pickBestLegalItem(res?.items || []);
+              if (picked) {
+                liveEntry = normalizeLiveItem(picked, config);
                 break;
               }
-            } catch (_) {
-              // Try next candidate
-            }
-          }
-
-          // Also check consolidated 'Politicas' or 'Legal' collection if single collection approach was used
-          if (!foundItem) {
-            for (const singleColl of ['Politicas', 'LegalPolicies', 'Legal']) {
-              try {
-                const res = await wixClient.items.query(singleColl).eq('slug', config.key).limit(1).find();
-                if (res.items && res.items.length > 0) {
-                  foundItem = res.items[0];
-                  break;
-                }
-              } catch (_) {}
-            }
-          }
-
-          if (!isCancelled && foundItem) {
-            const rawData = foundItem.data || foundItem;
-            const htmlContent = extractHtmlContent(foundItem);
-
-            if (htmlContent && htmlContent.trim().length > 40) {
-              const liveEntry = {
-                id: rawData._id || foundItem.id,
-                title: rawData.title || rawData.titulo || config.label,
-                content: htmlContent,
-                lastUpdated: rawData._updatedDate || rawData._createdDate || config.lastUpdated,
-                isLive: true,
-              };
-              legalCache.set(config.key, liveEntry);
-              setData(liveEntry);
-              setIsCMSLive(true);
-              setLoading(false);
-              return;
+            } catch {
+              // Collection may not exist yet; try next candidate
             }
           }
         }
 
-        // 2. Use high-fidelity built-in legal dataset
-        if (!isCancelled) {
-          legalCache.set(config.key, fallbackEntry);
-          setData(fallbackEntry);
-          setIsCMSLive(false);
+        if (!liveEntry && !isCancelled) {
+          try {
+            const apiRes = await fetch(
+              `/api/legal-policies?policy=${encodeURIComponent(config.key)}`
+            );
+            const contentType = apiRes.headers.get('content-type') || '';
+            if (apiRes.ok && contentType.includes('application/json')) {
+              const json = await apiRes.json();
+              const apiItem = json?.policy?.item;
+              if (apiItem) {
+                const picked = pickBestLegalItem([apiItem]);
+                if (picked) {
+                  liveEntry = normalizeLiveItem(picked, config);
+                }
+              }
+            }
+          } catch {
+            // Serverless API not available (e.g. local Vite preview)
+          }
         }
       } catch (err) {
-        console.warn(`[LegalCMS] Notice:`, err.message);
-        if (!isCancelled) {
-          legalCache.set(config.key, fallbackEntry);
-          setData(fallbackEntry);
-        }
-      } finally {
-        if (!isCancelled) setLoading(false);
+        console.warn('[LegalCMS] Notice:', err?.message || err);
       }
+
+      if (isCancelled) return;
+
+      const resolved = liveEntry || fallbackEntry;
+      legalCache.set(config.key, resolved);
+      setState({ key: config.key, entry: resolved });
     }
 
     fetchPolicyFromCMS();
 
+    const handleFocus = () => {
+      fetchPolicyFromCMS();
+    };
+    window.addEventListener('focus', handleFocus);
+
     return () => {
       isCancelled = true;
+      window.removeEventListener('focus', handleFocus);
     };
-  }, [wixClient, config.key, config.collection, config.label, config.lastUpdated]);
+  }, [wixClient, config]);
+
+  const cachedForKey = legalCache.get(config.key) || null;
+  const activeEntry = state.key === config.key ? state.entry : cachedForKey;
+  const loading = !activeEntry;
 
   return {
     config,
-    data,
-    content: data?.content || DEFAULT_LEGAL_CONTENT[config.key] || '',
-    title: data?.title || config.label,
-    lastUpdated: data?.lastUpdated || config.lastUpdated,
+    data: activeEntry,
+    content: activeEntry?.content || DEFAULT_LEGAL_CONTENT[config.key] || '',
+    title: activeEntry?.title || config.label,
+    subtitle: activeEntry?.subtitle || '',
+    tag: activeEntry?.tag || '',
+    lastUpdated: activeEntry?.lastUpdated || config.lastUpdated,
     loading,
-    error,
-    isCMSLive,
+    error: null,
+    isCMSLive: Boolean(activeEntry?.isLive),
     allPolicies: Object.values(LEGAL_POLICIES_CONFIG),
   };
 }

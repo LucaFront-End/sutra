@@ -42,7 +42,7 @@ const PATH_OR_SLUG_MAP = {
   'shipping': 'shipping',
 };
 
-export default function LegalPage({ policyKey: propPolicyKey, onNavigate }) {
+export default function LegalPage({ policyKey: propPolicyKey }) {
   const location = useLocation();
   const { slug } = useParams();
 
@@ -61,7 +61,7 @@ export default function LegalPage({ policyKey: propPolicyKey, onNavigate }) {
     return 'terms';
   }, [propPolicyKey, location.pathname, slug]);
 
-  const { config, content, title, lastUpdated, loading, error, allPolicies, isCMSLive } = useLegalCMS(activeKey);
+  const { config, content, title, subtitle, tag, lastUpdated, loading, error, allPolicies, isCMSLive } = useLegalCMS(activeKey);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -146,10 +146,10 @@ export default function LegalPage({ policyKey: propPolicyKey, onNavigate }) {
       <header className="legal-hero">
         <div className="container">
           <div className="legal-hero-inner">
-            <span className="legal-tag">✧ {config.tag}</span>
-            <h1 className="legal-title">{config.label}</h1>
+            <span className="legal-tag">✧ {tag || config.tag}</span>
+            <h1 className="legal-title">{title || config.label}</h1>
             <p className="legal-subtitle">
-              Sutra México · Transparencia, pureza artesanal y compromiso de confianza en cada envío y ritual.
+              {subtitle || 'Sutra México · Transparencia, pureza artesanal y compromiso de confianza en cada envío y ritual.'}
             </p>
 
             <div className="legal-meta-row">
